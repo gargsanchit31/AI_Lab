@@ -1,11 +1,10 @@
 #ifndef _UTILS
 #define _UTILS
-#include <iostream>
-#include <cmath>
-using namespace std;
 
-float sigmoid(float x){
-    return 1/(1 + exp(-x));
-}
+#define DEBUG 0
+#define IFBUG if(DEBUG){
+#define ENDBUG }
+
+float sigmoid(float x);
 
 #endif

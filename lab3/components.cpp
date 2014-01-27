@@ -1,4 +1,5 @@
 #include "components.h"
+#include "utils.h"
 /** Edge **/
 Edge::Edge(){
     weight = 0;
@@ -37,4 +38,18 @@ void Edge::print(){
 Neuron::Neuron(int in_size, int out_size){
     inputs.resize(in_size);
     outputs.resize(out_size);
+}
+
+void Neuron::trigger(){
+    float weighted_input = 0;
+    for(int i=0; i<inputs.size(); i++){
+        weighted_input += inputs[i]->get_output();
+    }
+    IFBUG cout << "wt in" <<weighted_input << endl; ENDBUG
+    float output = sigmoid(weighted_input);
+    IFBUG cout <<"out " << output << endl; ENDBUG
+    for(int i=0; i< outputs.size(); i++){
+        outputs[i]->set_input(output);
+        IFBUG cout << outputs[i]->get_output() << endl; ENDBUG
+    }
 }
