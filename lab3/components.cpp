@@ -92,7 +92,13 @@ void Neuron::propogate_error(){
         IFBUG cout << inputs[i]->get_output_error() << endl; ENDBUG
     }
 }
-void Neuron::update_weights(){
+
+void Neuron::update_weights(){ //for each input edge, update its weight acc to DELTA_W = delta_j * eita * output_i(of prev neuron NOT WEIGHTED)
+    for(int i=0; i<inputs.size() ;i++){
+        float curr_weight = inputs[i]->get_weight();
+        float delta_W = delta_error * EITA * inputs[i]->get_input_signal();
+        inputs[i]->set_weight(curr_weight + delta_W);
+    }
 }
 
 neuron_id Neuron::get_id(){

@@ -5,6 +5,7 @@
 #include <cmath>
 #include <vector>
 #include <ctime>
+#define EITA 0.01 // the learning rate
 using namespace std;
 
 typedef struct {
