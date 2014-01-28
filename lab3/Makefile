@@ -1,6 +1,7 @@
-CC = g++
-DEPS = components.h utils.h
-OBJ = main.o components.o utils.o
+CC = g++ -std=c++0x
+DEPS = components.h utils.h layer.h neural_network.h
+OBJ = main.o components.o utils.o layer.o neural_network.o
+OBJ2 = main.o components.o utils.o layer.o neural_network.o
 
 # $@ : lhs
 # $< : first item in rhs
@@ -9,8 +10,10 @@ OBJ = main.o components.o utils.o
 %.o : %.cpp $(DEPS)
 	$(CC) -c -o $@ $< 
 
-a.out: $(OBJ)
+main.out: $(OBJ)
 	$(CC) -o $@ $(OBJ)
+net.out: $(OBJ)
+	$(CC) -o $@ $(OBJ2)
 
 .PHONY: clean
 clean:

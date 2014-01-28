@@ -8,6 +8,7 @@ layer::layer(char type, char id, int number, int prev_number, int next_number){ 
 	population = number;
 	prev_population = prev_number;
 	next_population = next_number;
+	addnode();
 }
 
 /** 
@@ -58,4 +59,22 @@ void layer::weight_update(){
 	}
 }
 
+char layer::get_type(){
+	return type;
+}
 
+char layer::get_layerid(){
+	return layer_id;
+}
+
+int layer::get_population(){
+	return population;
+}
+
+int layer::get_prev_population(){
+	return prev_population;
+}
+
+int layer::get_next_population(){
+	return next_population;
+}
