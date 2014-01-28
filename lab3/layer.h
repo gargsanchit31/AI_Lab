@@ -10,8 +10,7 @@ public:
 	char type;					// I , H, O  are the allowed types
 	char layer_id;				// this is the id of the layer
 	int population;			// number of nodes in the layer
-	Neuron * nodeList;
-
+	Neuron * nodeList;		// array of nodes
 
 	layer(char, char, int);		// constructor : type, layer_id, population
 	~layer()
