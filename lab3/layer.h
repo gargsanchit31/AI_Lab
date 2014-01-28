@@ -18,7 +18,7 @@ public:
 	~layer()
 
 private:
-	void addnode();
+	void addnode();							// adds nodes to the layer upon initialization
 	void propogate_sig();					// propogates signal after 
 	void propogate_err();					// propogates error
 	void weight_update();					// updates teh weight of the lower layer neurons connected to it 	
