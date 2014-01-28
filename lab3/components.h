@@ -27,8 +27,10 @@ public:
     vector<Edge*> outputs; // output edges
     Neuron(char n_type, neuron_id nid, int in_size, int out_size);
     ~Neuron();
+    float get_signal_output();
+    float get_delta_error();
     void propogate_signal(); // collect weighted input from input edges, calculate the output and set it to all output edges
-    void propogate_error();  // collect weighted delta_errors from output edges, calculate self delta_error and propogate it to input edges
+    void propogate_error();  // collect weighted delta_error from output edges, calculate self delta_error and propogate it to input edges
     void update_weights(); // update weights of each 
 };
 
@@ -48,7 +50,8 @@ public:
     float get_input_error();
     float get_output_signal(); //calculates the output using weight * input_signal
     float get_output_error(); 
-    void print();
+    void print_signal();
+    void print_error();
 };
 
 #endif
