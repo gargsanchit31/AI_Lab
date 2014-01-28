@@ -2,7 +2,7 @@
 #include "utils.h"
 /** Edge **/
 Edge::Edge(){
-    weight = 0;
+    weight = get_random();
 }
 
 Edge::Edge(float wt){
@@ -93,4 +93,8 @@ void Neuron::propogate_error(){
     }
 }
 void Neuron::update_weights(){
+}
+
+neuron_id Neuron::get_id(){
+    return id;
 }

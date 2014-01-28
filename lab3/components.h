@@ -29,6 +29,7 @@ public:
     ~Neuron();
     float get_signal_output();
     float get_delta_error();
+    neuron_id get_id();
     void propogate_signal(); // collect weighted input from input edges, calculate the output and set it to all output edges
     void propogate_error();  // collect weighted delta_error from output edges, calculate self delta_error and propogate it to input edges
     void update_weights(); // update weights of each 
