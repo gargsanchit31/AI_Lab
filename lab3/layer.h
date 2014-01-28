@@ -22,7 +22,7 @@ public:
 	vector<Neuron*> neuronList;			// array of nodes
 
 	layer(char, char, int, int, int);		// constructor : type, layer_id, population, prev_population, next_layer
-	~layer()
+	~layer();
 
 private:
 	void addnode();							// adds nodes to the layer upon initialization
