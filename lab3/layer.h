@@ -19,6 +19,9 @@ public:
 
 private:
 	void addnode();
+	void propogate_sig();					// propogates signal after 
+	void propogate_err();					// propogates error
+	void weight_update();					// updates teh weight of the lower layer neurons connected to it 	
 };
 
 
