@@ -23,7 +23,7 @@ private:
 
 public:
 	vector<Neuron*> neuronList;				// array of nodes
-	
+
 	layer(char, char, int, int, int);		// constructor : type, layer_id, population, prev_population, next_layer
 	~layer();
 	char get_type();						//return type of neuron
@@ -34,7 +34,7 @@ public:
 	void addnode();							// adds nodes to the layer upon initialization
 	void propogate_sig();					// propogates signal after 
 	void propogate_err();					// propogates error
-	void weight_update();					// updates teh weight of the lower layer neurons connected to it 	
+	void weight_update();					// updates teh weight of the lower layer neurons connected to it 
 };
 
 
