@@ -53,6 +53,13 @@ Neuron::Neuron(char n_type, neuron_id nid, int in_size, int out_size){
     outputs.resize(out_size);
 }
 
+float Neuron::get_signal_output(){
+    return signal_output;
+}
+float Neuron::get_delta_error(){
+    return delta_error;
+}
+
 void Neuron::propogate_signal(){
     float weighted_signal = 0;
     for(int i=0; i<inputs.size(); i++){
@@ -85,9 +92,5 @@ void Neuron::propogate_error(){
         IFBUG cout << inputs[i]->get_output_error() << endl; ENDBUG
     }
 }
-float Neuron::get_signal_output(){
-    return signal_output;
-}
-float Neuron::get_delta_error(){
-    return delta_error;
+void Neuron::update_weights(){
 }
