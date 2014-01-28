@@ -7,4 +7,6 @@
 
 float sigmoid(float x);
 
+float get_random(); //get random number b/w 0 and 1
+
 #endif
