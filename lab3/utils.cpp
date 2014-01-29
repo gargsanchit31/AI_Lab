@@ -15,16 +15,23 @@ float get_random(){
     return r;
 }
 
-float distance_vec(vector<float> v1, vector<float> v2){
-	if(v1.size()!=v2.size()){
+float distance_vec(vector<float> Z, vector<float> Y){
+	if(Z.size()!=Y.size()){
 		cout<<"In dotproduct(): Error on vector sizes\n";
 		exit(1);
 	}
 	else{
-		float Error =0;
-		for(int i=0;i<v1.size();i++){
-			Error+=pow(v1[i]-v2[i], 2);
+		float Error =0, z=0;
+		for(int i=0;i<Z.size();i++){
+			Error+=pow(Z[i]-Y[i], 2);
 		}
 		return Error;
 	}
+}
+
+void printvec(vector<float> v){
+	for(int j=0;j<v.size();j++){
+		cout<<v[j]<<" ";
+	}
+	cout<<endl;
 }

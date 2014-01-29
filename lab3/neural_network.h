@@ -10,6 +10,11 @@ using namespace std;
 
 class neural_network;
 
+typedef struct {
+	vector<float> input;
+	vector<float> target;
+} training_data;
+
 class neural_network{
 private:
 	vector<layer * > layers;
@@ -17,6 +22,7 @@ private:
 	float tolerance;	//% error which can be accepted
 	float Threshold;
 	void create_edges();
+	//vector<float> get_output();
 //methods
 public:
 	neural_network();
@@ -27,9 +33,10 @@ public:
 	void back_propogate();
 	void print_topology();
 	void weight_update();
-	int training_step(vector<float>, vector<float>);
+	int training_step(vector<training_data>);
 	void set_input(vector<float>);
-	int calculate_err(vector<float>);
+	float calculate_err(vector<float>);			//returns the diatance between output layer vector and vector
+	vector<float> calculate_output(vector<float>);
 };
 
 

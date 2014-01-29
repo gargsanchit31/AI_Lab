@@ -4,6 +4,7 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 int main(){
+    srand(time(NULL));
     Edge *i0 = new Edge(-1);
     Edge *i1 = new Edge(3);
     Edge *o0 = new Edge(2);
@@ -48,6 +49,12 @@ int main(){
 
     //checking Edge() random constructor
     Edge * er = new Edge();
+    er->print_signal();
+    er = new Edge();
+    er->print_signal();
+    er = new Edge();
+    er->print_signal();
+    er = new Edge();
     er->print_signal();
     
     //checking randomness of rand function

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include <cstdlib>
 
 using namespace std;
 
@@ -54,7 +55,7 @@ void neural_network::create_edges(){
 		//set input to the input layer. input vector is of size 1
 		if(cur_index == 0){
 			for(int j=0;j<cur_layer->get_population();j++){
-				Edge* e = new Edge();
+				Edge* e = new Edge(1);
 				cur_layer_neurons[j]->inputs[0] = e;
 			}
 		}
@@ -80,7 +81,7 @@ void neural_network::create_edges(){
 		*/
 		if(cur_index == layer_count-1){
 			for(int j=0;j<cur_layer->get_population();j++){
-				Edge* e = new Edge();
+				Edge* e = new Edge(1);
 				cur_layer_neurons[j]->outputs[0] = e;
 			}
 		}
@@ -114,7 +115,59 @@ void neural_network::set_input(vector<float> input){
 	}
 }
 
-int neural_network::calculate_err(vector<float> z){
+float neural_network::calculate_err(vector<float> z){
+	vector<float> y;
+	layer* cur_layer = layers[layer_count-1];
+	vector<Neuron*> cur_layer_neurons = cur_layer->neuronList;
+	IFBUG cout << "output: " ; ENDBUG
+	for(int i=0;i<cur_layer->get_population();i++){
+		float output = cur_layer_neurons[i]->get_signal_output();
+		IFBUG cout << output << " "; ENDBUG
+		y.push_back(output);
+		cur_layer_neurons[i]->outputs[0]->set_error(z[i]-output);
+	}
+	IFBUG cout << endl; ENDBUG
+
+	float Error = distance_vec(z,y);
+	IFBUG cout << Error << " "; ENDBUG
+	return Error;
+	// //sleep(1);
+	// if(Error<Threshold){
+	// 	return 1;		//case successful; no need to back propogate error
+	// }
+	// else return -1;		//back propogate the error
+
+}
+
+int neural_network::training_step(vector<training_data> inp_data){
+	float Error=0;
+	for(int d=0;d<inp_data.size();d++){
+		training_data data=inp_data[d];
+
+		if((data.input.size()==layers[0]->get_population()) and (data.target.size()==layers[layer_count-1]->get_population())){
+			this->set_input(data.input);
+			this->fwd_propogate();
+			Error += this->calculate_err(data.target);
+			this->back_propogate();
+			this->weight_update();
+			//printvec(data.input);
+		}
+
+		else{
+			cout<<"training data's size doesn't comply with the network" <<endl;
+			return -1;
+		}
+	}
+	//cout << Error << endl;
+	if(Error >= Threshold){
+		return -1;
+	}
+	return 1;
+}
+
+vector<float> neural_network::calculate_output(vector<float> input){
+	this->set_input(input);
+	this->fwd_propogate();
 	vector<float> y;
 	layer* cur_layer = layers[layer_count-1];
 	vector<Neuron*> cur_layer_neurons = cur_layer->neuronList;
@@ -122,37 +175,9 @@ int neural_network::calculate_err(vector<float> z){
 	for(int i=0;i<cur_layer->get_population();i++){
 		float output = cur_layer_neurons[i]->get_signal_output();
 		y.push_back(output);
-		cur_layer_neurons[i]->outputs[0]->set_error(z[i]-output);
 	}
-
-	float Error = distance_vec(z,y);
-
-	if(Error<Threshold){
-		return 1;		//case successful; no need to back propogate error
-	}
-	else return -1;		//back propogate the error
-
+	return y;
 }
-
-int neural_network::training_step(vector<float> input, vector<float> output){
-	if((input.size()==layers[0]->get_population()) and (output.size()==layers[layer_count-1]->get_population())){
-		this->set_input(input);
-		this->fwd_propogate();
-		int success = this->calculate_err(output);
-		if(success == 1){
-			return 1;
-		}
-		this->back_propogate();
-		this->weight_update();
-		return -1;	
-		}
-
-	else{
-		cout<<"training data's size doesn't comply with the network" <<endl;
-	}
-	return 0;
-}
-
 
 //print the neural network
 void neural_network::print_topology(){
