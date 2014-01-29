@@ -17,6 +17,6 @@ net.out: $(OBJ2)
 
 .PHONY: clean
 clean:
-	rm -rf a.out
+	rm -rf a.out main.out net.out
 	rm -rf *.o
 
