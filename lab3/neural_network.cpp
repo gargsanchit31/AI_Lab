@@ -94,14 +94,14 @@ void neural_network::fwd_propogate(){
 	}
 }
 
-void neural_network::back_propogate(){
-	for(int i=layers.size()-1 ; i>=0 ; i--){
+void neural_network::back_propogate(){ //n-1 to upto layer 1 (leaving input layer i.e 0 as that is never used)
+	for(int i=layers.size()-1 ; i>0 ; i--){
 		layers[i]->propogate_err();
 	}
 }
 
-void neural_network::weight_update(){
-	for(int i=0;i<layers.size();i++){
+void neural_network::weight_update(){ //1 to n-1 (leaving input layer 0) since weights of input edges are fixed 1
+	for(int i=1;i<layers.size();i++){
 		layers[i]->weight_update();
 	}
 }
