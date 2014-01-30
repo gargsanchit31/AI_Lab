@@ -13,12 +13,13 @@ int main(){
 	vector<int> sizes ={2, 2, 1};
 
 	int size = sizes.size();
-	neural_network* nn = new neural_network(size,sizes, 0.001);
+	neural_network* nn = new neural_network(size,sizes, 0.01);
 	//training_data data[4];
 	vector<training_data> data = {{ {0,0}, {0}}, { {0,1}, {1}}, { {1,0}, {1}}, { {1,1}, {0}}};
 	nn->print_topology();
-
-
+	cout<<endl<<"************************"<<endl;
+	nn->print_network();
+	//return 0;
 	int iteration = 0;
 	for(int i=0; i<data.size();){
 		iteration++;
@@ -34,6 +35,7 @@ int main(){
 		}
 		else i=0;
 	}
+	nn->print_network();
 
 	cout <<iteration<< "\ntraining complete";
 	float a,b;

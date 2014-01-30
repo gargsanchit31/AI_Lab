@@ -74,6 +74,11 @@ void neural_network::create_edges(){
 					Edge* e = new Edge();
 					cur_layer_neurons[j]->outputs[k] = next_layer_neurons[k]->inputs[j] = e;
 				}
+				if(cur_index != 0){
+					Edge * e = new Edge();
+					e->set_signal(-1);
+					cur_layer_neurons[j]->inputs.push_back(e);
+				}
 			}
 		}
 
@@ -83,7 +88,12 @@ void neural_network::create_edges(){
 			for(int j=0;j<cur_layer->get_population();j++){
 				Edge* e = new Edge(1);
 				cur_layer_neurons[j]->outputs[0] = e;
+
+				e = new Edge();
+				e->set_signal(-1);
+				cur_layer_neurons[j]->inputs.push_back(e);
 			}
+			
 		}
 	}
 }
