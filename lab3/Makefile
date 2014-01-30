@@ -1,4 +1,4 @@
-CC = g++ -std=c++0x
+CC = g++ -std=c++0x -g 
 DEPS = components.h utils.h layer.h neural_network.h
 OBJ = main.o components.o utils.o layer.o neural_network.o
 OBJ2 = main_network.o components.o utils.o layer.o neural_network.o

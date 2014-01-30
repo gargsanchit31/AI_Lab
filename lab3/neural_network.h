@@ -32,6 +32,7 @@ public:
 	void fwd_propogate();
 	void back_propogate();
 	void print_topology();
+	void print_network();
 	void weight_update();
 	int training_step(vector<training_data>);
 	void set_input(vector<float>);
