@@ -71,6 +71,7 @@ void Neuron::propogate_signal(){
     }
     else{
         signal_output = sigmoid(weighted_signal);
+       // signal_output = weighted_signal;
     }
     IFBUG cout <<"out " << signal_output << endl; ENDBUG
     for(int i=0; i< outputs.size(); i++){

@@ -18,13 +18,13 @@ int main(){
 	vector<training_data> data = {{ {0,0}, {0}}, { {0,1}, {1}}, { {1,0}, {1}}, { {1,1}, {0}}};
 	nn->print_topology();
 	cout<<endl<<"************************"<<endl;
-	nn->print_network();
+	//nn->print_network();
 	//return 0;
 	int iteration = 0;
 	for(int i=0; i<data.size();){
 		iteration++;
 		if(iteration % 1000 == 0) cout << iteration /1000 <<endl;
-		if(iteration > 1000000){
+		if(iteration > 100000){
 			break;
 		}
 		//training_data d = data[i];
@@ -36,7 +36,7 @@ int main(){
 		else i=0;
 	}
 	nn->print_network();
-
+	
 	cout <<iteration<< "\ntraining complete";
 	float a,b;
 	while(1){
@@ -44,6 +44,7 @@ int main(){
 		cin >> a; cin >> b;
 		vector<float> out = nn->calculate_output({a,b});
 		cout << out[0] <<endl;
+		nn->print_network();
 	}
 
 	return 0;

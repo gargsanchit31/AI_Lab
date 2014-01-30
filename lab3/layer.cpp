@@ -1,9 +1,10 @@
 #include "layer.h"
+#include <algorithm>    // std::max
 
 /** this is the constructor definition **/
 
-layer::layer(char type, char id, int number, int prev_number, int next_number){    // type, layer_id, population, prev_population, next_layer
-	type = type;
+layer::layer(char t, char id, int number, int prev_number, int next_number){    // type, layer_id, population, prev_population, next_layer
+	type = t;
 	layer_id = id;
 	population = number;
 	prev_population = prev_number;
@@ -57,6 +58,59 @@ void layer::weight_update(){
 	for (int i = 0; i < population; i++){
 		neuronList[i]->update_weights();
 	}
+}
+
+void layer::print_layer(){
+	cout << "Layer :" << layer_id <<endl;
+	cout << "\t\t";
+	for(int i=0;i<population;i++){
+		Neuron *nn = neuronList[i];
+		//print o/p weights
+		for(int j=0; j< nn->outputs.size(); j++){
+			printf("%-7.3f", nn->outputs[j]->get_weight());
+		}
+	}
+	cout <<endl;
+	cout << "\t\t";
+	for(int i=0;i<population;i++){
+		Neuron *nn = neuronList[i];
+		int x = max(nn->outputs.size(),nn->inputs.size());
+		cout << "o/p " <<nn->get_signal_output();
+		for(int i=0; i< x ; i++){
+			printf("      ");
+		}
+	}
+	cout <<endl;
+	cout << "\t\t";
+	for(int i=0;i<population;i++){
+		Neuron *nn = neuronList[i];
+		int x = max(nn->outputs.size(),nn->inputs.size());
+		cout << "DELTA: " <<nn->get_delta_error();
+		for(int i=0; i< x ; i++){
+			printf("      ");
+		}
+	}
+	cout <<endl;
+	cout << "\t\t";
+	for(int i=0;i<population;i++){
+		Neuron *nn = neuronList[i];
+		int x = max(nn->outputs.size(),nn->inputs.size());
+		cout << "#"<< nn->get_id().seq_no;
+		for(int i=0; i< x ; i++){
+			printf("      ");
+		}
+	}
+	cout <<endl;	
+	
+	cout << "\t\t";	
+	for(int i=0;i<population;i++){
+		Neuron *nn = neuronList[i];
+		//print input weights
+		for(int j=0; j< nn->inputs.size(); j++){
+			printf("%-7.3f", nn->inputs[j]->get_weight());
+		}
+	}
+	cout << endl <<endl;
 }
 
 char layer::get_type(){

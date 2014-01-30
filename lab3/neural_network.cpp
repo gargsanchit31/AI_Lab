@@ -24,7 +24,7 @@ neural_network::neural_network(int size, vector<int> layer_vec, float thresh){
 	
 		//hidden layer if number of layer is more than 2
 		if(layer_count > 2){
-			while(l_no < size - 1){
+			while(l_no < layer_count - 1){
 				l = new layer('H', l_id++, layer_vec[l_no], layer_vec[l_no - 1], layer_vec[l_no + 1]);
 				l_no++;		//increment the layer number
 				layers.push_back(l);
@@ -33,6 +33,7 @@ neural_network::neural_network(int size, vector<int> layer_vec, float thresh){
 
 		//last layer as output layer
 		l = new layer('O', l_id++, layer_vec[l_no], layer_vec[l_no - 1], 1);
+		cout<<"layer is: "<<l_no<<endl;
 		l_no++;		//increment the layer number
 		layers.push_back(l);
 
@@ -155,11 +156,20 @@ int neural_network::training_step(vector<training_data> inp_data){
 		training_data data=inp_data[d];
 
 		if((data.input.size()==layers[0]->get_population()) and (data.target.size()==layers[layer_count-1]->get_population())){
+			//cout << "PRINTING " <<endl;
 			this->set_input(data.input);
+			//cout << "before propogate " <<endl;
+			//this->print_network();
 			this->fwd_propogate();
+			//cout << "before back prop " <<endl;
+			//this->print_network();
 			Error += this->calculate_err(data.target);
 			this->back_propogate();
+			//cout << "before weight_update " <<endl;
+			//this->print_network();
 			this->weight_update();
+			//cout << "after update weight " <<endl;
+			//this->print_network();
 			//printvec(data.input);
 		}
 
@@ -215,32 +225,6 @@ void neural_network::print_topology(){
 
 void neural_network::print_network(){
 	for(int cur_index=layer_count-1; cur_index>=0; cur_index--){
-		layer* cur_layer = layers[cur_index];
-		vector<Neuron*> cur_layer_neurons = cur_layer->neuronList;
-
-		for(int nno=0;nno<cur_layer->get_population();nno++){
-			Neuron* n = cur_layer_neurons[nno];
-			for(int ono=0;ono<n->outputs.size();ono++){
-				cout<<n->outputs[ono]->get_weight()<<" ";
-			}
-			cout<<"    ";
-		}
-		cout<<endl;
-
-		for(int nno=0;nno<cur_layer->get_population();nno++){
-			Neuron* n = cur_layer_neurons[nno];
-			neuron_id id = n->get_id();
-			cout<<id.layer_id<<id.seq_no<<"	";
-		}
-		cout<<endl;
-
-		for(int nno=0;nno<cur_layer->get_population();nno++){
-			Neuron* n = cur_layer_neurons[nno];
-			for(int ino=0;ino<n->inputs.size();ino++){
-				cout<<n->inputs[ino]->get_weight()<<" ";
-			}
-			cout<<"    ";
-		}
-		cout<<endl;
+		layers[cur_index]->print_layer();
 	}
 }
