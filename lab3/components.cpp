@@ -1,6 +1,8 @@
 #include "components.h"
 #include "utils.h"
 /** Edge **/
+extern float EITA;
+
 Edge::Edge(){
     weight = get_random();
 }

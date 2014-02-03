@@ -69,6 +69,7 @@ void layer::print_layer(){
 		for(int j=0; j< nn->outputs.size(); j++){
 			printf("%-7.3f", nn->outputs[j]->get_weight());
 		}
+        cout << " | ";
 	}
 	cout <<endl;
 	cout << "\t\t";
@@ -109,6 +110,7 @@ void layer::print_layer(){
 		for(int j=0; j< nn->inputs.size(); j++){
 			printf("%-7.3f", nn->inputs[j]->get_weight());
 		}
+        cout << " | ";
 	}
 	cout << endl <<endl;
 }
