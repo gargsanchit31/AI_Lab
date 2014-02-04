@@ -1,0 +1,27 @@
+operation needs two files (look at sample xor_control.txt, xor_truth.txt)
+
+1. xor_control.txt which must be passed as argument to executable i.e.   ./net.out xor_control.txt
+    this control file has following structure
+
+    #layers(k)
+
+    #neurons in L1(input)
+    #neurons in L2
+    .
+    .
+    .
+    #neurons in Lk(output)
+
+    xor_truth.txt (details in point#2)
+
+    OPTION (currently 'a' means analysis printing error vs iteration;   'demo' means train the network and prompt for input)
+
+    EITA
+
+    THRESH
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+2. xor_truth.txt
+    (contains the truth table in the form   y1 y2 y3.. ym    x1 x2 x3.... xn)

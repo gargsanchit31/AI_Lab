@@ -1,0 +1,12 @@
+3
+
+5
+5
+1
+
+palindrome_truth.txt
+
+a
+
+0.05
+0.01

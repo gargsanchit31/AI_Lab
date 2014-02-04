@@ -4,6 +4,10 @@
 #include <time.h>       /* time */
 #include <vector>
 
+extern int RANDNO;
+extern int ISRAND;
+extern float FIXWEIGHT;
+
 using namespace std;
 
 float sigmoid(float x){
@@ -11,8 +15,11 @@ float sigmoid(float x){
 }
 
 float get_random(){
-    float r = ((float) rand() / (RAND_MAX));
-    return r;
+    if(ISRAND == 1){ 
+        float r = ((float) rand() * RANDNO/ (RAND_MAX));
+        return r;
+    }
+    else return FIXWEIGHT;
 }
 
 float distance_vec(vector<float> Z, vector<float> Y){

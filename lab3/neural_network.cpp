@@ -5,6 +5,9 @@
 #include <cstring>
 #include <cstdlib>
 
+extern int PRINTERROR; //does network has to print cum_error after every 100 cycles
+extern int ITERATION; //global iteration count
+
 using namespace std;
 
 //size= "#(layers)", layer_vec[i] = #(neurons) at layer i
@@ -33,7 +36,7 @@ neural_network::neural_network(int size, vector<int> layer_vec, float thresh){
 
 		//last layer as output layer
 		l = new layer('O', l_id++, layer_vec[l_no], layer_vec[l_no - 1], 1);
-		cout<<"layer is: "<<l_no<<endl;
+		//cout<<"layer is: "<<l_no<<endl;
 		l_no++;		//increment the layer number
 		layers.push_back(l);
 
@@ -178,11 +181,11 @@ int neural_network::training_step(vector<training_data> inp_data){
 			return -1;
 		}
 	}
-	//cout << Error << endl;
+	if(PRINTERROR == 1 && ITERATION%100 == 0) cout << ITERATION/100 << " " << Error << endl;
 	if(Error >= Threshold){
 		return -1;
 	}
-	return 1;
+	return 1; // Error is within the limit, we are done with the training
 }
 
 vector<float> neural_network::calculate_output(vector<float> input){
