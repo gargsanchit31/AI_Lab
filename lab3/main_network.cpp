@@ -46,7 +46,7 @@ void run_network(neural_network *nn, vector<training_data>& data){
 
 int main(int argc, char *argv[]){
 
-    srand(time(NULL));
+    //srand(time(NULL));
 
     /****** input for palindrome ****/
     ifstream inFile;
@@ -119,6 +119,30 @@ int main(int argc, char *argv[]){
 
         run_network(nn, data);
 
+    }
+    if(option == "e"){//vary eita for fixed thresh
+        IFBUG cout << "option is 'e'" << endl; ENDBUG
+        //input EITA and THRESH
+        inFile >> THRESH;
+        IFBUG cout << "THRESH is " << THRESH <<endl; ENDBUG
+
+        for(EITA=0.01; EITA<0.8 ; EITA+=0.02){
+            neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
+            run_network(nn, data);
+            cout << EITA << " " << ITERATION <<endl;
+        }
+    }
+    if(option == "t"){//vary thresh for fixed eita
+        IFBUG cout << "option is 't'" << endl; ENDBUG
+        //input EITA and THRESH
+        inFile >> EITA;
+        IFBUG cout << "EITA is " << EITA <<endl; ENDBUG
+
+        for(THRESH=0.01; THRESH<0.4 ; THRESH+=0.01){
+            neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
+            run_network(nn, data);
+            cout << THRESH << " " << ITERATION <<endl;
+        }
     }
     else if(option == "demo"){ //further take eita and thresh and then take input for testing
         cout << "option is demo" << endl;
