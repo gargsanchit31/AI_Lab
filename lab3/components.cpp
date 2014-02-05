@@ -2,6 +2,7 @@
 #include "utils.h"
 /** Edge **/
 extern float EITA;
+extern float MOMENTUM;
 
 Edge::Edge(){
     weight = get_random();
@@ -9,6 +10,7 @@ Edge::Edge(){
 
 Edge::Edge(float wt){
     weight = wt;
+    oldweight = 0;
 }
 
 Edge::~Edge(){
@@ -98,9 +100,11 @@ void Neuron::propogate_error(){
 
 void Neuron::update_weights(){ //for each input edge, update its weight acc to DELTA_W = delta_j * eita * output_i(of prev neuron NOT WEIGHTED)
     for(int i=0; i<inputs.size() ;i++){
-        float curr_weight = inputs[i]->get_weight();
-        float delta_W = delta_error * EITA * inputs[i]->get_input_signal();
-        inputs[i]->set_weight(curr_weight + delta_W);
+        float weight = inputs[i]->weight;
+        float oldweight = inputs[i]->oldweight;
+        float delta_W = delta_error * EITA * inputs[i]->get_input_signal() + MOMENTUM * (weight - oldweight);
+        inputs[i]->oldweight = weight;
+        inputs[i]->set_weight(weight + delta_W);
     }
 }
 

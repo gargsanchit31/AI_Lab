@@ -37,10 +37,11 @@ public:
 };
 
 class Edge{
-    float weight; // weight on the edge
     float input_signal; // lower layer to high
     float input_error; // high layer to low
 public:
+    float weight; // weight on the edge
+    float oldweight;
     Edge(float weight);
     Edge();
     ~Edge();

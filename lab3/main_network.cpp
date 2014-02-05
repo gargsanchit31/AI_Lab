@@ -21,8 +21,9 @@ float THRESH = 0.01;
 int RANDNO = 1;
 int ISRAND = 1; //does weights are given randomly
 float FIXWEIGHT = 0.5; //if ISRAND = 0, then this weight will be used
+float MOMENTUM = 0;
 
-int PRINTERROR = 0; //does network has to print cum_error after every 100 cycles
+int PRINTERROR = 1; //does network has to print cum_error after every 100 cycles
 int ITERATION = 0; //global iteration count
 
 
@@ -33,7 +34,7 @@ void run_network(neural_network *nn, vector<training_data>& data){
     while(1){
         ITERATION++;
         //if(ITERATION % 1000 == 0) cout << ITERATION /1000 <<endl;
-        if(ITERATION > 100000){
+        if(ITERATION > 1000000){
             break;
         }
         //training_data d = data[i];
