@@ -1,0 +1,14 @@
+4
+
+6
+3
+2
+1
+
+6bit-parity_truth.txt
+
+demo
+
+0.1
+
+0.01
