@@ -6,7 +6,7 @@
 
 palindrome_truth.txt
 
-demo
+a
 
 0.05
 0.01
