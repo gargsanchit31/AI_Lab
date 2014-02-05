@@ -181,6 +181,9 @@ int neural_network::training_step(vector<training_data> inp_data){
 			return -1;
 		}
 	}
+    int num_patterns = pow(2,layers[layer_count-1]->get_population());
+    Error  = Error/num_patterns;
+
 	if(PRINTERROR == 1 && ITERATION%100 == 0) cout << ITERATION/100 << " " << Error << endl;
 	if(Error >= Threshold){
 		return -1;
