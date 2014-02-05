@@ -21,7 +21,7 @@ float THRESH = 0.01;
 int RANDNO = 1;
 int ISRAND = 1; //does weights are given randomly
 float FIXWEIGHT = 0.5; //if ISRAND = 0, then this weight will be used
-float MOMENTUM = 0;
+float MOMENTUM = 0.08;
 
 int PRINTERROR = 1; //does network has to print cum_error after every 100 cycles
 int ITERATION = 0; //global iteration count
