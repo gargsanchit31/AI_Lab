@@ -6,6 +6,7 @@
 
 5bit-majority_truth.txt
 
-t
+demo
 
+0.2
 0.01
