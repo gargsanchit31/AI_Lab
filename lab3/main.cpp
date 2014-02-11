@@ -4,7 +4,7 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 
-float EITA = 0.03;
+double EITA = 0.03;
 int main(){
     srand(time(NULL));
     Edge *i0 = new Edge(-1);

@@ -10,8 +10,8 @@
       set xtic auto                          # set xtics automatically
       set ytic auto                          # set ytics automatically
       set title "Error vs #Iter"
-      set xlabel "Error"
-      set ylabel "#Iterations"
+      set xlabel "Iter"
+      set ylabel "Error"
 #      set key 0.01,100
 #      set label "Yield Point" at 0.003,260
 #      set arrow from 0.0028,250 to 0.003,280

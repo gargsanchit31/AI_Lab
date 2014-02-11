@@ -16,12 +16,12 @@
 
 /** debugging symbols **/
 
-float EITA = 0.02;
-float THRESH = 0.01;
+double EITA = 0.02;
+double THRESH = 0.01;
 int RANDNO = 1;
 int ISRAND = 1; //does weights are given randomly
-float FIXWEIGHT = 0.5; //if ISRAND = 0, then this weight will be used
-float MOMENTUM = 0.08;
+double FIXWEIGHT = 0.5; //if ISRAND = 0, then this weight will be used
+double MOMENTUM = 0.4;
 
 int PRINTERROR = 1; //does network has to print cum_error after every 100 cycles
 int ITERATION = 0; //global iteration count
@@ -34,7 +34,7 @@ void run_network(neural_network *nn, vector<training_data>& data){
     while(1){
         ITERATION++;
         //if(ITERATION % 1000 == 0) cout << ITERATION /1000 <<endl;
-        if(ITERATION > 1000000){
+        if(ITERATION > 1000000000){
             break;
         }
         //training_data d = data[i];
@@ -47,7 +47,7 @@ void run_network(neural_network *nn, vector<training_data>& data){
 
 int main(int argc, char *argv[]){
 
-    //srand(time(NULL));
+    srand(time(NULL));
 
     /****** input for palindrome ****/
     ifstream inFile;
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
     int numoutputs = layer_sizes[num_layers-1];
 
     int i;
-    float in;
+    double in;
     IFBUG cout << "num " << numinputs << " "<< numoutputs <<endl; ENDBUG
     ifstream truthFile;
     truthFile.open(truth_file_name, ios::in);
@@ -163,14 +163,14 @@ int main(int argc, char *argv[]){
 
         nn->print_network();
         while(1){
-            vector<float> test;
+            vector<double> test;
             cout << "give the " << numinputs << " inputs seperated by spaces: ";
             int inp;
             for(int i=0;i<numinputs;i++){
                 cin >> inp;
                 test.push_back(inp);
             }
-            vector<float> out = nn->calculate_output(test);
+            vector<double> out = nn->calculate_output(test);
             printvec(out);
         }
     }

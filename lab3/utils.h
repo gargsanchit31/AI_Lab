@@ -8,11 +8,11 @@
 #define ENDBUG }
 
 
-float sigmoid(float x);
+double sigmoid(double x);
 
-float get_random(); //get random number b/w 0 and 1
+double get_random(); //get random number b/w 0 and 1
 
-float distance_vec(vector<float>, vector<float>);
+double distance_vec(vector<double>, vector<double>);
 
-void printvec(vector<float> v);
+void printvec(vector<double> v);
 #endif

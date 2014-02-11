@@ -6,29 +6,29 @@
 
 extern int RANDNO;
 extern int ISRAND;
-extern float FIXWEIGHT;
+extern double FIXWEIGHT;
 
 using namespace std;
 
-float sigmoid(float x){
+double sigmoid(double x){
     return 1/(1 + exp(-x));
 }
 
-float get_random(){
+double get_random(){
     if(ISRAND == 1){ 
-        float r = ((float) rand() * RANDNO/ (RAND_MAX));
+        double r = ((double) rand() * RANDNO/ (RAND_MAX));
         return r;
     }
     else return FIXWEIGHT;
 }
 
-float distance_vec(vector<float> Z, vector<float> Y){
+double distance_vec(vector<double> Z, vector<double> Y){
 	if(Z.size()!=Y.size()){
 		cout<<"In dotproduct(): Error on vector sizes\n";
 		exit(1);
 	}
 	else{
-		float Error =0, z=0;
+		double Error =0, z=0;
 		for(int i=0;i<Z.size();i++){
 			Error+=pow(Z[i]-Y[i], 2);
 		}
@@ -36,7 +36,7 @@ float distance_vec(vector<float> Z, vector<float> Y){
 	}
 }
 
-void printvec(vector<float> v){
+void printvec(vector<double> v){
 	for(int j=0;j<v.size();j++){
 		cout<<v[j]<<" ";
 	}
