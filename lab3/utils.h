@@ -15,4 +15,5 @@ double get_random(); //get random number b/w 0 and 1
 double distance_vec(vector<double>, vector<double>);
 
 void printvec(vector<double> v);
+int get_boolean(float in);
 #endif

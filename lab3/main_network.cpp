@@ -21,7 +21,7 @@ double THRESH = 0.01;
 int RANDNO = 1;
 int ISRAND = 1; //does weights are given randomly
 double FIXWEIGHT = 0.5; //if ISRAND = 0, then this weight will be used
-double MOMENTUM = 0.4;
+double MOMENTUM = 0.2;
 
 int PRINTERROR = 1; //does network has to print cum_error after every 100 cycles
 int ITERATION = 0; //global iteration count
@@ -171,7 +171,35 @@ int main(int argc, char *argv[]){
                 test.push_back(inp);
             }
             vector<double> out = nn->calculate_output(test);
-            printvec(out);
+            printvec(out); cout << endl;
+        }
+    }
+    else if(option == "truth"){ //further take eita and thresh and then take input for testing
+        cout << "option is demo" << endl;
+        //input EITA and THRESH
+        inFile >> EITA;
+        cout << "EITA is " << EITA <<endl;
+        inFile >> THRESH;
+        cout << "THRESH is " << THRESH <<endl;
+
+	    neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
+        //nn->print_topology();
+        //nn->print_network();
+
+        run_network(nn, data);
+
+        cout <<ITERATION<< "\ntraining complete";
+
+        nn->print_network();
+
+        cout << " - - - -  - - - - -  - - - - THE TRUTH IS HERE - - - - - - -  - - - - -  " <<endl;
+
+        for(int i=0; i < data.size(); i++){
+            nn->calculate_output(data[i].input);
+            printvec(data[i].input); //this contains
+            cout << " | ";
+            nn->print_truth();
+            cout <<endl;
         }
     }
 

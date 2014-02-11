@@ -1,12 +1,12 @@
 3
 
 5
-2
+3
 1
 
 palindrome_truth.txt
 
-demo
+truth
 
-1
-1
+0.7
+0.01

@@ -40,5 +40,8 @@ void printvec(vector<double> v){
 	for(int j=0;j<v.size();j++){
 		cout<<v[j]<<" ";
 	}
-	cout<<endl;
+}
+int get_boolean(float in){
+    if(in > 0.5) return 1;
+    else return 0;
 }

@@ -1,12 +1,12 @@
 3
 
 4
-4
+3
 1
 
 4bit-parity_truth.txt
 
-demo
+truth
 
 0.8
 

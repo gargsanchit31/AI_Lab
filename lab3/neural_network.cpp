@@ -234,3 +234,15 @@ void neural_network::print_network(){
 		layers[cur_index]->print_layer();
 	}
 }
+
+void neural_network::print_truth(){ //print o/p {0,1} for the neurons in all layers(except input)
+	for(int cur_index=layer_count-1; cur_index>0; cur_index--){
+		layer* cur_layer = layers[cur_index];
+		vector<Neuron*> cur_layer_neurons = cur_layer->neuronList;
+        for(int j=0; j<cur_layer->get_population(); j++){
+            float out = cur_layer_neurons[j]->get_signal_output();
+            cout << get_boolean(out) << " ";
+        }
+        cout << " | ";
+	}
+}
