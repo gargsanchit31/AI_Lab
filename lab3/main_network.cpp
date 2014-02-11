@@ -21,10 +21,11 @@ double THRESH = 0.01;
 int RANDNO = 1;
 int ISRAND = 1; //does weights are given randomly
 double FIXWEIGHT = 0.5; //if ISRAND = 0, then this weight will be used
-double MOMENTUM = 0.2;
+double MOMENTUM = 0.4;
 
 int PRINTERROR = 1; //does network has to print cum_error after every 100 cycles
 int ITERATION = 0; //global iteration count
+int MODULO = 1; 
 
 
 using namespace std;
@@ -75,6 +76,10 @@ int main(int argc, char *argv[]){
     int numinputs = layer_sizes[0];
     int numoutputs = layer_sizes[num_layers-1];
 
+
+    int num_training_data;
+    inFile >> num_training_data;
+
     int i;
     double in;
     IFBUG cout << "num " << numinputs << " "<< numoutputs <<endl; ENDBUG
@@ -85,7 +90,10 @@ int main(int argc, char *argv[]){
         exit(0);
     }
 
-    for(i=0;i<pow(2,numinputs);i++){
+    cout << "truth file opened succesfully " <<endl;
+    
+
+    for(i=0;i<num_training_data;i++){
         training_data d;
         for(int j=0;j<numoutputs;j++){
             truthFile >> in;
@@ -95,6 +103,7 @@ int main(int argc, char *argv[]){
             truthFile >> in;
             d.input.push_back(in);
         }
+        cout << "taken input "<< i <<endl;
         data.push_back(d);
     }
     IFBUG cout << "input data taken "<< i<<endl; ENDBUG

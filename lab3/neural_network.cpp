@@ -7,6 +7,7 @@
 
 extern int PRINTERROR; //does network has to print cum_error after every 100 cycles
 extern int ITERATION; //global iteration count
+extern int MODULO; 
 
 using namespace std;
 
@@ -184,7 +185,7 @@ int neural_network::training_step(vector<training_data> inp_data){
     int num_patterns = pow(2,layers[layer_count-1]->get_population());
     Error  = Error;
 
-	if(PRINTERROR == 1 && ITERATION%100 == 0) cout << ITERATION/100 << " " << Error << endl;
+	if(PRINTERROR == 1 && ITERATION% MODULO == 0) cout << ITERATION/ MODULO << " " << Error << endl;
 	if(Error >= Threshold){
 		return -1;
 	}
