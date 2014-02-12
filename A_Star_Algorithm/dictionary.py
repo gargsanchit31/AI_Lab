@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-#from nltk.corpus import wordnet
+from nltk.corpus import wordnet
 
 #if not wordnet.synsets(word_to_test):
   #Not an English Word
@@ -10,7 +10,7 @@
 
 
 import sys
-import en
+#import en
 
 def unique_list(l):
 	ulist = []
@@ -25,21 +25,24 @@ output_file_name = sys.argv[2]
 filein = open(input_file_name, "r")
 fileout = open(output_file_name,"w")
 
+b=[]
 a = ""
-a = filein
-a=' '.join(unique_list(a.split()))
+for a in filein:
+	b.extend(unique_list(a.split(" ")))
+
+print b
+
 l = ""
-for l in a:
-	for word in l.split():
-		if word.startswith(deleters):
-			print ""
-		elif len(word) <= 2 :
-			print ""
-		elif "http" in word :
-			print ""
-		elif "ing" in word :
-			print ""
-		elif "ed" in word :
-			print ""
-		else:
-			print word
+for l in b:
+	if l.startswith(deleters):
+		print ""
+	elif len(l) <= 2 :
+		print ""
+	elif "http" in l :
+		print ""
+	elif "ing" in l :
+		print ""
+	elif "ed" in l :
+		print ""
+	else:
+		print l
