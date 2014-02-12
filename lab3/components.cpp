@@ -1,42 +1,45 @@
 #include "components.h"
 #include "utils.h"
 /** Edge **/
-extern float EITA;
+extern double EITA;
+extern double MOMENTUM;
 
 Edge::Edge(){
     weight = get_random();
+    oldweight = weight;
 }
 
-Edge::Edge(float wt){
+Edge::Edge(double wt){
     weight = wt;
+    oldweight = 0;
 }
 
 Edge::~Edge(){
 }
 
-void Edge::set_signal(float in){
+void Edge::set_signal(double in){
     input_signal = in;
 }
-void Edge::set_error(float err){
+void Edge::set_error(double err){
     input_error = err;
 }
-void Edge::set_weight(float x){
+void Edge::set_weight(double x){
     weight = x;
 }
 
-float Edge::get_weight(){
+double Edge::get_weight(){
     return weight;
 }
-float Edge::get_input_signal(){
+double Edge::get_input_signal(){
     return input_signal;
 }
-float Edge::get_input_error(){
+double Edge::get_input_error(){
     return input_error;
 }
-float Edge::get_output_signal(){
+double Edge::get_output_signal(){
     return (input_signal * weight);
 }
-float Edge::get_output_error(){
+double Edge::get_output_error(){
     return (input_error * weight);
 }
 
@@ -55,15 +58,15 @@ Neuron::Neuron(char n_type, neuron_id nid, int in_size, int out_size){
     outputs.resize(out_size);
 }
 
-float Neuron::get_signal_output(){
+double Neuron::get_signal_output(){
     return signal_output;
 }
-float Neuron::get_delta_error(){
+double Neuron::get_delta_error(){
     return delta_error;
 }
 
 void Neuron::propogate_signal(){
-    float weighted_signal = 0;
+    double weighted_signal = 0;
     for(int i=0; i<inputs.size(); i++){
         weighted_signal += inputs[i]->get_output_signal();
     }
@@ -83,7 +86,7 @@ void Neuron::propogate_signal(){
 }
 
 void Neuron::propogate_error(){
-    float weighted_error = 0;
+    double weighted_error = 0;
     for(int i=0; i<outputs.size(); i++){
         weighted_error += outputs[i]->get_output_error();
     }
@@ -97,10 +100,16 @@ void Neuron::propogate_error(){
 }
 
 void Neuron::update_weights(){ //for each input edge, update its weight acc to DELTA_W = delta_j * eita * output_i(of prev neuron NOT WEIGHTED)
+    static int x= 0;
+    if(x == 0) {
+        cout << "Momentuem " << MOMENTUM << endl; x++;
+    }
     for(int i=0; i<inputs.size() ;i++){
-        float curr_weight = inputs[i]->get_weight();
-        float delta_W = delta_error * EITA * inputs[i]->get_input_signal();
-        inputs[i]->set_weight(curr_weight + delta_W);
+        double weight = inputs[i]->weight;
+        double oldweight = inputs[i]->oldweight;
+        double delta_W = (1- MOMENTUM)* delta_error * EITA * inputs[i]->get_input_signal() + MOMENTUM * (weight - oldweight);
+        inputs[i]->oldweight = weight;
+        inputs[i]->set_weight(weight + delta_W);
     }
 }
 

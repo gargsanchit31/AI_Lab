@@ -11,7 +11,7 @@ extern int ITERATION; //global iteration count
 using namespace std;
 
 //size= "#(layers)", layer_vec[i] = #(neurons) at layer i
-neural_network::neural_network(int size, vector<int> layer_vec, float thresh){
+neural_network::neural_network(int size, vector<int> layer_vec, double thresh){
 	int l_no=0;		//layer no.
 	char l_id='A';		//layer id
 	layer_count=size;
@@ -120,7 +120,7 @@ void neural_network::weight_update(){ //1 to n-1 (leaving input layer 0) since w
 	}
 }
 
-void neural_network::set_input(vector<float> input){
+void neural_network::set_input(vector<double> input){
 	layer* cur_layer = layers[0];
 	vector<Neuron*> cur_layer_neurons = cur_layer->neuronList;
 	
@@ -129,20 +129,20 @@ void neural_network::set_input(vector<float> input){
 	}
 }
 
-float neural_network::calculate_err(vector<float> z){
-	vector<float> y;
+double neural_network::calculate_err(vector<double> z){
+	vector<double> y;
 	layer* cur_layer = layers[layer_count-1];
 	vector<Neuron*> cur_layer_neurons = cur_layer->neuronList;
 	IFBUG cout << "output: " ; ENDBUG
 	for(int i=0;i<cur_layer->get_population();i++){
-		float output = cur_layer_neurons[i]->get_signal_output();
+		double output = cur_layer_neurons[i]->get_signal_output();
 		IFBUG cout << output << " "; ENDBUG
 		y.push_back(output);
 		cur_layer_neurons[i]->outputs[0]->set_error(z[i]-output);
 	}
 	IFBUG cout << endl; ENDBUG
 
-	float Error = distance_vec(z,y);
+	double Error = distance_vec(z,y);
 	IFBUG cout << Error << " "; ENDBUG
 	return Error;
 	// //sleep(1);
@@ -154,7 +154,7 @@ float neural_network::calculate_err(vector<float> z){
 }
 
 int neural_network::training_step(vector<training_data> inp_data){
-	float Error=0;
+	double Error=0;
 	for(int d=0;d<inp_data.size();d++){
 		training_data data=inp_data[d];
 
@@ -181,6 +181,9 @@ int neural_network::training_step(vector<training_data> inp_data){
 			return -1;
 		}
 	}
+    int num_patterns = pow(2,layers[layer_count-1]->get_population());
+    Error  = Error;
+
 	if(PRINTERROR == 1 && ITERATION%100 == 0) cout << ITERATION/100 << " " << Error << endl;
 	if(Error >= Threshold){
 		return -1;
@@ -188,15 +191,15 @@ int neural_network::training_step(vector<training_data> inp_data){
 	return 1; // Error is within the limit, we are done with the training
 }
 
-vector<float> neural_network::calculate_output(vector<float> input){
+vector<double> neural_network::calculate_output(vector<double> input){
 	this->set_input(input);
 	this->fwd_propogate();
-	vector<float> y;
+	vector<double> y;
 	layer* cur_layer = layers[layer_count-1];
 	vector<Neuron*> cur_layer_neurons = cur_layer->neuronList;
 	
 	for(int i=0;i<cur_layer->get_population();i++){
-		float output = cur_layer_neurons[i]->get_signal_output();
+		double output = cur_layer_neurons[i]->get_signal_output();
 		y.push_back(output);
 	}
 	return y;
@@ -229,5 +232,17 @@ void neural_network::print_topology(){
 void neural_network::print_network(){
 	for(int cur_index=layer_count-1; cur_index>=0; cur_index--){
 		layers[cur_index]->print_layer();
+	}
+}
+
+void neural_network::print_truth(){ //print o/p {0,1} for the neurons in all layers(except input)
+	for(int cur_index=layer_count-1; cur_index>0; cur_index--){
+		layer* cur_layer = layers[cur_index];
+		vector<Neuron*> cur_layer_neurons = cur_layer->neuronList;
+        for(int j=0; j<cur_layer->get_population(); j++){
+            float out = cur_layer_neurons[j]->get_signal_output();
+            cout << get_boolean(out) << " ";
+        }
+        cout << " | ";
 	}
 }

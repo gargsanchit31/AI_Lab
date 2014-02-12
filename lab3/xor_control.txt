@@ -6,7 +6,7 @@
 
 xor_truth.txt
 
-a
+truth
 
 0.2
-0.01
+0.005

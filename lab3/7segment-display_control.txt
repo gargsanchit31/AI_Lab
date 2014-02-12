@@ -1,0 +1,12 @@
+2
+
+7
+10
+
+7segment-display_truth.txt
+
+demo
+
+0.7
+
+0.1
