@@ -1,19 +1,13 @@
 #ifndef PRI_Q
 #define PRI_Q
-/*
-* A new Priority Queue class which handles changing value of objects and 
-* updating their order as required 
-* 
-NOTE:   use setDsize(to set size of the Departure event ID vector using no of servers) after creating this object
-NOTE: 	# requires < operator is Comparable class
-* 		# assume Comparable class stores (which are  compared using <) values as float
-* 		# requires set(double val) function in Comparable class to simply set value directly
-* 		# update(double speed, double simTime)  in Comparable class to change its time acc to given parameters 
-*/		//in short Comparable class shuould be similar to Event class with variations allowed
 #include <iostream>
 #include <vector>
 using namespace std;
 
+/*
+ * Comparable class must have a public member (int index) which will keep track the index in the vector<Comparable>
+ * Comparable must be a pointer so that we use -> to access index
+ */
 template <class Comparable, class Compare>
 class Priority_Q{
 private:
@@ -48,14 +42,18 @@ void Priority_Q<Comparable, Compare>::percolateUp(int hole){
 		parent = hole/2;
 		if(Compare()(tmp, vec[parent])){
 			vec[hole]=vec[parent]; //copy into hole(lower) the parent
+            vec[hole]->index = hole; //**index
 		}
 		else break;
 	}
 	vec[hole]=tmp;
+    vec[hole]->index = hole; //**index
 }
 
 template <class Comparable, class Compare>
 void Priority_Q<Comparable, Compare>::percolateDown(int hole){
+    if(currSize==0) return;
+
 	int child;
 	Comparable tmp=vec[hole];
 	for(;hole * 2 <=currSize; hole=child){
@@ -66,11 +64,13 @@ void Priority_Q<Comparable, Compare>::percolateDown(int hole){
 		}
 		if(Compare()(vec[child],tmp)){ //if temp > min of the two children move hole into the minchild 
 			vec[hole]=vec[child];
+            vec[hole]->index = hole; //**index
 		}
 		else 
 			break;  //as ( temp < both children) and this hole is where temp should be
 	}
 	vec[hole]=tmp;
+    vec[hole]->index = hole; //**index
 }
 
 template <class Comparable, class Compare>
@@ -78,6 +78,7 @@ void Priority_Q<Comparable, Compare>::push(Comparable x){
 	if(currSize ==vec.size()) {cout<<"into \n" ;vec.resize(vec.size()*2);}
 	
 	vec[++currSize] = x;
+    x->index = currSize; //**index
 	percolateUp(currSize);
 }
 
@@ -85,7 +86,11 @@ template <class Comparable, class Compare>
 void Priority_Q<Comparable, Compare>::pop(){
 	if(empty()){cout<<"  ERROR !! empty priority q\n";}
 
-	vec[1]=vec[currSize--];  //copy last element to first
+    vec[1]->index = -1; //**index : means popped element has no position in the PQ
+
+	vec[1]=vec[currSize];  //copy last element to first
+    if(currSize > 1) vec[1]->index = 1; //**index don't do this if popped element is the last one left(i.e 1 == currSize)
+    currSize--;
 	percolateDown(1);   	//call percolateDown with index 1 as this is 
 							//where disturbance occured and 
 							//its val is greater than what was before
@@ -95,10 +100,10 @@ void Priority_Q<Comparable, Compare>::pop(){
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 template <class Comparable, class Compare>
 void Priority_Q<Comparable, Compare>::print(){
-    cout << "**"<<endl;
+    cout << "* * * * * * * * * "<<endl;
 	for(int i=1;i<=currSize;i++)
-		cout << vec[i] << endl;
-	cout<<"printing done"<<endl;
+		cout << i << " (" <<vec[i]->f << ", " << vec[i]->index << ")" << ":" <<endl;
+    cout <<"done printing" <<endl;
 }
 
 template <class Comparable, class Compare>
