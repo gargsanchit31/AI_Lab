@@ -1,5 +1,5 @@
 CC = g++ -std=c++0x -g 
-DEPS = graph.h
+DEPS = graph.h PriorityQueue.h
 OBJ = main8sq.o 
 
 # $@ : lhs

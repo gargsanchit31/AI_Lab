@@ -30,6 +30,15 @@ int main(){
     v1->index = -1;
     v2->index = -1;
     v3->index = -1;
+    node<int> *v4 = new node<int>();
+    node<int> *v5 = new node<int>();
+    node<int> *v6 = new node<int>();
+    v4->f = 6;
+    v5->f = 3;
+    v6->f = 4;
+    v4->index = -1;
+    v5->index = -1;
+    v6->index = -1;
     
     cout << "lt() in action " << lt<int>()(v1,v2) <<endl;
     Priority_Q< node<int>*, lt<int> > queue; //if lt is < operator, then min Priority queue will be formed
@@ -40,11 +49,18 @@ int main(){
     queue.print();
     queue.push(v3);
     queue.print();
+    queue.push(v4);
+    queue.print();
+    queue.push(v5);
+    queue.print();
+    queue.push(v6);
+    queue.print();
 
     v3->f = v3->f - 11;
     queue.percolateUp(v3->index);
     queue.print();
 
+    /*
     cout << "poppings " <<endl;
     queue.pop();
     queue.print();
@@ -52,4 +68,5 @@ int main(){
     queue.print();
     queue.pop();
     queue.print();
+    */
 }

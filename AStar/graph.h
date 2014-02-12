@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <list>
 #include <vector>
+#include "PriorityQueue.h"
 using namespace std;
 
 template <class ID>
@@ -15,8 +16,14 @@ private:
 
 public:	
 	int cur_status;		//-1 -> not seen yet, 0 -> in open_list, 1-> in closed_list
-	float _g;
-	Node(ID, float);
+
+    /*** to be used by A-star **/
+	float _g; // this value is set and updated by A-star as algo progresses. Set first just before putting into open list
+    float _h; // this value is set just before putting it into OL of A-star.And then it is never changed.
+    int index;
+    /*** to be used by A-star **/
+
+	Node(ID);
 	~Node();
 	ID getid();
 	void setparent(Node*);
@@ -27,11 +34,15 @@ public:
 
 
 template<class ID>
-Node<ID>::Node(ID id, float g){
+Node<ID>::Node(ID id){
 	_id = id;
-	_g = g;
+
+    _g = -1;
+    _h = -1;
+    index = -1;
+
 	parent = NULL;
-	cur_status = -1;
+	cur_status = -1; //not seen yet
 }
 
 template<class ID>
@@ -59,6 +70,15 @@ void Node<ID>::print_me(){
 	cout<<_id<<endl;
 }
 
+template<class NODE>
+struct lt { //less than defined for all nodes (comparing f = g+h)
+    bool operator()(const NODE* v1, const NODE* v2){
+        if( (v1->_g + v1->_h) < (v2->_g + v2->_h) ) return true;
+        return false;
+    }
+};
+
+
 /////////////////////			A-Star			/////////////////////
 
 template<class NODE>
@@ -71,29 +91,26 @@ private:
 
 	NODE* Start;
 	NODE* Goal;
-	H _h;
-	list<NODE*> open_list;
-	list<NODE*> closed_list;
+	H heuristic; //func
+	neigh neighbour; //func
+	Priority_Q<NODE*, lt<NODE> > open_list;
 
 public:
 	AStar(NODE*, NODE*, H, neigh);
 	~AStar();
-	neigh neighbour;
-	float f(NODE*);
 	void run();
 	NODE* getStart();
 	NODE* getGoal();
 	NODE* lowest_fnode();
 	NODE* find_in_list(NODE*, list<NODE*>);
 	void trace(NODE*);
-
 };
 
 template<class NODE>
 AStar<NODE>::AStar(NODE* S, NODE* G, H h,  neigh n){
 	Start=S;
 	Goal = G;
-	_h = h;
+	heuristic = h;
 	neighbour = n;
 }
 
@@ -113,43 +130,10 @@ NODE* AStar<NODE>::getGoal(){
 }
 
 template<class NODE>
-float AStar<NODE>::f(NODE* n){
-	float ret = n->_g + _h(n);
-}
-
-template<class NODE>
 NODE* AStar<NODE>::lowest_fnode(){ //assuming open list is not null(check before calling this)
-	l_itr it=open_list.begin();
-	float min_f = f(*it);
-	NODE* min_node = *it;
-	l_itr min_itr = it;
-
-	for(;it!=open_list.end();it++){
-		if(f(*it) < min_f){
-			min_f = f(*it);
-			min_node = *it;
-			min_itr = it;
-		}
-		else if(f(*it) == min_f){
-			if((*it)->_g > min_node->_g){
-				min_node = *it;
-				min_itr = it;
-			}
-		}
-	}
-	open_list.erase(min_itr);
-	return min_node;
-}
-
-template<class NODE>
-NODE* AStar<NODE>::find_in_list(NODE* n, list<NODE*> l){
-	l_itr it=l.begin();
-	for(;it!=l.end();it++){
-		if(n->getid() == (*it)->getid()){
-			return (*it);
-		}
-	}
-	return NULL;
+    NODE * n = open_list.top();
+    open_list.pop();
+    return n;
 }
 
 template<class NODE>
@@ -162,13 +146,18 @@ void AStar<NODE>::trace(NODE* n){
 
 template<class NODE>
 void AStar<NODE>::run(){
+    
 	Start->_g = 0;
-	open_list.push_back(Start);
+    Start->_h = heuristic(Start);
+
+	open_list.push(Start);
+
 	int count=0;
 
 	while(1){
 		if(open_list.empty()){
-			cout<<"open_list can't be empty"<<endl;
+			cout<<"Something went wront. open_list can't be empty"<<endl;
+            return;
 			exit(0);
 		}
 
@@ -183,8 +172,6 @@ void AStar<NODE>::run(){
 		//closed_list.push_back(min_node);
 		min_node->cur_status=1;		//virtually push in the closed list
 		//min_node->print_me();
-        count++;
-        if(count%50==0) cout << "OL Size" <<open_list.size() <<endl;
 
 
 		list<NODE*> neighbours = neighbour(min_node);
@@ -197,35 +184,29 @@ void AStar<NODE>::run(){
 			}
 			else if((*it)->cur_status==0){
 				if(min_node->_g + 1 < (*it)->_g){ //then set minnode as its parent and update g value
-					//cout << "already opennode:" <<endl;
-
+				//cout << "already opennode:" <<endl;
                     (*it)->_g =  min_node->_g + 1;
                     (*it)->setparent(min_node);
-					/*
-					
-					to do with  pri-q
-					update the g value in priority queue and set the parent
-	
-					*/
+                    open_list.percolateUp((*it)->index); //this will update the priority queue appopriately
+
 					continue;
 				}
 			}
 			else{
-			//	cout << "discovered" <<endl;
-				(*it)->cur_status==0;		//put it in open node
+				//cout << "discovered" <<endl;
+				(*it)->cur_status=0;		//put it in open node
 				(*it)->_g = min_node->_g + 1;	//increment the _g value by 1;
+                (*it)->_h = heuristic(*it);
 				(*it)->setparent(min_node);		//set its parent 
-                open_list.push_back(*it);
+                open_list.push(*it);
+
+                count++;
+                if(count%1000==0) cout << count << "  OL Size" <<open_list.size() <<endl;
 				
-				/*
-				to do with pri-q
-				push it in open list
-				*/
                 continue;
 
 			}
 		}
-
 	}
 }
 

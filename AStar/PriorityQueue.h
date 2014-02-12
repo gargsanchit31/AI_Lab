@@ -75,8 +75,13 @@ void Priority_Q<Comparable, Compare>::percolateDown(int hole){
 
 template <class Comparable, class Compare>
 void Priority_Q<Comparable, Compare>::push(Comparable x){
-	if(currSize ==vec.size()) {cout<<"into \n" ;vec.resize(vec.size()*2);}
-	
+    int flag = 0;
+	if(currSize == vec.size()-1) {
+        vec.resize(vec.size()*2);
+        cout<<"new size  " << vec.size()<<endl;
+        flag=1;
+    }
+
 	vec[++currSize] = x;
     x->index = currSize; //**index
 	percolateUp(currSize);
@@ -101,8 +106,13 @@ void Priority_Q<Comparable, Compare>::pop(){
 template <class Comparable, class Compare>
 void Priority_Q<Comparable, Compare>::print(){
     cout << "* * * * * * * * * "<<endl;
-	for(int i=1;i<=currSize;i++)
+	for(int i=1;i<=currSize;i++){
+        if(vec[i]==NULL) {
+            cout << " i " << i << "is NULL";
+            return;
+        }
 		cout << i << " (" <<vec[i]->f << ", " << vec[i]->index << ")" << ":" <<endl;
+    }
     cout <<"done printing" <<endl;
 }
 

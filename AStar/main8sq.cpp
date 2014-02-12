@@ -69,43 +69,6 @@ pos_pair find(_8sq v, int n){
 	}
 }
 
-//neighbour function
-// list<Node< _8sq >* > myneigh(Node< _8sq >* n){
-// 	list<Node< _8sq >*> l;
-
-// 	_8sq id = n->getid();
-// 	pos_pair p = find(id, 9);
-// 	int row=p.row;
-// 	int col = p.col;
-// 	if(row == 0 or row == 1){
-// 		_8sq id1 = id;
-// 		swap(id1[row][col], id1[row+1][col]);
-// 		Node<_8sq>* n1 = new Node<_8sq>(id1,-1);
-// 		l.push_back(n1);
-// 	}
-// 	if(row == 2 or row == 1){
-// 		_8sq id1 = id;
-// 		swap(id1[row][col], id1[row-1][col]);
-// 		Node<_8sq>* n1 = new Node<_8sq>(id1,-1);
-// 		l.push_back(n1);
-// 	}
-// 	if(col==0 or col==1){
-// 		_8sq id1 = id;
-// 		swap(id1[row][col], id1[row][col+1]);
-// 		Node<_8sq>* n1 = new Node<_8sq>(id1,-1);
-// 		l.push_back(n1);
-// 	}
-// 	if(col==2 or col==1){
-// 		_8sq id1 = id;
-// 		swap(id1[row][col], id1[row][col-1]);
-// 		Node<_8sq>* n1 = new Node<_8sq>(id1,-1);
-// 		l.push_back(n1);
-// 	}
-
-// 	return l;
-// }
-
-
 list<mynode* > myneigh(mynode* n){
 	list<mynode*> l;
 
@@ -119,16 +82,13 @@ list<mynode* > myneigh(mynode* n){
 		_8sq id1 = id;
 		swap(id1[row][col], id1[row+1][col]);
 		string key = getkey(id1);
-		//cout<<"a"<<endl;
 		if(graph.find(key) == graph.end()){
-	//		cout<<"a1"<<endl;
-			mynode* n1 = new mynode(id1,-1);
+			mynode* n1 = new mynode(id1);
 			graph[key]=n1;
 			l.push_back(n1);
 		}
 		else{
 			//map wala dedo
-	//		cout<<"a2"<<endl;
 			l.push_back(graph[key]);
 		}
 	}
@@ -138,14 +98,12 @@ list<mynode* > myneigh(mynode* n){
 		string key = getkey(id1);
 		
 		if(graph.find(key) == graph.end()){
-			mynode* n1 = new mynode(id1,-1);
+			mynode* n1 = new mynode(id1);
 			graph[key]=n1;
 			l.push_back(n1);
-	//		cout<<"b1"<<endl;
 		}
 		else{
 			//map wala dedo
-	//		cout<<"b2"<<endl;
 			l.push_back(graph[key]);
 		}
 	}
@@ -155,24 +113,21 @@ list<mynode* > myneigh(mynode* n){
 		string key = getkey(id1);
 		
 		if(graph.find(key) == graph.end()){
-			mynode* n1 = new mynode(id1,-1);
+			mynode* n1 = new mynode(id1);
 			graph[key]=n1;
 			l.push_back(n1);
-	//		cout<<"c1"<<endl;
 		}
 		else{
 			//map wala dedo
 			l.push_back(graph[key]);
-	//		cout<<"c2"<<endl;
 		}
 	}
 	if(col==2 or col==1){
 		_8sq id1 = id;
 		swap(id1[row][col], id1[row][col-1]);
 		string key = getkey(id1);
-	//	cout<<"d"<<endl;
 		if(graph.find(key) == graph.end()){
-			mynode* n1 = new mynode(id1,-1);
+			mynode* n1 = new mynode(id1);
 			graph[key]=n1;
 			l.push_back(n1);
 		}
@@ -181,8 +136,6 @@ list<mynode* > myneigh(mynode* n){
 			l.push_back(graph[key]);
 		}
 	}
-	//cout <<l.size() <<endl;
-	//cout<<l.front()->getid()<<endl;
 	return l;
 }
 
@@ -210,7 +163,7 @@ float manhattan(Node< _8sq >* n){
 
 //9 is the blank
 int main(){
-	_8sq ids = {{1,5,3},{9,2,6},{4,7,8}};
+	_8sq ids = {{6,3,9},{1,5,2},{4,8,7}};
 
 	_8sq idg = {{1,2,3},{4,5,6},{7,8,9}};
 	
@@ -219,25 +172,59 @@ int main(){
 	cout<<getkey(ids)<<endl;
 
 
-	mynode* s = new mynode(ids,0);
-	mynode* g = new mynode(idg,0);
+
+	mynode* s = new mynode(ids);
+	mynode* g = new mynode(idg);
 
 	graph[getkey(ids)] = s;
 	graph[getkey(idg)] = g;
 
+    /*
+    //check if graph is generated wholly
+    int count = 0;
+    list<mynode*> ln ;
+    list<mynode*> G;
+    s->cur_status = 0;
+    G.push_back(s);
+	list<mynode*>::iterator itn ;
+    while(!G.empty()){
+        mynode * n = G.front();
+        G.pop_front();
+        ln = myneigh(n);
+        for(itn=ln.begin();itn!=ln.end();itn++){
+            if((*itn)->cur_status != 0){
+                count++;
+                (*itn)->cur_status = 0;
+                if(*itn == g) {
+                    cout<<"found goal node" <<endl;
+                    cout << "Final count of Test Graph " << count <<endl;
+                }
+                G.push_back((*itn));
+            }
+        }
+    }
 
+    cout << "Final count of Test Graph " << count <<endl;
+    return 0;
+    */
 
-	// list<mynode*> l1 = myneigh(s);
-	// list<mynode*> l2 = myneigh(s);
+    
 
-	// cout<<(l1.front() == l2.front())<<endl;		//if pointer is same
+	list<mynode*> l1 = myneigh(s);
+	list<mynode*> l2 = myneigh(s);
+
+	cout<<(l1.front() == l2.front())<<endl;		//if pointer is same
 	s->print_me();
-	list<mynode*> l = myneigh(s);
+	list<mynode*> l = myneigh(g);
 
-	// list<mynode*>::iterator it = l.begin();
-	// for(;it!=l.end();it++){
-	// 	(*it)->print_me();
-	// }
+
+    cout << "neigh " << endl;
+	list<mynode*>::iterator it = l.begin();
+	for(;it!=l.end();it++){
+		(*it)->print_me();
+	}
+
+    cout << "Starting with A-star" <<endl;
 
 	cout<<"Start Node: "<<endl;
 	cout<<ids;
@@ -246,6 +233,7 @@ int main(){
 
 	AStar<Node<_8sq > > algo(s,g,manhattan,myneigh);
 	algo.run();
+    cout << "Size of graph discovered " << graph.size() <<endl;
 
 	return 0;
 }
