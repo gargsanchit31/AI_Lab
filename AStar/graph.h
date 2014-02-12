@@ -138,10 +138,13 @@ NODE* AStar<NODE>::lowest_fnode(){ //assuming open list is not null(check before
 
 template<class NODE>
 void AStar<NODE>::trace(NODE* n){
+    int len=0;
 	while(n!=NULL){
 		n->print_me();
 		n=n->getparent();
+        len++;
 	}
+    cout << "Length of the optimal path is " << len-1 <<endl;
 }
 
 template<class NODE>

@@ -156,14 +156,13 @@ float manhattan(Node< _8sq >* n){
 		//cout<< i+1 <<" error: "<< temp<<endl;
 		cost+= temp;
 	}
-
 	//cout<< "cost is: " << cost<<endl;
 	return cost;
 }
 
 //9 is the blank
 int main(){
-	_8sq ids = {{6,3,9},{1,5,2},{4,8,7}};
+	_8sq ids = {{2,6,1},{9,3,8},{4,5,7}};
 
 	_8sq idg = {{1,2,3},{4,5,6},{7,8,9}};
 	
