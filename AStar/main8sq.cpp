@@ -121,14 +121,14 @@ list<mynode* > myneigh(mynode* n){
 		string key = getkey(id1);
 		//cout<<"a"<<endl;
 		if(graph.find(key) == graph.end()){
-			cout<<"a1"<<endl;
+	//		cout<<"a1"<<endl;
 			mynode* n1 = new mynode(id1,-1);
 			graph[key]=n1;
 			l.push_back(n1);
 		}
 		else{
 			//map wala dedo
-			cout<<"a2"<<endl;
+	//		cout<<"a2"<<endl;
 			l.push_back(graph[key]);
 		}
 	}
@@ -141,11 +141,11 @@ list<mynode* > myneigh(mynode* n){
 			mynode* n1 = new mynode(id1,-1);
 			graph[key]=n1;
 			l.push_back(n1);
-			cout<<"b1"<<endl;
+	//		cout<<"b1"<<endl;
 		}
 		else{
 			//map wala dedo
-			cout<<"b2"<<endl;
+	//		cout<<"b2"<<endl;
 			l.push_back(graph[key]);
 		}
 	}
@@ -158,19 +158,19 @@ list<mynode* > myneigh(mynode* n){
 			mynode* n1 = new mynode(id1,-1);
 			graph[key]=n1;
 			l.push_back(n1);
-			cout<<"c1"<<endl;
+	//		cout<<"c1"<<endl;
 		}
 		else{
 			//map wala dedo
 			l.push_back(graph[key]);
-			cout<<"c2"<<endl;
+	//		cout<<"c2"<<endl;
 		}
 	}
 	if(col==2 or col==1){
 		_8sq id1 = id;
 		swap(id1[row][col], id1[row][col-1]);
 		string key = getkey(id1);
-		cout<<"d"<<endl;
+	//	cout<<"d"<<endl;
 		if(graph.find(key) == graph.end()){
 			mynode* n1 = new mynode(id1,-1);
 			graph[key]=n1;
@@ -181,8 +181,8 @@ list<mynode* > myneigh(mynode* n){
 			l.push_back(graph[key]);
 		}
 	}
-	cout <<l.size() <<endl;
-	cout<<l.front()->getid()<<endl;
+	//cout <<l.size() <<endl;
+	//cout<<l.front()->getid()<<endl;
 	return l;
 }
 
@@ -231,7 +231,6 @@ int main(){
 	// list<mynode*> l2 = myneigh(s);
 
 	// cout<<(l1.front() == l2.front())<<endl;		//if pointer is same
-	return 0;
 	s->print_me();
 	list<mynode*> l = myneigh(s);
 

@@ -12,9 +12,9 @@ class Node{
 private:
 	ID _id;
 	Node<ID>* parent;
-	int cur_status;		//-1 -> not seen yet, 0 -> in open_list, 1-> in closed_list
 
 public:	
+	int cur_status;		//-1 -> not seen yet, 0 -> in open_list, 1-> in closed_list
 	float _g;
 	Node(ID, float);
 	~Node();
@@ -23,7 +23,6 @@ public:
 	Node* getparent();
 	void print_me();
 	//friend ostream& operator<<(ostream& os, const Date& dt);
-
 };
 
 
@@ -175,7 +174,7 @@ void AStar<NODE>::run(){
 
 		NODE * min_node = lowest_fnode();
 
-		if(min_node == Goal{
+		if(min_node == Goal){
 			cout<<"Hurray"<<endl;
 			trace(Goal);
 			break;
@@ -184,7 +183,8 @@ void AStar<NODE>::run(){
 		//closed_list.push_back(min_node);
 		min_node->cur_status=1;		//virtually push in the closed list
 		//min_node->print_me();
-		//cout<<"Count is: "<<++count<<endl;
+        count++;
+        if(count%50==0) cout << "OL Size" <<open_list.size() <<endl;
 
 
 		list<NODE*> neighbours = neighbour(min_node);
@@ -196,11 +196,14 @@ void AStar<NODE>::run(){
 				continue;
 			}
 			else if((*it)->cur_status==0){
-				if((*it)->_g < orig->_g){
-					cout << "already opennode:" <<endl;
+				if(min_node->_g + 1 < (*it)->_g){ //then set minnode as its parent and update g value
+					//cout << "already opennode:" <<endl;
+
+                    (*it)->_g =  min_node->_g + 1;
+                    (*it)->setparent(min_node);
 					/*
 					
-					to do 
+					to do with  pri-q
 					update the g value in priority queue and set the parent
 	
 					*/
@@ -208,40 +211,19 @@ void AStar<NODE>::run(){
 				}
 			}
 			else{
-				cout << "discovered" <<endl;
+			//	cout << "discovered" <<endl;
 				(*it)->cur_status==0;		//put it in open node
 				(*it)->_g = min_node->_g + 1;	//increment the _g value by 1;
 				(*it)->setparent(min_node);		//set its parent 
+                open_list.push_back(*it);
 				
 				/*
-				to do
+				to do with pri-q
 				push it in open list
 				*/
+                continue;
 
 			}
-			// NODE * orig = find_in_list(*it, closed_list);
-			// if(orig != NULL) { //if node exists in the closed list, the delete the copy 
-			// 	cout << "a" <<endl;
-			// 	delete  *it;
-			// 	continue;
-			// }
-
-
-
-			// orig = find_in_list(*it, open_list);
-			// if(orig != NULL) { //if node exists in the open list, update g if neccessary, and the delete the copy 
-			// 	if((*it)->_g < orig->_g){
-			// 		cout << "b" <<endl;
-			// 		orig->_g = (*it)->_g;
-			// 		orig->setparent(min_node);
-			// 	}
-			// 	delete  *it;
-			// 	continue;
-			// }
-			// cout << "c" <<endl;
-			// (*it)->_g = min_node->_g + 1;
-			// (*it)->setparent(min_node);
-			// open_list.push_back(*it);
 		}
 
 	}
