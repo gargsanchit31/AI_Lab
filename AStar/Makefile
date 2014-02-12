@@ -1,6 +1,6 @@
 CC = g++ -std=c++0x -g 
 DEPS = graph.h
-OBJ = main.o 
+OBJ = main8sq.o 
 
 # $@ : lhs
 # $< : first item in rhs
@@ -9,11 +9,11 @@ OBJ = main.o
 %.o : %.cpp $(DEPS)
 	$(CC) -c -o $@ $< 
 
-main.out: $(OBJ)
+main8.out: $(OBJ)
 	$(CC) -o $@ $(OBJ)
 
 .PHONY: clean
 clean:
-	rm -rf a.out main.out 
+	rm -rf *.out 
 	rm -rf *.o
 
