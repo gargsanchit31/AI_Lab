@@ -17,7 +17,6 @@ struct lt {
     }
 };
 
-
 int main(){
     node *v1 = new node();
     node *v2 = new node();
@@ -37,6 +36,12 @@ int main(){
     queue.print();
     queue.push(v3);
     queue.print();
+
+    v3->f = v3->f - 11;
+    queue.percolateUp(v3->index);
+    queue.print();
+
+    cout << "poppings " <<endl;
     queue.pop();
     queue.print();
     queue.pop();
