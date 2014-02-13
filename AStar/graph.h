@@ -98,12 +98,12 @@ private:
 public:
 	AStar(NODE*, NODE*, H, neigh);
 	~AStar();
-	void run();
+	int run();
 	NODE* getStart();
 	NODE* getGoal();
 	NODE* lowest_fnode();
 	NODE* find_in_list(NODE*, list<NODE*>);
-	void trace(NODE*);
+	int trace(NODE*);
 };
 
 template<class NODE>
@@ -137,7 +137,7 @@ NODE* AStar<NODE>::lowest_fnode(){ //assuming open list is not null(check before
 }
 
 template<class NODE>
-void AStar<NODE>::trace(NODE* n){
+int AStar<NODE>::trace(NODE* n){
     int len=0;
 	while(n!=NULL){
 		n->print_me();
@@ -145,10 +145,11 @@ void AStar<NODE>::trace(NODE* n){
         len++;
 	}
     cout << "Length of the optimal path is " << len-1 <<endl;
+    return len-1;
 }
 
 template<class NODE>
-void AStar<NODE>::run(){
+int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
     
 	Start->_g = 0;
     Start->_h = heuristic(Start);
@@ -160,16 +161,15 @@ void AStar<NODE>::run(){
 	while(1){
 		if(open_list.empty()){
 			cout<<"Something went wront. open_list can't be empty"<<endl;
-            return;
-			exit(0);
+            return -1; //path len is -1 (since no path could be found)
 		}
 
 		NODE * min_node = lowest_fnode();
 
 		if(min_node == Goal){
 			cout<<"Hurray"<<endl;
-			trace(Goal);
-			break;
+			int len = trace(Goal);
+            return len;
 		}
 
 		//closed_list.push_back(min_node);

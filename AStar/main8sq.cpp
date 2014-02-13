@@ -2,8 +2,11 @@
 #include <list>
 #include <vector>
 #include <string>
+#include <time.h>
 #include <unordered_map>
 #include "graph.h"
+#include "utils.h"
+
 using namespace std;
 
 typedef vector<vector<int> > _8sq;
@@ -146,7 +149,7 @@ float manhattan(Node< _8sq >* n){
 	_8sq ids = n->getid();
 
 	pos_pair pos;
-	for(int i=0;i<9;i++){
+	for(int i=0;i<8;i++){ //ERROR was here. We only need to consider manhattan displaced positions (i.e numbers 1 - 8)
 		pos_pair pos = find(ids, i+1);
 		int row = pos.row;
 		int col = pos.col;
@@ -160,8 +163,34 @@ float manhattan(Node< _8sq >* n){
 	return cost;
 }
 
+float hamming(Node< _8sq >* n){
+    float cost = 0;
+	_8sq ids = n->getid();
+
+	pos_pair pos;
+	for(int i=0;i<8;i++){//ERROR was here. (see manhattan() for details)
+		pos_pair pos = find(ids, i+1);
+		int row = pos.row;
+		int col = pos.col;
+		int man_row = (i)/3;
+		int man_col = (i)%3;
+		int temp = abs(man_row - row) + abs(man_col - col);
+		//cout<< i+1 <<" error: "<< temp<<endl;
+		if(temp>0)cost+= 1;
+	}
+	//cout<< "cost is: " << cost<<endl;
+	return cost;
+}
+
+float random_cost(mynode* n){
+    float x = manhattan(n);
+    if(x == 0) return 0;
+    return get_random(x);
+}
+
 //9 is the blank
 int main(){
+    srand(time(NULL)); //seed rand
 	_8sq ids = {{2,6,1},{9,3,8},{4,5,7}};
 
 	_8sq idg = {{1,2,3},{4,5,6},{7,8,9}};
@@ -230,8 +259,9 @@ int main(){
 	cout<<"End Node: "<<endl;
 	cout<<idg;
 
-	AStar<Node<_8sq > > algo(s,g,manhattan,myneigh);
-	algo.run();
+	AStar<Node<_8sq > > algo(s,g,random_cost,myneigh);
+	int len = algo.run();
+    cout << "Path found is of length " << len <<endl;
     cout << "Size of graph discovered " << graph.size() <<endl;
 
 	return 0;

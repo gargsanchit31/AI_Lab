@@ -1,6 +1,6 @@
 CC = g++ -std=c++0x -g 
-DEPS = graph.h PriorityQueue.h
-OBJ = main8sq.o 
+DEPS = graph.h PriorityQueue.h utils.h
+OBJ = main8sq.o  utils.o
 
 # $@ : lhs
 # $< : first item in rhs
