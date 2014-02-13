@@ -1,7 +1,7 @@
 3
 
 5
-5
+2
 1
 
 palindrome_truth.txt
