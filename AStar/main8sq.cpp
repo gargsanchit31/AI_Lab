@@ -76,7 +76,7 @@ list<mynode* > myneigh(mynode* n){
 	list<mynode*> l;
 
 	_8sq id = n->getid();
-	pos_pair p = find(id, 9);
+	pos_pair p = find(id, 0);
 
 	int row=p.row;
 	int col = p.col;
@@ -188,12 +188,12 @@ float random_cost(mynode* n){
     return get_random(x);
 }
 
-//9 is the blank
+//0 is the blank
 int main(){
     srand(time(NULL)); //seed rand
-	_8sq ids = {{2,6,1},{9,3,8},{4,5,7}};
+	_8sq ids = {{2,6,1},{0,3,8},{4,5,7}};
 
-	_8sq idg = {{1,2,3},{4,5,6},{7,8,9}};
+	_8sq idg = {{1,2,3},{4,5,6},{7,8,0}};
 	
 	//cout<<(idg==ids)<<endl;
 
