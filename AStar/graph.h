@@ -183,6 +183,12 @@ int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
 		for(;it!=neighbours.end();it++){
 
 			if((*it)->cur_status==1){//if node exists in the closed list, do nothing
+				if(min_node->_g + 1 < (*it)->_g){ //then set minnode as its parent and update g value
+                    (*it)->cur_status=0;		//put it in open node
+                    (*it)->_g =  min_node->_g + 1;
+                    (*it)->setparent(min_node);
+                    open_list.push(*it);
+                }
 				continue;
 			}
 			else if((*it)->cur_status==0){
@@ -207,7 +213,6 @@ int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
                 if(count%1000==0) cout << count << "  OL Size" <<open_list.size() <<endl;
 				
                 continue;
-
 			}
 		}
 	}

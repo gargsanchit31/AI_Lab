@@ -188,10 +188,16 @@ float random_cost(mynode* n){
     return get_random(x);
 }
 
+float random_cost_2(mynode* n){
+    float x = manhattan(n);
+    if(x == 0) return 0;
+    if(x >=4) x =4;
+    return get_random(x);
+}
 //0 is the blank
 int main(){
     srand(time(NULL)); //seed rand
-	_8sq ids = {{2,6,1},{0,3,8},{4,5,7}};
+	_8sq ids = {{1,3,2},{0,6,8},{4,5,7}};
 
 	_8sq idg = {{1,2,3},{4,5,6},{7,8,0}};
 	
@@ -259,7 +265,7 @@ int main(){
 	cout<<"End Node: "<<endl;
 	cout<<idg;
 
-	AStar<Node<_8sq > > algo(s,g,random_cost,myneigh);
+	AStar<Node<_8sq > > algo(s,g,random_cost_2,myneigh);
 	int len = algo.run();
     cout << "Path found is of length " << len <<endl;
     cout << "Size of graph discovered " << graph.size() <<endl;
