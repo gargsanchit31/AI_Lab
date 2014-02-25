@@ -11,6 +11,7 @@ using namespace std;
 
 typedef vector<vector<int> > _8sq;
 typedef Node<_8sq> mynode;
+typedef NeighInfo<mynode> myneighinfo;
 
 typedef struct{
 	int row;
@@ -72,8 +73,8 @@ pos_pair find(_8sq v, int n){
 	}
 }
 
-list<mynode* > myneigh(mynode* n){
-	list<mynode*> l;
+list<myneighinfo> myneigh(mynode* n){
+	list<myneighinfo> l;
 
 	_8sq id = n->getid();
 	pos_pair p = find(id, 0);
@@ -88,11 +89,18 @@ list<mynode* > myneigh(mynode* n){
 		if(graph.find(key) == graph.end()){
 			mynode* n1 = new mynode(id1);
 			graph[key]=n1;
-			l.push_back(n1);
+
+            myneighinfo info;
+            info.node = n1;
+            info.edge_cost = 1;
+			l.push_back(info);
 		}
 		else{
 			//map wala dedo
-			l.push_back(graph[key]);
+            myneighinfo info;
+            info.node = graph[key];
+            info.edge_cost = 1;
+			l.push_back(info);
 		}
 	}
 	if(row == 2 or row == 1){
@@ -103,11 +111,18 @@ list<mynode* > myneigh(mynode* n){
 		if(graph.find(key) == graph.end()){
 			mynode* n1 = new mynode(id1);
 			graph[key]=n1;
-			l.push_back(n1);
+
+            myneighinfo info;
+            info.node = n1;
+            info.edge_cost = 1;
+			l.push_back(info);
 		}
 		else{
 			//map wala dedo
-			l.push_back(graph[key]);
+            myneighinfo info;
+            info.node = graph[key];
+            info.edge_cost = 1;
+			l.push_back(info);
 		}
 	}
 	if(col==0 or col==1){
@@ -118,11 +133,18 @@ list<mynode* > myneigh(mynode* n){
 		if(graph.find(key) == graph.end()){
 			mynode* n1 = new mynode(id1);
 			graph[key]=n1;
-			l.push_back(n1);
+
+            myneighinfo info;
+            info.node = n1;
+            info.edge_cost = 1;
+			l.push_back(info);
 		}
 		else{
 			//map wala dedo
-			l.push_back(graph[key]);
+            myneighinfo info;
+            info.node = graph[key];
+            info.edge_cost = 1;
+			l.push_back(info);
 		}
 	}
 	if(col==2 or col==1){
@@ -132,11 +154,18 @@ list<mynode* > myneigh(mynode* n){
 		if(graph.find(key) == graph.end()){
 			mynode* n1 = new mynode(id1);
 			graph[key]=n1;
-			l.push_back(n1);
+
+            myneighinfo info;
+            info.node = n1;
+            info.edge_cost = 1;
+			l.push_back(info);
 		}
 		else{
 			//map wala dedo
-			l.push_back(graph[key]);
+            myneighinfo info;
+            info.node = graph[key];
+            info.edge_cost = 1;
+			l.push_back(info);
 		}
 	}
 	return l;
@@ -197,7 +226,7 @@ float random_cost_2(mynode* n){
 //0 is the blank
 int main(){
     srand(time(NULL)); //seed rand
-	_8sq ids = {{3,1,2},{0,6,8},{4,5,7}};
+	_8sq ids = {{1,2,3},{0,8,6},{4,5,7}};
 
 	_8sq idg1 = {{1,2,3},{4,5,6},{7,8,0}};
 	_8sq idg2 = {{2,1,3},{4,5,6},{7,8,0}};
@@ -217,8 +246,8 @@ int main(){
 	graph[getkey(idg2)] = g2;
 
     list<mynode*> goals;
-	goals.push_back(g1);
 	goals.push_back(g2);
+	goals.push_back(g1);
 
     /*
     //check if graph is generated wholly
@@ -251,6 +280,7 @@ int main(){
 
     
 
+    /*
 	list<mynode*> l1 = myneigh(s);
 	list<mynode*> l2 = myneigh(s);
 
@@ -265,18 +295,23 @@ int main(){
 		(*it)->print_me();
 	}
 
+    */
+
     cout << "Starting with A-star" <<endl;
 
 	cout<<"Start Node: "<<endl;
 	cout<<ids;
-	cout<<"End Node: "<<endl;
+	cout<<"End Nodes: "<<endl;
 	cout<<idg1;
+	cout<<"- - - - - "<<endl;
 	cout<<idg2;
 
-	AStar<Node<_8sq > > algo(s,goals,manhattan,myneigh);
+	AStar<Node<_8sq > > algo(s,goals,random_cost,myneigh);
 	int len = algo.run();
     cout << "Path found is of length " << len <<endl;
     cout << "Size of graph discovered " << graph.size() <<endl;
 
 	return 0;
 }
+
+
