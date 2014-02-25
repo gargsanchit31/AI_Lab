@@ -197,9 +197,10 @@ float random_cost_2(mynode* n){
 //0 is the blank
 int main(){
     srand(time(NULL)); //seed rand
-	_8sq ids = {{1,3,2},{0,6,8},{4,5,7}};
+	_8sq ids = {{3,1,2},{0,6,8},{4,5,7}};
 
-	_8sq idg = {{1,2,3},{4,5,6},{7,8,0}};
+	_8sq idg1 = {{1,2,3},{4,5,6},{7,8,0}};
+	_8sq idg2 = {{2,1,3},{4,5,6},{7,8,0}};
 	
 	//cout<<(idg==ids)<<endl;
 
@@ -208,10 +209,16 @@ int main(){
 
 
 	mynode* s = new mynode(ids);
-	mynode* g = new mynode(idg);
+	mynode* g1 = new mynode(idg1);
+	mynode* g2 = new mynode(idg2);
 
 	graph[getkey(ids)] = s;
-	graph[getkey(idg)] = g;
+	graph[getkey(idg1)] = g1;
+	graph[getkey(idg2)] = g2;
+
+    list<mynode*> goals;
+	goals.push_back(g1);
+	goals.push_back(g2);
 
     /*
     //check if graph is generated wholly
@@ -249,7 +256,7 @@ int main(){
 
 	cout<<(l1.front() == l2.front())<<endl;		//if pointer is same
 	s->print_me();
-	list<mynode*> l = myneigh(g);
+	list<mynode*> l = myneigh(g1);
 
 
     cout << "neigh " << endl;
@@ -263,9 +270,10 @@ int main(){
 	cout<<"Start Node: "<<endl;
 	cout<<ids;
 	cout<<"End Node: "<<endl;
-	cout<<idg;
+	cout<<idg1;
+	cout<<idg2;
 
-	AStar<Node<_8sq > > algo(s,g,random_cost_2,myneigh);
+	AStar<Node<_8sq > > algo(s,goals,manhattan,myneigh);
 	int len = algo.run();
     cout << "Path found is of length " << len <<endl;
     cout << "Size of graph discovered " << graph.size() <<endl;

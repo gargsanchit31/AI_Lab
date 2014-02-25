@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <list>
 #include <vector>
+#include <unordered_map>
 #include "PriorityQueue.h"
 using namespace std;
 
@@ -20,7 +21,7 @@ public:
     /*** to be used by A-star **/
 	float _g; // this value is set and updated by A-star as algo progresses. Set first just before putting into open list
     float _h; // this value is set just before putting it into OL of A-star.And then it is never changed.
-    int index;
+    int index;//position in the PriorityQueue
     /*** to be used by A-star **/
 
 	Node(ID);
@@ -90,26 +91,34 @@ private:
 	typedef typename list<NODE*>::iterator l_itr;
 
 	NODE* Start;
-	NODE* Goal;
+    unordered_map<NODE*, bool> Goals;
+
 	H heuristic; //func
 	neigh neighbour; //func
 	Priority_Q<NODE*, lt<NODE> > open_list;
 
 public:
-	AStar(NODE*, NODE*, H, neigh);
+	AStar(NODE*, list<NODE*>, H, neigh);
 	~AStar();
 	int run();
 	NODE* getStart();
-	NODE* getGoal();
 	NODE* lowest_fnode();
 	NODE* find_in_list(NODE*, list<NODE*>);
 	int trace(NODE*);
 };
 
 template<class NODE>
-AStar<NODE>::AStar(NODE* S, NODE* G, H h,  neigh n){
+AStar<NODE>::AStar(NODE* S, list<NODE*> G, H h,  neigh n){
 	Start=S;
-	Goal = G;
+	l_itr it = G.begin();
+    NODE * temp;
+    for(; it!=G.end(); it++){
+        temp = *it;
+        Goals[*it] = true;
+    }
+	if(Goals.find(temp) != Goals.end()){
+        cout << "Hash Map working" <<endl;
+    }
 	heuristic = h;
 	neighbour = n;
 }
@@ -122,11 +131,6 @@ AStar<NODE>::~AStar(){
 template<class NODE>
 NODE* AStar<NODE>::getStart(){
 	return Start;
-}
-
-template<class NODE>
-NODE* AStar<NODE>::getGoal(){
-	return Goal;
 }
 
 template<class NODE>
@@ -166,9 +170,9 @@ int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
 
 		NODE * min_node = lowest_fnode();
 
-		if(min_node == Goal){
+		if(Goals.find(min_node) != Goals.end()){
 			cout<<"Hurray"<<endl;
-			int len = trace(Goal);
+			int len = trace(min_node);
             return len;
 		}
 

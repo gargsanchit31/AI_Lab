@@ -106,11 +106,14 @@ int main(){
 	graph[getkey(ids)] = s;
 	graph[getkey(idg)] = g;
 
+    list<mynode*> goals;
+    goals.push_back(g);
+
 	//cout<<cost(s);
 
 //	node_list l = myneigh(s);
 
-	AStar<mynode> algo(s,g,cost,myneigh);
+	AStar<mynode> algo(s,goals,cost,myneigh);
 	int len = algo.run();
     cout << "Path found is of length " << len <<endl;
     cout << "Size of graph discovered " << graph.size() <<endl;
