@@ -13,6 +13,7 @@ using namespace std;
 
 typedef vector<char> ID;			// '#' means blank, 'B' mean B, 'W' mean W
 typedef Node<ID> mynode;
+typedef NeighInfo<mynode> myneighinfo;
 
 typedef struct{
 	int row;
@@ -65,77 +66,105 @@ vector<int> find_blank(ID id){
 	return res;
 }
 
-list<mynode* > myneigh(mynode* n){
-	list<mynode*> l;
+list<myneighinfo > myneigh(mynode* n){
+	list<myneighinfo> l;
 	ID id = n->getid();
 	vector<int> blank = find_blank(id);
 	for(int i=0; i<blank.size();++i){
 		int bi = blank[i];	//blank place
-		cout<<"blank at "<<bi<<endl;
+		// cout<<"blank at "<<bi<<endl;
 		if(bi+1 < id.size() and id[bi+1] != BLANK){
 			ID id1 = id;
 			swap(id1[bi], id1[bi+1]);
-			cout<<"swap at "<<bi+1<<" "<<id1<<endl;
+			// cout<<"swap at "<<bi+1<<" "<<id1<<endl;
 
 			string key = getkey(id1);
 			if(graph.find(key) == graph.end()){
 				mynode* n1 = new mynode(id1);
 				graph[key]=n1;
-				l.push_back(n1);
+				
+				myneighinfo info;
+	            info.node = n1;
+	            info.edge_cost = 1;
+				l.push_back(info);
 			}
 			else{
 				//map wala dedo
-				l.push_back(graph[key]);
+				myneighinfo info;
+	            info.node = graph[key];
+	            info.edge_cost = 1;
+				l.push_back(info);
 			}
 
 			
 			if(bi+2 < id.size() and id[bi+2] != BLANK){
 				id1 = id;
 				swap(id1[bi], id1[bi+2]);
-				cout<<"swap at "<<bi+2<<" "<<id1<<endl;
+				// cout<<"swap at "<<bi+2<<" "<<id1<<endl;
 
 				string key = getkey(id1);
 				if(graph.find(key) == graph.end()){
 					mynode* n1 = new mynode(id1);
 					graph[key]=n1;
-					l.push_back(n1);
+					
+					myneighinfo info;
+			        info.node = n1;
+			        info.edge_cost = 2;
+					l.push_back(info);
 				}
 				else{
 					//map wala dedo
-					l.push_back(graph[key]);
+					myneighinfo info;
+		            info.node = graph[key];
+		            info.edge_cost = 2;
+					l.push_back(info);
 				}
 			}
 		}
 		if(bi-1 >= 0 and id[bi-1] != BLANK){
 			ID id1 = id;
 			swap(id1[bi], id1[bi-1]);
-			cout<<"swap at "<<bi-1<<" "<<id1<<endl;
+			// cout<<"swap at "<<bi-1<<" "<<id1<<endl;
 
 			string key = getkey(id1);
 			if(graph.find(key) == graph.end()){
 				mynode* n1 = new mynode(id1);
 				graph[key]=n1;
-				l.push_back(n1);
+				
+				myneighinfo info;
+		        info.node = n1;
+		        info.edge_cost = 1;
+				l.push_back(info);
 			}
 			else{
 				//map wala dedo
-				l.push_back(graph[key]);
+				myneighinfo info;
+	            info.node = graph[key];
+	            info.edge_cost = 1;
+				l.push_back(info);
 			}
 
 			if(bi-2 >= 0 and id[bi-2] != BLANK){
 				id1 = id;
 				swap(id1[bi], id1[bi-2]);
-				cout<<"swap at "<<bi-2<<" "<<id1<<endl;
+				// cout<<"swap at "<<bi-2<<" "<<id1<<endl;
 
 				string key = getkey(id1);
 				if(graph.find(key) == graph.end()){
 					mynode* n1 = new mynode(id1);
 					graph[key]=n1;
-					l.push_back(n1);
+					
+					myneighinfo info;
+			        info.node = n1;
+			        info.edge_cost = 2;
+					l.push_back(info);
 				}
 				else{
 					//map wala dedo
-					l.push_back(graph[key]);
+					myneighinfo info;
+		            info.node = graph[key];
+		            info.edge_cost = 2;
+					l.push_back(info);
 				}
 			}
 		}
@@ -199,18 +228,24 @@ float cost_1(mynode* n){
 // }
 //0 is the blank
 int main(){
-	ID ids = {'B','B','B','#','W','W','W'};
-	ID idg = {'W','W','W','B','B','B','#'};
-	cout<<ids<<endl;
+	ID ids = {'B','B','B',BLANK,'W','W','W'};
+	ID idg1 = {'W','W','W','B','B','B',BLANK};
+	ID idg2 = {'W','W','W','B','B',BLANK,'B'};
+	ID idg3 = {'W','W','W','B',BLANK,'B','B'};
+	ID idg4 = {'W','W','W',BLANK,'B','B','B'};
+	ID idg5 = {'W','W',BLANK,'W','B','B','B'};
+	ID idg6 = {'W',BLANK,'W','W','B','B','B'};
+	ID idg7 = {BLANK,'W','W','W','B','B','B'};
+	// cout<<ids<<endl;
 	// swap(ids[6],ids[4]);
 	// cout<<ids;
 	// return 0;
-	vector<int> blank = find_blank(ids);
+	// vector<int> blank = find_blank(ids);
 	// return 0;
-	for(int i=0;i<blank.size();++i){
-		cout<<blank[i]<<" ";
-	}
-	cout<<endl;
+	// for(int i=0;i<blank.size();++i){
+	// 	cout<<blank[i]<<" ";
+	// }
+	// cout<<endl;
 
 	// mynode* s = new mynode(ids);
 	// list<mynode*> l = myneigh(s);
@@ -229,14 +264,32 @@ int main(){
 
 	mynode* s = new mynode(ids);
 	
-	mynode* g1 = new mynode(idg);
-	// mynode* g2 = new mynode(idg2);
+	mynode* g1 = new mynode(idg1);
+	mynode* g2 = new mynode(idg2);
+	mynode* g3 = new mynode(idg3);
+	mynode* g4 = new mynode(idg4);
+	mynode* g5 = new mynode(idg5);
+	mynode* g6 = new mynode(idg6);
+	mynode* g7 = new mynode(idg7);
 
 	graph[getkey(ids)] = s;
 	
-	graph[getkey(idg)] = g1;
+	graph[getkey(idg1)] = g1;
+	graph[getkey(idg2)] = g2;
+	graph[getkey(idg3)] = g3;
+	graph[getkey(idg4)] = g4;
+	graph[getkey(idg5)] = g5;
+	graph[getkey(idg6)] = g6;
+	graph[getkey(idg7)] = g7;
+
 	list<mynode*> goals;
 	goals.push_back(g1);
+	goals.push_back(g2);
+	goals.push_back(g3);
+	goals.push_back(g4);
+	goals.push_back(g5);
+	goals.push_back(g6);
+	goals.push_back(g7);
 	// graph[getkey(idg2)] = g2;
 
  //    list<mynode*> goals;

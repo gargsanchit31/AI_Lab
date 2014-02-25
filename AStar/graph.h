@@ -22,6 +22,7 @@ public:
 	float _g; // this value is set and updated by A-star as algo progresses. Set first just before putting into open list
     float _h; // this value is set just before putting it into OL of A-star.And then it is never changed.
     int index;//position in the PriorityQueue
+    float parent_edge_cost;//this is cost of the edge to the current set parent
     /*** to be used by A-star **/
 
 	Node(ID);
@@ -41,6 +42,7 @@ Node<ID>::Node(ID id){
     _g = -1;
     _h = -1;
     index = -1;
+    parent_edge_cost =0;
 
 	parent = NULL;
 	cur_status = -1; //not seen yet
@@ -149,12 +151,16 @@ template<class NODE>
 int AStar<NODE>::trace(NODE* n){
     cout << "Tracing Path " << endl;
     int len=0;
+    float cost =0;
 	while(n!=NULL){
 		n->print_me();
+		cost+= n->parent_edge_cost;
 		n=n->getparent();
         len++;
+
 	}
     cout << "Length of the optimal path is " << len-1 <<endl;
+    cout << "Cost of the optimal path is " << cost <<endl;
     return len-1;
 }
 
@@ -201,6 +207,7 @@ int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
                     node->cur_status=0;		//put it in open node
                     node->_g =  min_node->_g + edge_cost;
                     node->setparent(min_node);
+                    node->parent_edge_cost = edge_cost;
                     open_list.push(node);
                 }
 				continue;
@@ -210,6 +217,7 @@ int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
 				//cout << "already opennode:" <<endl;
                     node->_g =  min_node->_g + edge_cost;
                     node->setparent(min_node);
+                    node->parent_edge_cost = edge_cost;
                     open_list.percolateUp(node->index); //this will update the priority queue appopriately
 
 					continue;
@@ -220,7 +228,8 @@ int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
 				node->cur_status=0;		//put it in open node
 				node->_g = min_node->_g + 1;	//increment the _g value by 1;
                 node->_h = heuristic(node);
-				node->setparent(min_node);		//set its parent 
+				node->setparent(min_node);		//set its parent
+				node->parent_edge_cost = edge_cost; 
                 open_list.push(node);
 
                 count++;
