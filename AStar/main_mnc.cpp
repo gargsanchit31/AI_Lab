@@ -23,6 +23,7 @@ typedef struct{
 typedef Node<ID> mynode;
 typedef list<mynode* > node_list;
 typedef node_list::iterator node_it;
+typedef NeighInfo<mynode> myneighinfo;
 
 unordered_map<string, mynode*> graph;
 vector<mnc_move> move_list = {{1,0},{0,1},{2,0},{0,2},{1,1}};
@@ -66,9 +67,9 @@ bool isvalid(ID id){
 	return false;
 }
 
-node_list myneigh(mynode* n){
+list<myneighinfo> myneigh(mynode* n){
 	int factor = 1;
-	node_list l;
+	list<myneighinfo> l;
 	if(n->getid().position){
 		factor=-1;
 	}
@@ -84,10 +85,17 @@ node_list myneigh(mynode* n){
 		if(graph.find(key) == graph.end()){
 			mynode* n1 = new mynode(newid);
 			graph[key]=n1;
-			l.push_back(n1);
+			
+			myneighinfo info;
+            info.node = n1;
+            info.edge_cost = 1;
+			l.push_back(info);
 		}
 		else{
-			l.push_back(graph[key]);
+			myneighinfo info;
+            info.node = graph[key];
+            info.edge_cost = 1;
+			l.push_back(info);
 		}
 	}
 	return l;
@@ -96,6 +104,10 @@ node_list myneigh(mynode* n){
 float cost(mynode* n){
 	ID id = n->getid();
 	return (id.cannibles + id.missionaries + !id.position)/(float)2;
+}
+
+float zero_cost(mynode* n){
+	return 0;
 }
 
 int main(){
@@ -113,7 +125,7 @@ int main(){
 
 //	node_list l = myneigh(s);
 
-	AStar<mynode> algo(s,goals,cost,myneigh);
+	AStar<mynode> algo(s,goals,zero_cost,myneigh);
 	int len = algo.run();
     cout << "Path found is of length " << len <<endl;
     cout << "Size of graph discovered " << graph.size() <<endl;

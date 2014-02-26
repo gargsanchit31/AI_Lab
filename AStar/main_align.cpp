@@ -21,8 +21,8 @@ typedef struct{
 } pos_pair;
 
 unordered_map<string, mynode*> graph;
+list<mynode*> goals;
 
-vector<int> find_blank(ID);
 //overload the << operator for printing vector
 ostream& operator<<(ostream& os, const ID v)
 {
@@ -173,8 +173,31 @@ list<myneighinfo > myneigh(mynode* n){
 }
 
 float cost_1(mynode* n){
-	return 1;
+	return 7;
 }
+
+//here manhattan is number of inverted pair
+float inversion(mynode* n){
+	ID id = n->getid();
+	float inv =0;
+	for(int i=0;i<id.size();++i){
+		if(id[i]=='B'){
+			for(int j=i+1;j<id.size();++j){
+				if(id[j]=='W'){
+					++inv;
+				}
+			}
+		}
+	}
+	return inv;
+}
+
+float inversion2(mynode* n){
+	float x = inversion(n);
+	if(x>0) return x-1;
+	return x;
+}
+
 // //h(n) function
 // float manhattan(Node< _8sq >* n){
 // 	float cost = 0;
@@ -214,11 +237,21 @@ float cost_1(mynode* n){
 // 	return cost;
 // }
 
-// float random_cost(mynode* n){
-//     float x = manhattan(n);
-//     if(x == 0) return 0;
-//     return get_random(x);
-// }
+float random_cost(mynode* n){
+    float x = inversion(n);
+    if(x == 0) return 0;
+    return get_random(x);
+}
+
+float greater_h(mynode* n){
+    float x = inversion(n);
+    if(x == 0) return 0;
+    return x + get_random(x) + 2;
+}
+
+float zero_cost(mynode* n){
+	return 0;
+}
 
 // float random_cost_2(mynode* n){
 //     float x = manhattan(n);
@@ -228,6 +261,8 @@ float cost_1(mynode* n){
 // }
 //0 is the blank
 int main(){
+	srand(time(NULL)); //seed rand
+
 	ID ids = {'B','B','B',BLANK,'W','W','W'};
 	ID idg1 = {'W','W','W','B','B','B',BLANK};
 	ID idg2 = {'W','W','W','B','B',BLANK,'B'};
@@ -272,6 +307,9 @@ int main(){
 	mynode* g6 = new mynode(idg6);
 	mynode* g7 = new mynode(idg7);
 
+	// cout<<manhattan(s)<<endl;
+	// return 0;
+
 	graph[getkey(ids)] = s;
 	
 	graph[getkey(idg1)] = g1;
@@ -282,7 +320,6 @@ int main(){
 	graph[getkey(idg6)] = g6;
 	graph[getkey(idg7)] = g7;
 
-	list<mynode*> goals;
 	goals.push_back(g1);
 	goals.push_back(g2);
 	goals.push_back(g3);
@@ -317,7 +354,7 @@ int main(){
 	// cout<<idg1;
 	// cout<<idg2;
 
-	AStar<mynode> algo(s,goals,cost_1,myneigh);
+	AStar<mynode> algo(s,goals,inversion2,myneigh);
 	int len = algo.run();
     cout << "Path found is of length " << len <<endl;
     cout << "Size of graph discovered " << graph.size() <<endl;
