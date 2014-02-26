@@ -97,20 +97,22 @@ private:
 	typedef float (*H)(NODE*) ;
 
 	typedef NeighInfo<NODE> myneighinfo;
-	typedef list<myneighinfo> (*neigh)(NODE*);
+    typedef unordered_map<string, NODE*> mygraphtype;
+	typedef list<myneighinfo> (*neigh)(NODE*, mygraphtype&);
 
 	typedef typename list<NODE*>::iterator l_itr;
 	typedef typename list<myneighinfo>::iterator l_neighinfo_itr;
 
 	NODE* Start;
     unordered_map<NODE*, bool> Goals;
+    mygraphtype* graph;
 
 	H heuristic; //func
 	neigh neighbour; //func
 	Priority_Q<NODE*, lt<NODE> > open_list;
 
 public:
-	AStar(NODE*, list<NODE*>, H, neigh);
+	AStar(NODE*, list<NODE*>, H, neigh, mygraphtype*);
 	~AStar();
 	int run();
 	NODE* getStart();
@@ -120,7 +122,7 @@ public:
 };
 
 template<class NODE>
-AStar<NODE>::AStar(NODE* S, list<NODE*> G, H h,  neigh n){
+AStar<NODE>::AStar(NODE* S, list<NODE*> G, H h, neigh n, mygraphtype* in_graph){
 	Start=S;
 	l_itr it = G.begin();
     for(; it!=G.end(); it++){
@@ -128,6 +130,7 @@ AStar<NODE>::AStar(NODE* S, list<NODE*> G, H h,  neigh n){
     }
 	heuristic = h;
 	neighbour = n;
+    graph = in_graph;
 }
 
 template<class NODE>
@@ -194,7 +197,7 @@ int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
 		//min_node->print_me();
 
 
-		list<myneighinfo> neighbours = neighbour(min_node);
+		list<myneighinfo> neighbours = neighbour(min_node, *graph);
 		//cout<<"Neighbour Size: "<<neighbours.size()<<endl;
 		l_neighinfo_itr it = neighbours.begin();
 		for(;it!=neighbours.end();it++){
