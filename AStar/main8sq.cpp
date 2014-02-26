@@ -12,13 +12,13 @@ using namespace std;
 typedef vector<vector<int> > _8sq;
 typedef Node<_8sq> mynode;
 typedef NeighInfo<mynode> myneighinfo;
+typedef unordered_map<string, mynode*> mygraphtype;
 
 typedef struct{
 	int row;
 	int col;
 } pos_pair;
 
-unordered_map<string, mynode*> graph;
 
 //overload the << operator for printing vector
 ostream& operator<<(ostream& os, const _8sq v)
@@ -73,7 +73,7 @@ pos_pair find(_8sq v, int n){
 	}
 }
 
-list<myneighinfo> myneigh(mynode* n){
+list<myneighinfo> myneigh(mynode* n, mygraphtype &graph){
 	list<myneighinfo> l;
 
 	_8sq id = n->getid();
@@ -225,6 +225,8 @@ float random_cost_2(mynode* n){
 }
 //0 is the blank
 int main(){
+    mygraphtype * graph = new mygraphtype() ;
+
     srand(time(NULL)); //seed rand
 	_8sq ids = {{1,2,3},{0,8,6},{4,5,7}};
 
@@ -241,61 +243,13 @@ int main(){
 	mynode* g1 = new mynode(idg1);
 	mynode* g2 = new mynode(idg2);
 
-	graph[getkey(ids)] = s;
-	graph[getkey(idg1)] = g1;
-	graph[getkey(idg2)] = g2;
+	(*graph)[getkey(ids)] = s;
+	(*graph)[getkey(idg1)] = g1;
+	(*graph)[getkey(idg2)] = g2;
 
     list<mynode*> goals;
 	goals.push_back(g2);
 	goals.push_back(g1);
-
-    /*
-    //check if graph is generated wholly
-    int count = 0;
-    list<mynode*> ln ;
-    list<mynode*> G;
-    s->cur_status = 0;
-    G.push_back(s);
-	list<mynode*>::iterator itn ;
-    while(!G.empty()){
-        mynode * n = G.front();
-        G.pop_front();
-        ln = myneigh(n);
-        for(itn=ln.begin();itn!=ln.end();itn++){
-            if((*itn)->cur_status != 0){
-                count++;
-                (*itn)->cur_status = 0;
-                if(*itn == g) {
-                    cout<<"found goal node" <<endl;
-                    cout << "Final count of Test Graph " << count <<endl;
-                }
-                G.push_back((*itn));
-            }
-        }
-    }
-
-    cout << "Final count of Test Graph " << count <<endl;
-    return 0;
-    */
-
-    
-
-    /*
-	list<mynode*> l1 = myneigh(s);
-	list<mynode*> l2 = myneigh(s);
-
-	cout<<(l1.front() == l2.front())<<endl;		//if pointer is same
-	s->print_me();
-	list<mynode*> l = myneigh(g1);
-
-
-    cout << "neigh " << endl;
-	list<mynode*>::iterator it = l.begin();
-	for(;it!=l.end();it++){
-		(*it)->print_me();
-	}
-
-    */
 
     cout << "Starting with A-star" <<endl;
 
@@ -306,10 +260,10 @@ int main(){
 	cout<<"- - - - - "<<endl;
 	cout<<idg2;
 
-	AStar<Node<_8sq > > algo(s,goals,random_cost,myneigh);
+	AStar<Node<_8sq > > algo(s,goals,random_cost,myneigh,graph);
 	int len = algo.run();
     cout << "Path found is of length " << len <<endl;
-    cout << "Size of graph discovered " << graph.size() <<endl;
+    cout << "Size of graph discovered " << (*graph).size() <<endl;
 
 	return 0;
 }
