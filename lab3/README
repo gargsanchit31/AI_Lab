@@ -14,14 +14,16 @@ operation needs two files (look at sample tweet_control.txt, tweet_train.txt, tw
     #neurons in Lk(output)
 
     tweet_train.txt
+    #no of train records
 
     tweets //OPTION
-
-    tweet_test.txt
 
     EITA
 
     THRESH
+
+    tweet_test.txt
+    #no of test records
 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

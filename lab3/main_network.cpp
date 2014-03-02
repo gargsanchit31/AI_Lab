@@ -67,11 +67,16 @@ int main(int argc, char *argv[]){
         inFile >> layer_sizes[i];
     }
     //take training data
+    cout << "Taken layer info" << endl;
 
-    char truth_file_name[100];
-    inFile >> truth_file_name;
-     
+    char train_truth_file[100];
+    int train_record_count;
     vector<training_data> data;
+
+    inFile >> train_truth_file;
+    inFile >> train_record_count;
+    cout << "Taken record count" << endl;
+
     int numinputs = layer_sizes[0];
     int numoutputs = layer_sizes[num_layers-1];
 
@@ -79,13 +84,13 @@ int main(int argc, char *argv[]){
     double in;
     IFBUG cout << "num " << numinputs << " "<< numoutputs <<endl; ENDBUG
     ifstream truthFile;
-    truthFile.open(truth_file_name, ios::in);
+    truthFile.open(train_truth_file, ios::in);
     if(!truthFile.is_open()){
-        cout << "can't open truth file " << truth_file_name <<endl;
+        cout << "can't open truth file " << train_truth_file <<endl;
         exit(0);
     }
 
-    for(i=0;i<pow(2,numinputs);i++){
+    for(i=0; i<train_record_count;i++){
         training_data d;
         for(int j=0;j<numoutputs;j++){
             truthFile >> in;
@@ -105,48 +110,8 @@ int main(int argc, char *argv[]){
     inFile >> option; //a : print iteration vs sq_error
     IFBUG cout << "option is " << option <<endl; ENDBUG
 
-    if(option == "a"){
-        IFBUG cout << "option is 'a'" << endl; ENDBUG
-        //input EITA and THRESH
-        inFile >> EITA;
-        IFBUG cout << "EITA is " << EITA <<endl; ENDBUG
-        inFile >> THRESH;
-        IFBUG cout << "THRESH is " << THRESH <<endl; ENDBUG
-
-        PRINTERROR = 1;
-	    neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
-        //nn->print_topology();
-        //nn->print_network();
-
-        run_network(nn, data);
-
-    }
-    if(option == "e"){//vary eita for fixed thresh
-        IFBUG cout << "option is 'e'" << endl; ENDBUG
-        //input EITA and THRESH
-        inFile >> THRESH;
-        IFBUG cout << "THRESH is " << THRESH <<endl; ENDBUG
-
-        for(EITA=0.01; EITA<0.8 ; EITA+=0.02){
-            neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
-            run_network(nn, data);
-            cout << EITA << " " << ITERATION <<endl;
-        }
-    }
-    if(option == "t"){//vary thresh for fixed eita
-        IFBUG cout << "option is 't'" << endl; ENDBUG
-        //input EITA and THRESH
-        inFile >> EITA;
-        IFBUG cout << "EITA is " << EITA <<endl; ENDBUG
-
-        for(THRESH=0.01; THRESH<0.4 ; THRESH+=0.01){
-            neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
-            run_network(nn, data);
-            cout << THRESH << " " << ITERATION <<endl;
-        }
-    }
-    else if(option == "demo"){ //further take eita and thresh and then take input for testing
-        cout << "option is demo" << endl;
+    if(option == "tweets"){ //further take eita and thresh and then take input for testing
+        cout << "option is" << option << endl;
         //input EITA and THRESH
         inFile >> EITA;
         cout << "EITA is " << EITA <<endl;
@@ -162,45 +127,39 @@ int main(int argc, char *argv[]){
         cout <<ITERATION<< "\ntraining complete";
 
         nn->print_network();
-        while(1){
-            vector<double> test;
-            cout << "give the " << numinputs << " inputs seperated by spaces: ";
-            int inp;
-            for(int i=0;i<numinputs;i++){
-                cin >> inp;
-                test.push_back(inp);
+        //5-fold  verification phase
+        char test_truth_file[100];
+        int test_record_count;
+        int correct_count = 0; //no of test tweets classified correctly
+
+        inFile >> test_truth_file;
+        inFile >> test_record_count;
+
+        truthFile.open(train_truth_file, ios::in);
+        if(!truthFile.is_open()){
+            cout << "can't open truth file " << test_truth_file <<endl;
+            exit(0);
+        }
+
+        for(int i=0; i<test_record_count;i++){
+            training_data d;
+            for(int j=0;j<numoutputs;j++){
+                truthFile >> in;
+                d.target.push_back(in);
             }
-            vector<double> out = nn->calculate_output(test);
-            printvec(out); cout << endl;
+            for(int j=0;j<numinputs;j++){
+                truthFile >> in;
+                d.input.push_back(in);
+            }
+            vector<double> out = nn->calculate_output(d.input);
+            if(are_equal_vec(out, d.target)){
+                cout << "correct\n";
+                correct_count++;
+            }
         }
-    }
-    else if(option == "truth"){ //further take eita and thresh and then take input for testing
-        cout << "option is demo" << endl;
-        //input EITA and THRESH
-        inFile >> EITA;
-        cout << "EITA is " << EITA <<endl;
-        inFile >> THRESH;
-        cout << "THRESH is " << THRESH <<endl;
+        cout << "accuracy " << ((float)correct_count * 100)/test_record_count << endl;
 
-	    neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
-        //nn->print_topology();
-        //nn->print_network();
-
-        run_network(nn, data);
-
-        cout <<ITERATION<< "\ntraining complete";
-
-        nn->print_network();
-
-        cout << " - - - -  - - - - -  - - - - THE TRUTH IS HERE - - - - - - -  - - - - -  " <<endl;
-
-        for(int i=0; i < data.size(); i++){
-            nn->calculate_output(data[i].input);
-            printvec(data[i].input); //this contains
-            cout << " | ";
-            nn->print_truth();
-            cout <<endl;
-        }
+        truthFile.close();
     }
 
     /******************************/

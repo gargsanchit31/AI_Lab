@@ -41,6 +41,17 @@ void printvec(vector<double> v){
 		cout<<v[j]<<" ";
 	}
 }
+
+bool are_equal_vec(vector<double> Z, vector<double> Y){
+	if(Z.size()!=Y.size()){
+		cout<<"In are_equal_vec(): Error on vector sizes\n";
+		exit(1);
+	}
+	for(int j=0;j<Z.size();j++){
+        if(Z[j] != Y[j]) return false;
+	}
+    return true;
+}
 int get_boolean(float in){
     if(in > 0.5) return 1;
     else return 0;
