@@ -3,14 +3,13 @@
 450
 3
 
-train_vector
-400
+test_vector
+98
 
 tweets
 
 0.1
-5
+7
 
-test_vector
-98
-
+train_vector
+400
