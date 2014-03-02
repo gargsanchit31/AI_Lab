@@ -1,15 +1,16 @@
 2
 
-450
+530
 3
 
-test_vector
-98
+extracted-features.dump
+400
 
 tweets
 
 0.1
 7
 
-train_vector
-400
+extracted-features.dump.test
+100
+

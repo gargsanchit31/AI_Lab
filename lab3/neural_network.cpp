@@ -5,6 +5,9 @@
 #include <cstring>
 #include <cstdlib>
 
+//#define CLASSIFY(x) (x<0.4?0:(x>0.6?1:2))
+#define CLASSIFY(x) (x<0.5?0:1)
+
 extern int PRINTERROR; //does network has to print cum_error after every 100 cycles
 extern int ITERATION; //global iteration count
 
@@ -200,7 +203,7 @@ vector<double> neural_network::calculate_output(vector<double> input){
 	
 	for(int i=0;i<cur_layer->get_population();i++){
 		double output = cur_layer_neurons[i]->get_signal_output();
-		y.push_back(output);
+		y.push_back(CLASSIFY(output));
 	}
 	return y;
 }

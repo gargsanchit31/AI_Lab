@@ -10,11 +10,6 @@
 #include <string>
 
 /** debugging symbols **/
-#define DEBUG 0
-#define IFBUG if(DEBUG){
-#define ENDBUG }
-
-/** debugging symbols **/
 
 double EITA = 0.02;
 double THRESH = 0.01;
@@ -33,8 +28,9 @@ void run_network(neural_network *nn, vector<training_data>& data){
     ITERATION = 0;
     while(1){
         ITERATION++;
-        //if(ITERATION % 1000 == 0) cout << ITERATION /1000 <<endl;
-        if(ITERATION > 1000000000){
+        //cout << "iteration " << ITERATION <<endl;
+        if(ITERATION > 1000){
+            cout << "inside "<< endl;
             break;
         }
         //training_data d = data[i];
@@ -102,6 +98,9 @@ int main(int argc, char *argv[]){
         }
         data.push_back(d);
     }
+    char x;
+    truthFile >> x;
+    cout << " The end character is " << x << endl;  
     IFBUG cout << "input data taken "<< i<<endl; ENDBUG
     truthFile.close();
 
@@ -126,7 +125,7 @@ int main(int argc, char *argv[]){
 
         cout <<ITERATION<< "\ntraining complete";
 
-        nn->print_network();
+        //nn->print_network();
         //5-fold  verification phase
         char test_truth_file[100];
         int test_record_count;
@@ -135,28 +134,46 @@ int main(int argc, char *argv[]){
         inFile >> test_truth_file;
         inFile >> test_record_count;
 
-        truthFile.open(train_truth_file, ios::in);
+        truthFile.open(test_truth_file, ios::in);
         if(!truthFile.is_open()){
             cout << "can't open truth file " << test_truth_file <<endl;
             exit(0);
         }
 
+        cout << "Test record count " <<endl;
+        cout << "no of input /outputs" << numinputs<<" " <<numoutputs <<endl;
         for(int i=0; i<test_record_count;i++){
             training_data d;
             for(int j=0;j<numoutputs;j++){
                 truthFile >> in;
                 d.target.push_back(in);
             }
+            vector<double> zero;
+            zero.push_back(0);
+            zero.push_back(0);
+            zero.push_back(0);
+            if(are_equal_vec(d.target,zero)) cout << "Some mishap occured @ input " << i  <<endl;
+
             for(int j=0;j<numinputs;j++){
                 truthFile >> in;
                 d.input.push_back(in);
             }
             vector<double> out = nn->calculate_output(d.input);
+            printvec(out);
+            printvec(d.target);
+            cout << "---" << endl;
+            //if(are_equal_vec({1,3,4}, {1, 3, 4}) cout << "Hello \n";
             if(are_equal_vec(out, d.target)){
                 cout << "correct\n";
                 correct_count++;
             }
+            else{
+                cout << "wrong\n";
+            }
         }
+        char x;
+        truthFile >> x;
+        cout << " The end character is " << x << endl;  
         cout << "accuracy " << ((float)correct_count * 100)/test_record_count << endl;
 
         truthFile.close();
