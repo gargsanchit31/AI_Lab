@@ -1,6 +1,7 @@
-operation needs two files (look at sample xor_control.txt, xor_truth.txt)
+Twitter Analysis:
+operation needs two files (look at sample tweet_control.txt, tweet_train.txt, tweet_test.txt)
 
-1. xor_control.txt which must be passed as argument to executable i.e.   ./net.out xor_control.txt
+1. tweet_control.txt which must be passed as argument to executable i.e.   ./net.out xor_control.txt
     this control file has following structure
 
     #layers(k)
@@ -12,9 +13,11 @@ operation needs two files (look at sample xor_control.txt, xor_truth.txt)
     .
     #neurons in Lk(output)
 
-    xor_truth.txt (details in point#2)
+    tweet_train.txt
 
-    OPTION (currently 'a' means analysis printing error vs iteration;   'demo' means train the network and prompt for input, 'e' means varying eita fixed thresh, 't' means varying thresh fixed eita)
+    tweets //OPTION
+
+    tweet_test.txt
 
     EITA
 
@@ -23,5 +26,8 @@ operation needs two files (look at sample xor_control.txt, xor_truth.txt)
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-2. xor_truth.txt
+2. tweet_train.txt
+    (contains the truth table in the form   y1 y2 y3.. ym    x1 x2 x3.... xn)
+
+3. tweet_test.txt
     (contains the truth table in the form   y1 y2 y3.. ym    x1 x2 x3.... xn)
