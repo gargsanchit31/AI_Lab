@@ -1,0 +1,21 @@
+4
+
+6
+4
+2
+1
+
+monks-2.test
+432
+
+yes
+1
+
+tweets
+
+0.1
+1
+0.99
+
+NOTE:
+iterations < 50000

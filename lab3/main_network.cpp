@@ -29,7 +29,7 @@ void run_network(neural_network *nn, vector<training_data>& data){
     while(1){
         ITERATION++;
         //cout << "iteration " << ITERATION <<endl;
-        if(ITERATION > 30000){
+        if(ITERATION > 50000){
             cout << "inside "<< endl;
             break;
         }
@@ -77,6 +77,14 @@ int main(int argc, char *argv[]){ //args control-file-name  #block in 4/5 testin
     int size_block = record_count/5;
     cout << "Taken record count" << endl;
 
+    string to_normalise; //whether to normalise the input data or not
+    inFile >> to_normalise;
+    float normal_factor =1;
+    if(to_normalise == "yes"){
+        inFile>> normal_factor;
+        cout << "Asked to normalise by factor of " << normal_factor <<endl;
+    }
+
     int numinputs = layer_sizes[0];
     int numoutputs = layer_sizes[num_layers-1];
     cout << "numinputs " << numinputs << " " << numoutputs << endl;
@@ -97,10 +105,10 @@ int main(int argc, char *argv[]){ //args control-file-name  #block in 4/5 testin
             truthFile >> in;
             d.target.push_back(in);
         }
-            if(i==150) printvec(d.target);
         for(int j=0;j<numinputs;j++){
             truthFile >> in;
-            d.input.push_back(in);
+            d.input.push_back(in/normal_factor);
+            //d.input.push_back(in);
         }
         printvec(d.target); printvec( d.input); cout << endl;
         if(i/size_block == block_no){
