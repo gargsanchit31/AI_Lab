@@ -16,7 +16,7 @@ double THRESH = 0.01;
 int RANDNO = 1;
 int ISRAND = 1; //does weights are given randomly
 double FIXWEIGHT = 0.5; //if ISRAND = 0, then this weight will be used
-double MOMENTUM = 0.9;
+double MOMENTUM = 0.7;
 
 int PRINTERROR = 1; //does network has to print cum_error after every 100 cycles
 int ITERATION = 0; //global iteration count
@@ -29,7 +29,7 @@ void run_network(neural_network *nn, vector<training_data>& data){
     while(1){
         ITERATION++;
         //cout << "iteration " << ITERATION <<endl;
-        if(ITERATION > 1000){
+        if(ITERATION > 30000){
             cout << "inside "<< endl;
             break;
         }
@@ -41,13 +41,15 @@ void run_network(neural_network *nn, vector<training_data>& data){
     }
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]){ //args control-file-name  #block in 4/5 testing
 
     srand(time(NULL));
 
     /****** input for palindrome ****/
     ifstream inFile;
     inFile.open(argv[1], ios::in);
+    int block_no = atoi(argv[2]);
+    cout << "BLOCK no is  " << block_no << endl;
     if(!inFile.is_open()){
         cout << "can't open control file " << argv[1] <<endl;
         exit(0);
@@ -65,46 +67,59 @@ int main(int argc, char *argv[]){
     //take training data
     cout << "Taken layer info" << endl;
 
-    char train_truth_file[100];
-    int train_record_count;
+    char truth_file[100];
+    int record_count;
     vector<training_data> data;
+    vector<training_data> test_data;
 
-    inFile >> train_truth_file;
-    inFile >> train_record_count;
+    inFile >> truth_file;
+    inFile >> record_count;
+    int size_block = record_count/5;
     cout << "Taken record count" << endl;
 
     int numinputs = layer_sizes[0];
     int numoutputs = layer_sizes[num_layers-1];
+    cout << "numinputs " << numinputs << " " << numoutputs << endl;
 
     int i;
     double in;
     IFBUG cout << "num " << numinputs << " "<< numoutputs <<endl; ENDBUG
     ifstream truthFile;
-    truthFile.open(train_truth_file, ios::in);
+    truthFile.open(truth_file, ios::in);
     if(!truthFile.is_open()){
-        cout << "can't open truth file " << train_truth_file <<endl;
+        cout << "can't open truth file " << truth_file <<endl;
         exit(0);
     }
 
-    for(i=0; i<train_record_count;i++){
+    for(i=0; i<record_count;i++){
         training_data d;
         for(int j=0;j<numoutputs;j++){
             truthFile >> in;
             d.target.push_back(in);
         }
+            if(i==150) printvec(d.target);
         for(int j=0;j<numinputs;j++){
             truthFile >> in;
             d.input.push_back(in);
         }
-        data.push_back(d);
+        printvec(d.target); printvec( d.input); cout << endl;
+        if(i/size_block == block_no){
+            cout << i << " t\n";
+            test_data.push_back(d);
+        }
+        else{
+            cout << i << " i\n";
+            data.push_back(d);
+        }
     }
     char x;
     truthFile >> x;
+
     cout << " The end character is " << x << endl;  
-    IFBUG cout << "input data taken "<< i<<endl; ENDBUG
+    IFBUG cout << "All data taken "<< i<<endl; ENDBUG
     truthFile.close();
 
-    IFBUG cout << "taking opton " <<endl; ENDBUG
+    IFBUG cout << "taking option " <<endl; ENDBUG
     string option;
     inFile >> option; //a : print iteration vs sq_error
     IFBUG cout << "option is " << option <<endl; ENDBUG
@@ -116,6 +131,8 @@ int main(int argc, char *argv[]){
         cout << "EITA is " << EITA <<endl;
         inFile >> THRESH;
         cout << "THRESH is " << THRESH <<endl;
+        inFile >> MOMENTUM;
+        cout << "MOMENTUM is " << MOMENTUM <<endl;
 
 	    neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
         //nn->print_topology();
@@ -125,45 +142,16 @@ int main(int argc, char *argv[]){
 
         cout <<ITERATION<< "\ntraining complete";
 
-        //nn->print_network();
-        //5-fold  verification phase
-        char test_truth_file[100];
-        int test_record_count;
+        cout << "test_record_count " << size_block <<endl;
         int correct_count = 0; //no of test tweets classified correctly
 
-        inFile >> test_truth_file;
-        inFile >> test_record_count;
-
-        truthFile.open(test_truth_file, ios::in);
-        if(!truthFile.is_open()){
-            cout << "can't open truth file " << test_truth_file <<endl;
-            exit(0);
-        }
-
-        cout << "Test record count " <<endl;
-        cout << "no of input /outputs" << numinputs<<" " <<numoutputs <<endl;
-        for(int i=0; i<test_record_count;i++){
-            training_data d;
-            for(int j=0;j<numoutputs;j++){
-                truthFile >> in;
-                d.target.push_back(in);
-            }
-            vector<double> zero;
-            zero.push_back(0);
-            zero.push_back(0);
-            zero.push_back(0);
-            if(are_equal_vec(d.target,zero)) cout << "Some mishap occured @ input " << i  <<endl;
-
-            for(int j=0;j<numinputs;j++){
-                truthFile >> in;
-                d.input.push_back(in);
-            }
-            vector<double> out = nn->calculate_output(d.input);
+        for(int i=0; i<test_data.size();i++){
+            vector<double> out = nn->calculate_output(test_data[i].input);
             printvec(out);
-            printvec(d.target);
+            printvec(test_data[i].target);
             cout << "---" << endl;
             //if(are_equal_vec({1,3,4}, {1, 3, 4}) cout << "Hello \n";
-            if(are_equal_vec(out, d.target)){
+            if(are_equal_vec(out, test_data[i].target)){
                 cout << "correct\n";
                 correct_count++;
             }
@@ -171,12 +159,7 @@ int main(int argc, char *argv[]){
                 cout << "wrong\n";
             }
         }
-        char x;
-        truthFile >> x;
-        cout << " The end character is " << x << endl;  
-        cout << "accuracy " << ((float)correct_count * 100)/test_record_count << endl;
-
-        truthFile.close();
+        cout << "accuracy " << ((float)correct_count * 100)/test_data.size()<< endl;
     }
 
     /******************************/

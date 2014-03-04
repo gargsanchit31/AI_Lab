@@ -1,0 +1,17 @@
+3
+
+4
+6
+3
+
+iris.data.random
+150
+
+tweets
+
+0.1
+0.5
+0.9
+
+NOTE:
+iterations < 30000

@@ -1,8 +1,9 @@
 Twitter Analysis:
 operation needs two files (look at sample tweet_control.txt, tweet_train.txt, tweet_test.txt)
 
-1. tweet_control.txt which must be passed as argument to executable i.e.   ./net.out xor_control.txt
-    this control file has following structure
+takes two arguments ./net.out   xor_control.txt   block#(one of the 5 blocks 0-4)
+
+1. tweet_control.txt which must be passed as argument to executable 
 
     #layers(k)
 
@@ -13,8 +14,8 @@ operation needs two files (look at sample tweet_control.txt, tweet_train.txt, tw
     .
     #neurons in Lk(output)
 
-    tweet_train.txt
-    #no of train records
+    truth.txt
+    #records
 
     tweets //OPTION
 
@@ -22,14 +23,12 @@ operation needs two files (look at sample tweet_control.txt, tweet_train.txt, tw
 
     THRESH
 
-    tweet_test.txt
-    #no of test records
+    MOMENTUM
 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-2. tweet_train.txt
+2. truth.txt
     (contains the truth table in the form   y1 y2 y3.. ym    x1 x2 x3.... xn)
+    HAS # at the end to verify that it has been read properly
 
-3. tweet_test.txt
-    (contains the truth table in the form   y1 y2 y3.. ym    x1 x2 x3.... xn)

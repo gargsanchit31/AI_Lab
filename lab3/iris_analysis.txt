@@ -1,0 +1,12 @@
+five fold analysis 1
+
+block # : accuracy %
+0       : 96.6
+
+1       : 96.6
+
+2       : 96.6
+
+3       : 100
+
+4       : 93.3

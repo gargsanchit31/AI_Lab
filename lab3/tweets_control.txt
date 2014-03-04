@@ -3,14 +3,11 @@
 530
 3
 
-extracted-features.dump
-400
+extracted-features-all
+500
 
 tweets
 
 0.1
 7
-
-extracted-features.dump.test
-100
 
