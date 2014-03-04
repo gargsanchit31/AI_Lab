@@ -4,7 +4,7 @@
 6
 3
 
-iris.data.random
+iris.data.random2
 150
 
 tweets

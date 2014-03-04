@@ -1,4 +1,5 @@
 five fold analysis 1
+data : iris.data.random
 
 block # : accuracy %
 0       : 96.6
@@ -10,3 +11,18 @@ block # : accuracy %
 3       : 100
 
 4       : 93.3
+
+
+five fold analysis 2
+data : iris.data.random2
+
+block # : accuracy %
+0       : 100
+
+1       : 
+
+2       : 
+
+3       : 
+
+4       : 
