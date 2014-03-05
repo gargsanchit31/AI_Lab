@@ -18,3 +18,5 @@ tweets
 
 NOTE:
 iterations < 50000
+
+MONK-1: (a1 = a2) or (a5 = 1)
