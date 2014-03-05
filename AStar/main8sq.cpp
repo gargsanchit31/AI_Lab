@@ -223,15 +223,123 @@ float random_cost_2(mynode* n){
     if(x >=4) x =4;
     return get_random(x);
 }
+
+float rel_displace_cost(mynode* n){
+	pos_pair node[8];
+	_8sq id = n->getid();
+	float cost=0;
+	for(int i=0;i<8;i++){
+		node[i]=find(id, i+1);
+	}
+	for(int i=0;i<8;i++){
+		float temp=0;
+		switch(i){
+			case 0:
+				if((node[1].col - node[0].col) != 1){
+					temp+=1;
+				}
+				if((node[3].row - node[0].row) != 1){
+					temp+=1;
+				}
+				cost += temp/2;
+			break;
+
+			case 1:
+				if((node[1].col - node[0].col) != 1){
+					temp+=1;
+				}
+				if((node[4].row - node[1].row) != 1){
+					temp+=1;
+				}
+				if((node[2].col - node[1].col) != 1){
+					temp+=1;
+				}
+				cost += temp/3;
+			break;
+
+			case 2:
+				if((node[2].col - node[1].col) != 1){
+					temp+=1;
+				}
+				if((node[5].row - node[2].row) != 1){
+					temp+=1;
+				}
+				cost += temp/2;
+			break;
+
+			case 3:
+				if((node[3].row - node[0].row) != 1){
+					temp+=1;
+				}
+				if((node[4].col - node[3].col) != 1){
+					temp+=1;
+				}
+				if((node[6].row - node[3].row) != 1){
+					temp+=1;
+				}
+				cost += temp/3;
+			break;
+
+			case 4:
+				if((node[4].row - node[1].row) != 1){
+					temp+=1;
+				}
+				if((node[4].col - node[3].col) != 1){
+					temp+=1;
+				}
+				if((node[7].row - node[4].row) != 1){
+					temp+=1;
+				}
+				if((node[5].col - node[4].col) != 1){
+					temp+=1;
+				}
+				cost += temp/4;
+			break;
+
+			case 5:
+				if((node[5].row - node[2].row) != 1){
+					temp+=1;
+				}
+				if((node[5].col - node[4].col) != 1){
+					temp+=1;
+				}
+				cost += temp/2;
+			break;
+
+			case 6:
+				if((node[7].col - node[6].col) != 1){
+					temp+=1;
+				}
+				if((node[6].row - node[3].row) != 1){
+					temp+=1;
+				}
+				cost += temp/2;
+			break;
+
+			case 7:
+				if((node[7].col - node[6].col) != 1){
+					temp+=1;
+				}
+				if((node[7].row - node[4].row) != 1){
+					temp+=1;
+				}
+				cost += temp/2;
+			break;			
+		}
+	}
+	return cost/2;
+}
+
 //0 is the blank
 int main(){
     mygraphtype * graph = new mygraphtype() ;
 
-    srand(time(NULL)); //seed rand
-	_8sq ids = {{1,2,3},{0,8,6},{4,5,7}};
+    srand(time(NULL)); //seed _8sq
+	// rand ids = {{1,4,7},{2,5,3},{8,6,0}};
+	_8sq ids = {{1,4,5},{0,8,2},{7,3,6}};
 
 	_8sq idg1 = {{1,2,3},{4,5,6},{7,8,0}};
-	_8sq idg2 = {{2,1,3},{4,5,6},{7,8,0}};
+	//_8sq idg2 = {{2,1,3},{4,5,6},{7,8,0}};
 	
 	//cout<<(idg==ids)<<endl;
 
@@ -241,14 +349,14 @@ int main(){
 
 	mynode* s = new mynode(ids);
 	mynode* g1 = new mynode(idg1);
-	mynode* g2 = new mynode(idg2);
+	// mynode* g2 = new mynode(idg2);
 
 	(*graph)[getkey(ids)] = s;
 	(*graph)[getkey(idg1)] = g1;
-	(*graph)[getkey(idg2)] = g2;
+	// (*graph)[getkey(idg2)] = g2;
 
     list<mynode*> goals;
-	goals.push_back(g2);
+	// goals.push_back(g2);
 	goals.push_back(g1);
 
     cout << "Starting with A-star" <<endl;
@@ -257,10 +365,10 @@ int main(){
 	cout<<ids;
 	cout<<"End Nodes: "<<endl;
 	cout<<idg1;
-	cout<<"- - - - - "<<endl;
-	cout<<idg2;
+	// cout<<"- - - - - "<<endl;
+	// cout<<idg2;
 
-	AStar<Node<_8sq > > algo(s,goals,random_cost,myneigh,graph);
+	AStar<Node<_8sq > > algo(s,goals,manhattan,myneigh,graph);
 	int len = algo.run();
     cout << "Path found is of length " << len <<endl;
     cout << "Size of graph discovered " << (*graph).size() <<endl;

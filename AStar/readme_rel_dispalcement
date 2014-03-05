@@ -1,0 +1,14 @@
+rel_displace_cost:
+
+1 -> 2,4		(divide by 2)
+2 -> 1,3,5		(divide by 3)
+3 -> 2,6		(divide by 2)
+4 -> 1,5,7		(divide by 3)
+5 -> 2,4,6,8		(divide by 4)
+6 -> 3,5,9		(divide by 3)
+7 -> 4,8		(divide by 2)
+8 -> 5,7		(divide by 2)
+
+total cost is sum over these weighted displacements and then divide by 2.
+
+It is monotone because ek bar mein cost can reduce atleast by 1 i.e aless than equal edge cost and hence triangular inequality is maintained.
