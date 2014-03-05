@@ -1,11 +1,10 @@
-4
+3
 
 6
 4
-2
 1
 
-monks-2.test
+monks-1.test
 432
 
 yes
@@ -13,9 +12,9 @@ yes
 
 tweets
 
+0.4
 0.1
-1
-0.99
+0.9
 
 NOTE:
 iterations < 50000

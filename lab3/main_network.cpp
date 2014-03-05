@@ -10,10 +10,12 @@
 #include <string>
 
 /** debugging symbols **/
+#define  MAXITERATION  -1
+#define INF 10000000
 
 double EITA = 0.02;
 double THRESH = 0.01;
-int RANDNO = 1;
+double RANDNO = 1;
 int ISRAND = 1; //does weights are given randomly
 double FIXWEIGHT = 0.5; //if ISRAND = 0, then this weight will be used
 double MOMENTUM = 0.7;
@@ -29,12 +31,13 @@ void run_network(neural_network *nn, vector<training_data>& data){
     while(1){
         ITERATION++;
         //cout << "iteration " << ITERATION <<endl;
-        if(ITERATION > 50000){
+        if(ITERATION == MAXITERATION){
             cout << "inside "<< endl;
             break;
         }
         //training_data d = data[i];
         int result = nn->training_step(data);
+	//nn->print_network();
         if(result==1){
             break;
         }
@@ -110,13 +113,13 @@ int main(int argc, char *argv[]){ //args control-file-name  #block in 4/5 testin
             d.input.push_back(in/normal_factor);
             //d.input.push_back(in);
         }
-        printvec(d.target); printvec( d.input); cout << endl;
+        //printvec(d.target); printvec( d.input); cout << endl;
         if(i/size_block == block_no){
-            cout << i << " t\n";
+         //   cout << i << " t\n";
             test_data.push_back(d);
         }
         else{
-            cout << i << " i\n";
+          //  cout << i << " i\n";
             data.push_back(d);
         }
     }
@@ -132,6 +135,7 @@ int main(int argc, char *argv[]){ //args control-file-name  #block in 4/5 testin
     inFile >> option; //a : print iteration vs sq_error
     IFBUG cout << "option is " << option <<endl; ENDBUG
 
+    
     if(option == "tweets"){ //further take eita and thresh and then take input for testing
         cout << "option is" << option << endl;
         //input EITA and THRESH
@@ -144,14 +148,13 @@ int main(int argc, char *argv[]){ //args control-file-name  #block in 4/5 testin
 
 	    neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
         //nn->print_topology();
-        //nn->print_network();
-
+        
         run_network(nn, data);
 
         cout <<ITERATION<< "\ntraining complete";
 
         cout << "test_record_count " << size_block <<endl;
-        int correct_count = 0; //no of test tweets classified correctly
+        float correct_count = 0; //no of test tweets classified correctly
 
         for(int i=0; i<test_data.size();i++){
             vector<double> out = nn->calculate_output(test_data[i].input);
@@ -159,14 +162,10 @@ int main(int argc, char *argv[]){ //args control-file-name  #block in 4/5 testin
             printvec(test_data[i].target);
             cout << "---" << endl;
             //if(are_equal_vec({1,3,4}, {1, 3, 4}) cout << "Hello \n";
-            if(are_equal_vec(out, test_data[i].target)){
-                cout << "correct\n";
-                correct_count++;
-            }
-            else{
-                cout << "wrong\n";
-            }
+            cout << "c/s " << are_equal_vec(out, test_data[i].target) <<endl;
+            correct_count += are_equal_vec(out, test_data[i].target);
         }
+        cout << "correct_count " << correct_count <<endl;
         cout << "accuracy " << ((float)correct_count * 100)/test_data.size()<< endl;
     }
 

@@ -191,6 +191,7 @@ int neural_network::training_step(vector<training_data> inp_data){
 	if(Error >= Threshold){
 		return -1;
 	}
+	cout << "error " <<Error <<endl;
 	return 1; // Error is within the limit, we are done with the training
 }
 

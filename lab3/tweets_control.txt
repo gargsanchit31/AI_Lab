@@ -6,8 +6,12 @@
 extracted-features-all
 500
 
+yes
+1
+
 tweets
 
 0.1
-7
+2
+0.9
 

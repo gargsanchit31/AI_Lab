@@ -13,7 +13,7 @@ double sigmoid(double x);
 double get_random(); //get random number b/w 0 and 1
 
 double distance_vec(vector<double>, vector<double>);
-bool are_equal_vec(vector<double> Z, vector<double> Y);
+double are_equal_vec(vector<double> Z, vector<double> Y);
 
 void printvec(vector<double> v);
 int get_boolean(float in);
