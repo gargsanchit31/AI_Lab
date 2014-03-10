@@ -1,0 +1,33 @@
+extracted-features-all
+
+block #    accuracy %
+0           71.6
+1           70.3
+2           69.3 
+3           78.6 
+4           79.6
+----------------
+            369.4 / 5 = 73.88
+
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+control-file:
+
+2
+
+530
+3
+
+extracted-features-all
+500
+
+yes
+1
+
+tweets
+
+0.1
+2
+0.9
+
+maxiterations < 50000

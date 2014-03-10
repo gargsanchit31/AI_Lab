@@ -3,13 +3,13 @@ data : monks-1.test
 config file : monks_control_1.txt
 
 block # : accuracy %
-0       : 100
+0       : 81.39
 
-1       : 100 (when conveges)
+1       : 74.41
 
-2       : 100
+2       : 
 
-3       : 100
+3       : 
 
-4       : 100
+4       : 
 

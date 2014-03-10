@@ -10,7 +10,7 @@
 #include <string>
 
 /** debugging symbols **/
-#define  MAXITERATION  -1
+#define  MAXITERATION 10000
 #define INF 10000000
 
 double EITA = 0.02;

@@ -1,15 +1,16 @@
 five fold analysis 1
-data : monks-1.test
-config file : monks_control_1.txt
+data : monks-2.test
+config file : monks_control_2.txt
 
 block # : accuracy %
 0       : 100
 
-1       : 100 (when conveges)
+1       : 100 
 
 2       : 100
 
 3       : 100
 
 4       : 100
+
 
