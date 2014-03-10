@@ -33,4 +33,3 @@ FNode* parse(){ //formula is either 'a' OR (<f> - <f>)
 
     return formula;
 }
-

@@ -32,3 +32,13 @@ void FNode::print(){
     }
 }
 
+bool FNode::operator == (const FNode & node){
+    if(val == node.val && val=='-'){
+        //recusively check lhs and rhs
+        return ((*lhs == *node.lhs) && (*rhs == *node.rhs));
+    }
+    else if(val == node.val){
+        return true;
+    }
+    return false;
+}

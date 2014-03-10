@@ -13,5 +13,6 @@ public:
     FNode(char tval, FNode * tlhs, FNode * trhs);
     FNode(char tval);
     void print();
+    bool operator == (const FNode & node);
 };
 #endif
