@@ -8,11 +8,12 @@ public:
     Formula * lhs;
     Formula * rhs;
     char val;
-
+    /* basic */
     Formula();
     Formula(char tval, Formula * tlhs, Formula * trhs);
     Formula(char tval);
     void print();
+    void print_line();
     bool operator == (const Formula & node);
 };
 #endif

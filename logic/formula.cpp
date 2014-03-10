@@ -31,6 +31,10 @@ void Formula::print(){
         cout << val;
     }
 }
+void Formula::print_line(){
+    print();
+    cout <<endl;
+}
 
 bool Formula::operator == (const Formula & node){
     if(val == node.val && val=='-'){
@@ -42,3 +46,4 @@ bool Formula::operator == (const Formula & node){
     }
     return false;
 }
+

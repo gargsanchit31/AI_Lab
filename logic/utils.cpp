@@ -1,5 +1,9 @@
 #include "utils.h"
 using namespace std;
+
+/* shared variables */
+
+/* functions  */
 Formula* parse(){ //formula is either 'a' OR (<f> - <f>)
     Formula * formula;
 
@@ -32,4 +36,37 @@ Formula* parse(){ //formula is either 'a' OR (<f> - <f>)
     formula = new Formula('-', lhs, rhs);
 
     return formula;
+}
+
+Formula * implication(Formula *lhs, Formula *rhs){
+    Formula * formula = new Formula('-', lhs ,rhs);
+    return formula;
+}
+
+Formula * Axiom1(Formula *A, Formula *B){
+    return implication(A, implication(B, A));
+}
+
+Formula * Axiom2(Formula *A, Formula *B, Formula *C){
+    return  implication(
+                implication(
+                    A, 
+                    implication(B, C)
+                ),
+                implication(
+                    implication(A, B),
+                    implication(A, C)
+                )
+            );
+}
+
+Formula * Axiom3(Formula *A){
+    Formula * F = new Formula('F');
+    return  implication(
+                implication(
+                    implication(A, F),
+                    F
+                ),
+                A
+            );
 }
