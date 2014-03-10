@@ -1,6 +1,6 @@
 CC = g++ -std=c++0x -g 
-DEPS = fnode.h 
-OBJ = main.o fnode.o
+DEPS = fnode.h  utils.h
+OBJ = main.o fnode.o utils.o
 # $@ : lhs
 # $< : first item in rhs
 # $< : complete rhs

@@ -1,3 +1,5 @@
+#ifndef _FNODE_H
+#define _FNODE_H
 #include <iostream>
 
 class FNode{ //leaf has values a-z or A-Z
@@ -12,3 +14,4 @@ public:
     FNode(char tval);
     void print();
 };
+#endif
