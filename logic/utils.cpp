@@ -1,18 +1,18 @@
 #include "utils.h"
 using namespace std;
-FNode* parse(){ //formula is either 'a' OR (<f> - <f>)
-    FNode * formula;
+Formula* parse(){ //formula is either 'a' OR (<f> - <f>)
+    Formula * formula;
 
     char x;
     cin >> x;
     if(x != '('){//i.e its 'a'
-        formula = new FNode(x);
+        formula = new Formula(x);
         return formula;
     }
 
     //its (f - f)
-    FNode * lhs;
-    FNode * rhs;
+    Formula * lhs;
+    Formula * rhs;
     lhs = parse();
 
     cin >>x ; //for '-'
@@ -29,7 +29,7 @@ FNode* parse(){ //formula is either 'a' OR (<f> - <f>)
         return NULL;
     }
 
-    formula = new FNode('-', lhs, rhs);
+    formula = new Formula('-', lhs, rhs);
 
     return formula;
 }
