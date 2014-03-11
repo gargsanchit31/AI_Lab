@@ -1,12 +1,15 @@
 #include "decider.h"
 
+/**  Decider **/
 Decider::Decider(Formula * stmt){
     statement = stmt;
     genererate_hypothesis(statement, hypothesis_list);
     print_formula_list(hypothesis_list);
 
-    proof.assign(hypothesis_list.begin(), hypothesis_list.end());//all hyp are also lines in proof
-    print_formula_list(proof);
+    for(int i=0; i<hypothesis_list.size(); i++){
+        proof.push(hypothesis_list[i]);
+    }
+    print_formula_list(proof.stmt_list);
 }
 
 void Decider::genererate_hypothesis(Formula * stmt, Formula_List& hyp_list){
@@ -24,5 +27,29 @@ void Decider::print_formula_list(Formula_List &l){
     for(int i=0; i<l.size(); i++){
         cout << i << " : ";
         l[i]->print_line();
+    }
+}
+
+/**  Proof_Map **/
+void Proof_Map::push(Formula* f){
+    string key = f->to_string();
+    if(map.find(key) == map.end()){
+        int i = stmt_list.size();
+        map[key] = i;
+        stmt_list.push_back(f);
+    }
+    else{
+        cout << "formula already exists in stmt list" << endl;
+    }
+}
+
+Formula* Proof_Map::get(string key){
+    int i;
+    if(map.find(key) != map.end()){
+        return stmt_list[map[key]];
+    }
+    else{
+        cout << "formula doesnt exist in stmt list" << endl;
+        return NULL;
     }
 }

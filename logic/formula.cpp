@@ -51,6 +51,12 @@ void Formula::print_string(string &buffer){
     }
 }
 
+string Formula::to_string(){
+    string str;
+    print_string(str);
+    return str;
+}
+
 bool Formula::operator == (const Formula & node){
     if(val == node.val && val=='-'){
         //recusively check lhs and rhs

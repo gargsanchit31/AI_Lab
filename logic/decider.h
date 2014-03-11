@@ -7,12 +7,18 @@
 #include <unordered_map>
 typedef vector<Formula*> Formula_List;
 
+struct Proof_Map{
+    unordered_map<string, int> map;
+    Formula_List stmt_list;
+    void push(Formula* f);
+    Formula * get(string key);
+};
 
 class Decider{
 public:
     Formula * statement; //that needs to be proved
     Formula_List hypothesis_list;
-    Formula_List proof; //statements which are lines in the proof in that order
+    Proof_Map proof; //statements which are lines in the proof in that order
 
     /* functions */
     Decider(Formula * stmt);

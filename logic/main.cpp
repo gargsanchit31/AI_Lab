@@ -22,11 +22,19 @@ int main(){
     Axiom2(f1, f2, f3)->print_line();
     Axiom3(f1)->print_line();
 
-    string ax_str;
-    Axiom2(f1, f2, f3)->print_string(ax_str);
-    cout << "Printing Ax String : " << ax_str <<endl;
+    cout << "Printing Ax2 String : " << (Axiom2(f1, f2, f3)->to_string()) <<endl;
 
     Decider Dec(Axiom2(f1, f2, f3));
+
+
+    cout << "- - - - - - - - - - - " <<endl;
+    Proof_Map pm;
+    pm.push(f1);
+    pm.push(f2);
+    Formula * x = pm.get(f2->to_string());//->print_line();
+    if(x != NULL){
+        x->print_line();
+    }
     /*
         Formula * Axiom1(Formula *A, Formula *B);
         Formula * Axiom2(Formula *A, Formula *B, Formula *C);
