@@ -94,7 +94,7 @@ template<class NODE>
 class AStar{
 private:
 
-	typedef float (*H)(NODE*) ;
+	typedef float (*H)(NODE*, NODE*) ;
 
 	typedef NeighInfo<NODE> myneighinfo;
     typedef unordered_map<string, NODE*> mygraphtype;
@@ -120,7 +120,7 @@ public:
 	NODE* find_in_list(NODE*, list<NODE*>);
 	int trace(NODE*);
 	void init();
-	int step(NODE*);
+	int step(NODE*&);
 	bool open_list_empty();
 	long long open_list_size();
 };
@@ -176,7 +176,7 @@ bool AStar<NODE>::open_list_empty(){
 template<class NODE>
 void AStar<NODE>::init(){
 	Start->_g = 0;
-    Start->_h = heuristic(Start);
+    Start->_h = heuristic(Start, Goal);
 	open_list.push(Start);
 }
 
@@ -186,7 +186,7 @@ long long AStar<NODE>::open_list_size(){
 }
 
 template<class NODE>
-int AStar<NODE>::step(NODE* node){
+int AStar<NODE>::step(NODE*& n){
 
 	NODE * min_node = lowest_fnode();
 
@@ -200,7 +200,7 @@ int AStar<NODE>::step(NODE* node){
 
 	//closed_list.push_back(min_node);
 	min_node->cur_status=1;		//virtually push in the closed list
-	node=min_node;
+	n = min_node;
 
 	list<myneighinfo> neighbours = neighbour(min_node, *graph);
 
@@ -235,7 +235,7 @@ int AStar<NODE>::step(NODE* node){
 			//cout << "discovered" <<endl;
 			node->cur_status=0;		//put it in open node
 			node->_g = min_node->_g + 1;	//increment the _g value by 1;
-            node->_h = heuristic(node);
+            node->_h = heuristic(node, Goal);
 			node->setparent(min_node);		//set its parent
 			node->parent_edge_cost = edge_cost; 
             open_list.push(node);

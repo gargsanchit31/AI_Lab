@@ -78,7 +78,7 @@ void Priority_Q<Comparable, Compare>::push(Comparable x){
     int flag = 0;
 	if(currSize == vec.size()-1) {
         vec.resize(vec.size()*2);
-        cout<<"new size  " << vec.size()<<endl;
+        // cout<<"new size  " << vec.size()<<endl;
         flag=1;
     }
 

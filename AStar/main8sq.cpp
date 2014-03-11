@@ -171,28 +171,22 @@ list<myneighinfo> myneigh(mynode* n, mygraphtype &graph){
 	return l;
 }
 
-
 //h(n) function
-float manhattan(Node< _8sq >* n){
+float manhattan(mynode* n, mynode* g){
 	float cost = 0;
 	_8sq ids = n->getid();
+	_8sq idg = g->getid();
 
 	pos_pair pos;
-	for(int i=0;i<8;i++){ //ERROR was here. We only need to consider manhattan displaced positions (i.e numbers 1 - 8)
+	for(int i=0;i<8;i++){
 		pos_pair pos = find(ids, i+1);
-		int row = pos.row;
-		int col = pos.col;
-		int man_row = (i)/3;
-		int man_col = (i)%3;
-		int temp = abs(man_row - row) + abs(man_col - col);
-		//cout<< i+1 <<" error: "<< temp<<endl;
-		cost+= temp;
+		pos_pair posg = find(idg, i+1);
+		cost += abs(pos.row - posg.row) + abs(pos.col - posg.col);
 	}
-	//cout<< "cost is: " << cost<<endl;
 	return cost;
 }
 
-float hamming(Node< _8sq >* n){
+float hamming(mynode* n,mynode* g){
     float cost = 0;
 	_8sq ids = n->getid();
 
@@ -211,20 +205,20 @@ float hamming(Node< _8sq >* n){
 	return cost;
 }
 
-float random_cost(mynode* n){
-    float x = manhattan(n);
+float random_cost(mynode* n, mynode* g){
+    float x = manhattan(n,g);
     if(x == 0) return 0;
     return get_random(x);
 }
 
-float random_cost_2(mynode* n){
-    float x = manhattan(n);
+float random_cost_2(mynode* n, mynode* g){
+    float x = manhattan(n,g);
     if(x == 0) return 0;
     if(x >=4) x =4;
     return get_random(x);
 }
 
-float rel_displace_cost(mynode* n){
+float rel_displace_cost(mynode* n, mynode* g){
 	pos_pair node[8];
 	_8sq id = n->getid();
 	float cost=0;
@@ -341,8 +335,12 @@ int main(){
 	_8sq idg = {{1,2,3},{4,5,6},{7,8,0}};
 
 
+
 	mynode* s1 = new mynode(ids);
 	mynode* g1 = new mynode(idg);
+
+	cout<<"costs are: "<<manhattan(s1,g1)<<" "<<manhattan(g1,s1);
+	//return 0;
 
 	mynode* g2 = new mynode(ids);
 	mynode* s2 = new mynode(idg);
@@ -362,10 +360,6 @@ int main(){
 
 	AStar<Node<_8sq > > algo1(s1,g1,rel_displace_cost,myneigh,graph1);
 	AStar<Node<_8sq > > algo2(s2,g2,rel_displace_cost,myneigh,graph2);
-	
-	//int len = algo1.run();
-    // cout << "Path found is of length " << len <<endl;
-    // cout << "Size of graph discovered " << (*graph).size() <<endl;
 
     algo1.init();
     algo2.init();
@@ -373,11 +367,10 @@ int main(){
     while(1){
 		if((algo1.open_list_empty()) || (algo2.open_list_empty())){
 			cout<<"Something went wrong. open_list can't be empty"<<endl;
-            return -1; //path len is -1 (since no path could be found)
+            return -1;
 		}
 
-		mynode* n1 = (mynode*)malloc(sizeof(mynode));
-		mynode* n2 = (mynode*)malloc(sizeof(mynode));
+		mynode *n1, *n2;
 
 		int len1 = algo1.step(n1);
 		int len2 = algo2.step(n2);
@@ -392,14 +385,49 @@ int main(){
 			break;
 		}
 
+		string key1 = getkey(n1->getid());
+		
+		string key2 = getkey(n2->getid());
 
-		free(n1);
-		free(n2);
+		if(graph1->find(key2) != graph1->end()){
+			mynode* n = (*graph1)[key2];
+			if(n->cur_status == 1){
+				algo2.trace(n2);
+				algo1.trace(n);
+				break;
+			}
+		}
+
+		if(graph2->find(key1) != graph2->end()){
+			mynode* n = (*graph2)[key1];
+			if(n->cur_status == 1){
+				algo2.trace(n);
+				algo1.trace(n1);
+				break;
+			}
+		}
+
 		count++;
 		if(count%1000==0){
 			cout<<count<<endl<<"OL1 Size: " <<algo1.open_list_size()<<endl<<"OL2 Size" <<algo2.open_list_size()<<endl;
 		}
 	}
+	int elem = 0;
+	cout<<"size of graph1: "<<graph1->size()<<endl;
+	cout<<"size of graph2: "<<graph2->size()<<endl;
+	
+	mygraphtype::iterator it = graph2->begin();
+
+	for(;it!=graph2->end();it++){
+		string key = getkey(((*it).second)->getid());
+		if(graph1->find(key) != graph1->end()){
+			continue;
+		}
+		++elem;
+	}
+
+	cout<<"total graph explored: "<<graph1->size() + elem << endl;
+
 	return 0;
 }
 
