@@ -1,4 +1,5 @@
 #include "formula.h"
+#include <string>
 using namespace std;
 
 Formula::Formula(){
@@ -31,9 +32,23 @@ void Formula::print(){
         cout << val;
     }
 }
+
 void Formula::print_line(){
     print();
     cout <<endl;
+}
+
+void Formula::print_string(string &buffer){
+    if(val == '-'){//recusively print lhs & rhs
+        buffer.push_back('(');
+        lhs->print_string(buffer);
+        buffer.push_back('-');
+        rhs->print_string(buffer);
+        buffer.push_back(')');
+    }
+    else{//it's leaf
+        buffer.push_back(val);
+    }
 }
 
 bool Formula::operator == (const Formula & node){
