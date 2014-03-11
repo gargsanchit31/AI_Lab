@@ -104,7 +104,7 @@ private:
 	typedef typename list<myneighinfo>::iterator l_neighinfo_itr;
 
 	NODE* Start;
-    unordered_map<NODE*, bool> Goals;
+	NODE* Goal;
     mygraphtype* graph;
 
 	H heuristic; //func
@@ -112,22 +112,23 @@ private:
 	Priority_Q<NODE*, lt<NODE> > open_list;
 
 public:
-	AStar(NODE*, list<NODE*>, H, neigh, mygraphtype*);
+	AStar(NODE*, NODE*, H, neigh, mygraphtype*);
 	~AStar();
 	int run();
 	NODE* getStart();
 	NODE* lowest_fnode();
 	NODE* find_in_list(NODE*, list<NODE*>);
 	int trace(NODE*);
+	void init();
+	int step(NODE*);
+	bool open_list_empty();
+	long long open_list_size();
 };
 
 template<class NODE>
-AStar<NODE>::AStar(NODE* S, list<NODE*> G, H h, neigh n, mygraphtype* in_graph){
+AStar<NODE>::AStar(NODE* S, NODE* Gl, H h, neigh n, mygraphtype* in_graph){
 	Start=S;
-	l_itr it = G.begin();
-    for(; it!=G.end(); it++){
-        Goals[*it] = true;
-    }
+	Goal = Gl;
 	heuristic = h;
 	neighbour = n;
     graph = in_graph;
@@ -168,79 +169,101 @@ int AStar<NODE>::trace(NODE* n){
 }
 
 template<class NODE>
-int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
-    
+bool AStar<NODE>::open_list_empty(){
+	return open_list.empty();
+}
+
+template<class NODE>
+void AStar<NODE>::init(){
 	Start->_g = 0;
     Start->_h = heuristic(Start);
-
 	open_list.push(Start);
+}
+
+template<class NODE>
+long long AStar<NODE>::open_list_size(){
+	return open_list.size();
+}
+
+template<class NODE>
+int AStar<NODE>::step(NODE* node){
+
+	NODE * min_node = lowest_fnode();
+
+	//if(Goals.find(min_node) != Goals.end()){
+	if(min_node == Goal){
+	cout<<"Hurray Goal is"<<endl;
+        min_node->print_me();
+		int len = trace(min_node);
+        return len;
+	}
+
+	//closed_list.push_back(min_node);
+	min_node->cur_status=1;		//virtually push in the closed list
+	node=min_node;
+
+	list<myneighinfo> neighbours = neighbour(min_node, *graph);
+
+	l_neighinfo_itr it = neighbours.begin();
+	for(;it!=neighbours.end();it++){
+        NODE* node = (*it).node; //neighbour node
+        float edge_cost = (*it).edge_cost;
+
+		if(node->cur_status==1){//if node exists in the closed list, do nothing
+			if(min_node->_g + 1 < node->_g){ //then set minnode as its parent and update g value
+                cout<<"not monotone\n";
+                node->cur_status=0;		//put it in open node
+                node->_g =  min_node->_g + edge_cost;
+                node->setparent(min_node);
+                node->parent_edge_cost = edge_cost;
+                open_list.push(node);
+            }
+			continue;
+		}
+		else if(node->cur_status==0){
+			if(min_node->_g + 1 < node->_g){ //then set minnode as its parent and update g value
+			//cout << "already opennode:" <<endl;
+                node->_g =  min_node->_g + edge_cost;
+                node->setparent(min_node);
+                node->parent_edge_cost = edge_cost;
+                open_list.percolateUp(node->index); //this will update the priority queue appopriately
+
+				continue;
+			}
+		}
+		else{
+			//cout << "discovered" <<endl;
+			node->cur_status=0;		//put it in open node
+			node->_g = min_node->_g + 1;	//increment the _g value by 1;
+            node->_h = heuristic(node);
+			node->setparent(min_node);		//set its parent
+			node->parent_edge_cost = edge_cost; 
+            open_list.push(node);
+
+            continue;
+		}
+	}
+	return -1;
+}
+
+template<class NODE>
+int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
+    
+	init();
 
 	int count=0;
 
 	while(1){
 		if(open_list.empty()){
-			cout<<"Something went wront. open_list can't be empty"<<endl;
+			cout<<"Something went wrong. open_list can't be empty"<<endl;
             return -1; //path len is -1 (since no path could be found)
 		}
-
-		NODE * min_node = lowest_fnode();
-
-		if(Goals.find(min_node) != Goals.end()){
-		cout<<"Hurray Goal is"<<endl;
-            min_node->print_me();
-			int len = trace(min_node);
-            return len;
+		NODE* n1 = (NODE*)malloc(sizeof(NODE));
+		int len = step(n1);
+		if(len!=-1){
+			break;
 		}
-
-		//closed_list.push_back(min_node);
-		min_node->cur_status=1;		//virtually push in the closed list
-		//min_node->print_me();
-
-
-		list<myneighinfo> neighbours = neighbour(min_node, *graph);
-		//cout<<"Neighbour Size: "<<neighbours.size()<<endl;
-		l_neighinfo_itr it = neighbours.begin();
-		for(;it!=neighbours.end();it++){
-            NODE* node = (*it).node; //neighbour node
-            float edge_cost = (*it).edge_cost;
-
-			if(node->cur_status==1){//if node exists in the closed list, do nothing
-				if(min_node->_g + 1 < node->_g){ //then set minnode as its parent and update g value
-                    cout<<"not monotone\n";
-                    node->cur_status=0;		//put it in open node
-                    node->_g =  min_node->_g + edge_cost;
-                    node->setparent(min_node);
-                    node->parent_edge_cost = edge_cost;
-                    open_list.push(node);
-                }
-				continue;
-			}
-			else if(node->cur_status==0){
-				if(min_node->_g + 1 < node->_g){ //then set minnode as its parent and update g value
-				//cout << "already opennode:" <<endl;
-                    node->_g =  min_node->_g + edge_cost;
-                    node->setparent(min_node);
-                    node->parent_edge_cost = edge_cost;
-                    open_list.percolateUp(node->index); //this will update the priority queue appopriately
-
-					continue;
-				}
-			}
-			else{
-				//cout << "discovered" <<endl;
-				node->cur_status=0;		//put it in open node
-				node->_g = min_node->_g + 1;	//increment the _g value by 1;
-                node->_h = heuristic(node);
-				node->setparent(min_node);		//set its parent
-				node->parent_edge_cost = edge_cost; 
-                open_list.push(node);
-
-                count++;
-                if(count%1000==0) cout << count << "  OL Size" <<open_list.size() <<endl;
-				
-                continue;
-			}
-		}
+		free(n1);
 	}
 }
 

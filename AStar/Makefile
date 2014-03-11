@@ -1,5 +1,5 @@
 CC = g++ -std=c++0x -g 
-DEPS = graph.h PriorityQueue.h utils.h
+DEPS = bigraph.h PriorityQueue.h utils.h
 OBJ_8SQ = main8sq.o  utils.o
 OBJ_MNC = main_mnc.o  utils.o
 OBJ_ALIGN = main_align.o  utils.o

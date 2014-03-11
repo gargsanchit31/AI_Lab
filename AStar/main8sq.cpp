@@ -4,7 +4,7 @@
 #include <string>
 #include <time.h>
 #include <unordered_map>
-#include "graph.h"
+#include "bigraph.h"
 #include "utils.h"
 
 using namespace std;
@@ -332,47 +332,74 @@ float rel_displace_cost(mynode* n){
 
 //0 is the blank
 int main(){
-    mygraphtype * graph = new mygraphtype() ;
+    mygraphtype * graph1 = new mygraphtype();
+    mygraphtype * graph2 = new mygraphtype();
 
     srand(time(NULL)); //seed _8sq
 	// rand ids = {{1,4,7},{2,5,3},{8,6,0}};
 	_8sq ids = {{1,4,5},{0,8,2},{7,3,6}};
-
-	_8sq idg1 = {{1,2,3},{4,5,6},{7,8,0}};
-	//_8sq idg2 = {{2,1,3},{4,5,6},{7,8,0}};
-	
-	//cout<<(idg==ids)<<endl;
-
-	cout<<getkey(ids)<<endl;
+	_8sq idg = {{1,2,3},{4,5,6},{7,8,0}};
 
 
+	mynode* s1 = new mynode(ids);
+	mynode* g1 = new mynode(idg);
 
-	mynode* s = new mynode(ids);
-	mynode* g1 = new mynode(idg1);
-	// mynode* g2 = new mynode(idg2);
+	mynode* g2 = new mynode(ids);
+	mynode* s2 = new mynode(idg);
 
-	(*graph)[getkey(ids)] = s;
-	(*graph)[getkey(idg1)] = g1;
-	// (*graph)[getkey(idg2)] = g2;
+	(*graph1)[getkey(ids)] = s1;
+	(*graph1)[getkey(idg)] = g1;
 
-    list<mynode*> goals;
-	// goals.push_back(g2);
-	goals.push_back(g1);
+	(*graph2)[getkey(ids)] = g2;
+	(*graph2)[getkey(idg)] = s2;
 
-    cout << "Starting with A-star" <<endl;
+    cout << "Starting with Bi-directional A-star" <<endl;
 
 	cout<<"Start Node: "<<endl;
 	cout<<ids;
 	cout<<"End Nodes: "<<endl;
-	cout<<idg1;
-	// cout<<"- - - - - "<<endl;
-	// cout<<idg2;
+	cout<<idg;
 
-	AStar<Node<_8sq > > algo(s,goals,manhattan,myneigh,graph);
-	int len = algo.run();
-    cout << "Path found is of length " << len <<endl;
-    cout << "Size of graph discovered " << (*graph).size() <<endl;
+	AStar<Node<_8sq > > algo1(s1,g1,rel_displace_cost,myneigh,graph1);
+	AStar<Node<_8sq > > algo2(s2,g2,rel_displace_cost,myneigh,graph2);
+	
+	//int len = algo1.run();
+    // cout << "Path found is of length " << len <<endl;
+    // cout << "Size of graph discovered " << (*graph).size() <<endl;
 
+    algo1.init();
+    algo2.init();
+    int count = 0;
+    while(1){
+		if((algo1.open_list_empty()) || (algo2.open_list_empty())){
+			cout<<"Something went wrong. open_list can't be empty"<<endl;
+            return -1; //path len is -1 (since no path could be found)
+		}
+
+		mynode* n1 = (mynode*)malloc(sizeof(mynode));
+		mynode* n2 = (mynode*)malloc(sizeof(mynode));
+
+		int len1 = algo1.step(n1);
+		int len2 = algo2.step(n2);
+		
+		if(len1!=-1){
+			cout<<"Algo1 found the path\n";
+			break;
+		}
+
+		if(len2!=-1){
+			cout<<"Algo2 found the path\n";
+			break;
+		}
+
+
+		free(n1);
+		free(n2);
+		count++;
+		if(count%1000==0){
+			cout<<count<<endl<<"OL1 Size: " <<algo1.open_list_size()<<endl<<"OL2 Size" <<algo2.open_list_size()<<endl;
+		}
+	}
 	return 0;
 }
 
