@@ -1,6 +1,7 @@
 #include <iostream>
 #include "formula.h"
 #include "utils.h"
+#include "decider.h"
 using namespace std;
 
 
@@ -24,6 +25,8 @@ int main(){
     string ax_str;
     Axiom2(f1, f2, f3)->print_string(ax_str);
     cout << "Printing Ax String : " << ax_str <<endl;
+
+    Decider Dec(Axiom2(f1, f2, f3));
     /*
         Formula * Axiom1(Formula *A, Formula *B);
         Formula * Axiom2(Formula *A, Formula *B, Formula *C);
@@ -38,3 +41,4 @@ int main(){
     f->print(); cout<< endl;
     */
 }
+

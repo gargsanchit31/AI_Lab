@@ -1,6 +1,6 @@
 CC = g++ -std=c++0x -g 
-DEPS = formula.h  utils.h
-OBJ = main.o formula.o utils.o
+DEPS = formula.h  utils.h decider.h
+OBJ = main.o formula.o utils.o decider.o
 # $@ : lhs
 # $< : first item in rhs
 # $< : complete rhs

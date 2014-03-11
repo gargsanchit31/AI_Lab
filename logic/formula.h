@@ -18,5 +18,7 @@ public:
     void print_line();
     void print_string(string &buffer);
     bool operator == (const Formula & node);
+    bool is_leaf();
+    bool is_false(); //Is syntactically False
 };
 #endif

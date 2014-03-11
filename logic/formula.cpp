@@ -62,3 +62,11 @@ bool Formula::operator == (const Formula & node){
     return false;
 }
 
+bool Formula::is_leaf(){
+    if(val=='-') return false;
+    return true;
+}
+bool Formula::is_false(){
+    if(val=='F') return true;
+    return false;
+}
