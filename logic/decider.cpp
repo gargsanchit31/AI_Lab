@@ -1,15 +1,20 @@
 #include "decider.h"
 
 /**  Decider **/
-Decider::Decider(Formula * stmt){
+Decider::Decider(Formula * stmt, Formula_List tSeed){
     statement = stmt;
     genererate_hypothesis(statement, hypothesis_list);
-    print_formula_list(hypothesis_list);
+    //print_formula_list(hypothesis_list);
 
     for(int i=0; i<hypothesis_list.size(); i++){
         proof.push(hypothesis_list[i]);
     }
+    cout << "Hypo list" <<endl;
     print_formula_list(proof.stmt_list);
+
+    Seed = tSeed;
+    cout << "Seeds ---- " <<endl;
+    print_formula_list(Seed);
 }
 
 void Decider::genererate_hypothesis(Formula * stmt, Formula_List& hyp_list){
@@ -30,6 +35,15 @@ void Decider::print_formula_list(Formula_List &l){
     }
 }
 
+void Decider::mp_closure(){
+    int size = proof.stmt_list.size();
+    for(int i=0; i< size;i++){
+        Formula* f = proof.stmt_list[i];
+        Formula* l = proof.get(f->lhs->to_string());
+        if(l!=NULL) proof.push(f->rhs);//f is (L-R), L is already in proof, so push R into proof
+    }
+}
+
 /**  Proof_Map **/
 void Proof_Map::push(Formula* f){
     string key = f->to_string();
@@ -39,7 +53,8 @@ void Proof_Map::push(Formula* f){
         stmt_list.push_back(f);
     }
     else{
-        cout << "formula already exists in stmt list" << endl;
+        cout << "formula already exists in stmt list";
+        f->print_line();
     }
 }
 
@@ -49,7 +64,7 @@ Formula* Proof_Map::get(string key){
         return stmt_list[map[key]];
     }
     else{
-        cout << "formula doesnt exist in stmt list" << endl;
+        //cout << "formula doesnt exist in stmt list" << endl;
         return NULL;
     }
 }

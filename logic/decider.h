@@ -18,13 +18,16 @@ class Decider{
 public:
     Formula * statement; //that needs to be proved
     Formula_List hypothesis_list;
+    Formula_List Seed;//Seed to axioms(apart from formula in stmts of proof)
     Proof_Map proof; //statements which are lines in the proof in that order
 
     /* functions */
-    Decider(Formula * stmt);
+    Decider(Formula * stmt, Formula_List tSeed);
     void genererate_hypothesis(Formula *stmt, Formula_List & hyp_list);  //prove stmt S : equiv to proving: f1,f2,f3,...fn |- F
                                                 //puts f1,f2,... in hypothesis_list
     void print_formula_list(Formula_List &l);
+
+    void mp_closure(); //Modus ponens closure on proof
 };
 #endif
 

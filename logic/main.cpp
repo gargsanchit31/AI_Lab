@@ -24,10 +24,20 @@ int main(){
 
     cout << "Printing Ax2 String : " << (Axiom2(f1, f2, f3)->to_string()) <<endl;
 
-    Decider Dec(Axiom2(f1, f2, f3));
+    //Take Seed formulae
+    int seed_count;
+    cin >> seed_count;
+    Formula_List seeds;
+    for(int i=0; i<seed_count; i++){
+        seeds.push_back(parse());
+    }
+
+    cout << endl <<"** Decider **" <<endl;
+    Decider Dec(Axiom2(f1, f2, f3), seeds);
 
 
-    cout << "- - - - - - - - - - - " <<endl;
+
+    cout << "- - - - - test - - - - - - " <<endl;
     Proof_Map pm;
     pm.push(f1);
     pm.push(f2);
