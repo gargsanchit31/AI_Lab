@@ -39,8 +39,21 @@ void Decider::mp_closure(){
     int size = proof.stmt_list.size();
     for(int i=0; i< size;i++){
         Formula* f = proof.stmt_list[i];
-        Formula* l = proof.get(f->lhs->to_string());
-        if(l!=NULL) proof.push(f->rhs);//f is (L-R), L is already in proof, so push R into proof
+        cout << "f is : " ; f->print();
+        if(!f->is_leaf()){
+            Formula* l = proof.get(f->lhs->to_string());
+            cout << " non-leaf ";
+            if(l!=NULL) {
+                cout <<"  MP applicable on rhs '";
+                l->print();
+                cout <<"'" <<endl;
+                proof.push(f->rhs);//f is (L-R), L is already in proof, so push R into proof
+            }
+            cout << endl;
+        }
+        else{
+            cout << " leaf " <<endl;
+        }
     }
 }
 
@@ -53,7 +66,7 @@ void Proof_Map::push(Formula* f){
         stmt_list.push_back(f);
     }
     else{
-        cout << "formula already exists in stmt list";
+        cout << "formula already exists in stmt list : ";
         f->print_line();
     }
 }
