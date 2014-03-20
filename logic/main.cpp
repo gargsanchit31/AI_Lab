@@ -28,27 +28,16 @@ int main(){
     int seed_count;
     cin >> seed_count;
     Formula_List seeds;
-    Proof_Map pm;
     for(int i=0; i<seed_count; i++){
         Formula * f = parse();
         seeds.push_back(f);
-        pm.push(f);
     }
 
     cout << endl <<"** Decider **" <<endl;
-    Decider Dec(Axiom2(f1, f2, f3), seeds);
-    cout << "Testing MP closure " << endl;
-    Dec.proof = pm;
-    cout << "Before " <<endl;
-    Dec.print_formula_list(Dec.proof.stmt_list);
-    Dec.mp_closure();
-    cout << "After " <<endl;
-    Dec.print_formula_list(Dec.proof.stmt_list);
-    
-
-
-
+    Decider Dec(f1, seeds);
+    Dec.prove();
     cout << "- - - - - test - - - - - - " <<endl;
+    /*
     Proof_Map pm1;
     pm1.push(f1);
     pm1.push(f2);
@@ -56,6 +45,7 @@ int main(){
     if(x != NULL){
         x->print_line();
     }
+    */
 
     /*
         Formula * Axiom1(Formula *A, Formula *B);

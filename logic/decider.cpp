@@ -1,4 +1,6 @@
 #include "decider.h"
+#include <ctime>
+#include <unistd.h>
 
 /**  Decider **/
 Decider::Decider(Formula * stmt, Formula_List tSeed){
@@ -19,6 +21,7 @@ Decider::Decider(Formula * stmt, Formula_List tSeed){
 
 void Decider::genererate_hypothesis(Formula * stmt, Formula_List& hyp_list){
     if(stmt->is_leaf()){//generate a-F
+        if(stmt->val == 'F') return; //do nothing, were done
         Formula* hyp = implication(stmt, new Formula('F'));
         hyp_list.push_back(hyp);
     }
@@ -33,6 +36,28 @@ void Decider::print_formula_list(Formula_List &l){
         cout << i << " : ";
         l[i]->print_line();
     }
+}
+
+void Decider::prove(){
+    cout << "hello" <<endl;
+    sleep(10);
+    int x;
+    int LIMIT = 5;
+    for(int i=0; i<LIMIT; i++){
+        mp_closure();
+        if(proof.get("F") != NULL){
+            cout << "Proof found" << endl;
+            cin >> x;
+            print_formula_list(proof.stmt_list);
+            return;
+        }
+        axiom1_closure();
+        print_formula_list(proof.stmt_list);
+        axiom3_closure();
+        //cout << "continue enter any number to continue? ";
+        //cin >> x;
+    }
+    cout << "Could Not prove" <<endl;
 }
 
 void Decider::mp_closure(){
@@ -54,6 +79,48 @@ void Decider::mp_closure(){
         else{
             cout << " leaf " <<endl;
         }
+    }
+}
+
+void Decider::axiom1_closure(){
+    int size_seed = Seed.size();
+    int size_stmt = proof.stmt_list.size();
+    for(int i=0; i<size_seed; ++i){
+        Formula* A = Seed[i];
+        for(int j=0;j<size_seed;++j){
+            Formula* B = Seed[j];
+            proof.push(implication(A,implication(B,A)));
+        }
+        for(int j=0;j<size_stmt;++j){
+            Formula* B = proof.stmt_list[j];
+            proof.push(implication(A,implication(B,A)));
+        }
+    }
+    for(int i=0; i<size_stmt; ++i){
+        Formula* A = proof.stmt_list[i];
+        for(int j=0;j<size_seed;++j){
+            Formula* B = Seed[j];
+            proof.push(implication(A,implication(B,A)));
+        }
+        for(int j=0;j<size_stmt;++j){
+            Formula* B = proof.stmt_list[j];
+            proof.push(implication(A,implication(B,A)));
+        }
+    }
+}
+
+void Decider::axiom3_closure(){
+    int size_seed = Seed.size();
+    int size_stmt = proof.stmt_list.size();
+    for(int i=0; i<size_seed; ++i){
+        Formula* A = Seed[i];
+        Formula* F = new Formula('F');
+        proof.push(implication(implication(implication(A, F), F), A));
+    }
+    for(int i=0; i<size_stmt; ++i){
+        Formula* A = proof.stmt_list[i];
+        Formula* F = new Formula('F');
+        proof.push(implication(implication(implication(A, F), F), A));
     }
 }
 
