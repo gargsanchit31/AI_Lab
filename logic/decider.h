@@ -34,6 +34,7 @@ struct Proof_Map{
     void push(Formula* f, Annotation ann);
     int get(string key);
     void print(); //print annotated list of statements
+    void print(int i); //print annotated list of statements
     void trace(); //trace back the steps to hyps
 };
 

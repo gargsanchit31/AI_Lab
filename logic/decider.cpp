@@ -1,6 +1,7 @@
 #include "decider.h"
 #include <ctime>
 #include <unistd.h>
+#include <stack>
 /** Annotation **/
 void Annotation::print(){
     switch(rule){
@@ -73,7 +74,7 @@ void Decider::prove(){
         if(proof.get("F") != -1){
             cout << "Proof found" << endl;
             cin >> x;
-            proof.print();
+            proof.trace();
             return;
         }
         axiom1_closure();
@@ -191,16 +192,41 @@ int Proof_Map::get(string key){
     }
 }
 
+void Proof_Map::print(int i){
+    cout << "L"<< i << ": ";
+    stmt_list[i]->print();
+    ann_list[i].print();
+}
+
 void Proof_Map::print(){
     for(int i=0;i< stmt_list.size(); i++){
-        cout << "L"<< i << ": ";
-        stmt_list[i]->print();
-        ann_list[i].print();
+        print(i);
     }
 }
 
 void Proof_Map::trace(){
-    bool * V = new bool(stmt_list.size());
-    int x = get("F");
-    cout << "found @ index " << x <<endl;
+    vector<bool> &V = *new vector<bool>(stmt_list.size(), false);
+    stack<int> path;
+    cout << "no of proof steps scanned : " << V.size() <<endl;
+    int end = get("F");
+    path.push(end);
+    while(path.size() !=0){
+        int i =  path.top();
+        path.pop();
+        V[i] = true;
+        Annotation ann= ann_list[i];
+        if(ann.rule == MP){
+            path.push(ann.l1);
+            path.push(ann.l2);
+        }
+    }
+
+    cout << "'F' -- found @ index " << end <<endl;
+
+    cout << "Proof Steps : " << endl;
+    for(int i=0;i <V.size();i++){
+        if(V[i]) {
+            print(i);
+        }
+    }
 }
