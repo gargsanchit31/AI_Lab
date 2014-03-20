@@ -6,23 +6,9 @@ using namespace std;
 
 
 int main(){
+
     Formula * f1 = parse();
     //f1->print_line();
-
-    Formula * f2 = parse();
-    //f2->print_line();
-
-    Formula * f3 = parse();
-    //f3->print_line();
-
-    cout << (*f1 == *f2) <<endl;
-
-    implication(f1,f2)->print_line();
-    Axiom1(f1, f2)->print_line();
-    Axiom2(f1, f2, f3)->print_line();
-    Axiom3(f1)->print_line();
-
-    cout << "Printing Ax2 String : " << (Axiom2(f1, f2, f3)->to_string()) <<endl;
 
     //Take Seed formulae
     int seed_count;
@@ -61,4 +47,3 @@ int main(){
     f->print(); cout<< endl;
     */
 }
-

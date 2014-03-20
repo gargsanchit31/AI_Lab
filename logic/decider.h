@@ -7,11 +7,34 @@
 #include <unordered_map>
 typedef vector<Formula*> Formula_List;
 
+typedef enum{
+    Hyp,
+    MP,
+    Ax1,
+    Ax2,
+    Ax3
+} Rule;
+
+struct Annotation{
+    Rule rule;
+    int l1; //p-q  MP
+    int l2; //p    MP
+    Formula * a; // Ax2, Ax1, Ax3
+    Formula * b; // Ax2, Ax1, 
+    Formula * c; // Ax2
+    void print();
+};
+
+typedef vector<Annotation> Annotation_List;
+
 struct Proof_Map{
     unordered_map<string, int> map;
-    Formula_List stmt_list;
-    void push(Formula* f);
-    Formula * get(string key);
+    Formula_List stmt_list; //Proof lines
+    Annotation_List ann_list; //Explanation(annotate) each proof line
+    void push(Formula* f, Annotation ann);
+    int get(string key);
+    void print(); //print annotated list of statements
+    void trace(); //trace back the steps to hyps
 };
 
 class Decider{
