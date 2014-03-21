@@ -78,8 +78,8 @@ void Decider::prove(){
             return;
         }
         axiom1_closure();
-        print_formula_list(proof.stmt_list);
         axiom3_closure();
+        //print_formula_list(proof.stmt_list);
         //cout << "continue enter any number to continue? ";
         //cin >> x;
     }
@@ -157,13 +157,13 @@ void Decider::axiom1_closure(){
             Formula* B = Seed[j];
             ann.a = A;
             ann.b = B;
-            proof.push(implication(A,implication(B,A)), ann);
+            proof.push(Axiom1(A,B), ann);
         }
         for(int j=0;j<size_stmt;++j){
             Formula* B = proof.stmt_list[j];
             ann.a = A;
             ann.b = B;
-            proof.push(implication(A,implication(B,A)), ann);
+            proof.push(Axiom1(A,B), ann);
         }
     }
     for(int i=0; i<size_stmt; ++i){
@@ -172,32 +172,62 @@ void Decider::axiom1_closure(){
             Formula* B = Seed[j];
             ann.a = A;
             ann.b = B;
-            proof.push(implication(A,implication(B,A)), ann);
+            proof.push(Axiom1(A,B), ann);
         }
         for(int j=0;j<size_stmt;++j){
             Formula* B = proof.stmt_list[j];
             ann.a = A;
             ann.b = B;
-            proof.push(implication(A,implication(B,A)), ann);
+            proof.push(Axiom1(A,B), ann);
         }
     }
 }
 
 void Decider::axiom3_closure(){
     Annotation ann;
+    ann.rule = Ax3;
+    int delta;
+    do{
+        delta = 0;
+        int size_stmt = proof.stmt_list.size();
+        for(int i=0; i<size_stmt; ++i){
+            Formula* A = proof.stmt_list[i];
+            //if A is of the form ((p-F)-F) apply axiom 3 with p as param
+            if(A->is_leaf()) continue; //A is leaf
+            if(A->rhs->to_string() != "F") continue; //A->rhs is not F
+            if(A->lhs->is_leaf()) continue;//A->lhs is leaf
+            if(A->lhs->rhs->to_string() != "F") continue;//A->lhs->rhs is not F
+
+            //A is not leaf, its rhs is "F", its lhs is not leaf, its lhs->rhs is "F"
+            //i.e A is ((p-F)-F)
+            Formula* F = new Formula('F');
+            Formula* P = A->lhs->lhs;
+
+            ann.a = P;
+            int status = proof.push(Axiom3(P), ann); //((p-F)-F) - p
+
+            if(status == 0) delta++;
+        }
+    }
+    while(delta > 0);
+}
+
+void Decider::axiom3_closure_brute(){
+    Annotation ann;
+    ann.rule = Ax3;
     int size_seed = Seed.size();
     int size_stmt = proof.stmt_list.size();
     for(int i=0; i<size_seed; ++i){
         Formula* A = Seed[i];
         Formula* F = new Formula('F');
         ann.a = A;
-        proof.push(implication(implication(implication(A, F), F), A), ann);
+        proof.push(Axiom3(A), ann);
     }
     for(int i=0; i<size_stmt; ++i){
         Formula* A = proof.stmt_list[i];
         Formula* F = new Formula('F');
         ann.a = A;
-        proof.push(implication(implication(implication(A, F), F), A), ann);
+        proof.push(Axiom3(A), ann);
     }
 }
 

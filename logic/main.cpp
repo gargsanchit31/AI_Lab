@@ -6,6 +6,29 @@ using namespace std;
 
 
 int main(){
+    /*
+    //checking axiom 3 closure new
+    Formula * a = new Formula('a');
+    Formula * F = new Formula('F');
+    Formula * A = implication(implication(a, F), F);   //  ((a-F)-F)
+    Formula * inp = implication(implication(A, F), F); //((    A    -F)-F)
+    Formula_List seeds1;
+    Decider Dec1(F, seeds1);
+    Annotation ann;
+    ann.rule = Hyp;
+    Dec1.proof.push(inp,ann); //push inp
+
+    Dec1.axiom3_closure();
+    Dec1.mp_closure();
+    cout << "one pass" <<endl;
+    Dec1.proof.print();
+    Dec1.axiom3_closure();
+    Dec1.mp_closure();
+    cout << "second pass" <<endl;
+    Dec1.proof.print();
+    return 0;
+    */
+
 
     Formula * f1 = parse();
     //f1->print_line();

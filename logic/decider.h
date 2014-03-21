@@ -57,6 +57,7 @@ public:
     void mp_closure_onepass(); //Modus ponens closure on proof
     void axiom1_closure();  // Axiom1 closure
     void axiom3_closure(); // Axiom3 closure
+    void axiom3_closure_brute(); // Axiom3 closure brute
 
 };
 #endif
