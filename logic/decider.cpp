@@ -89,6 +89,39 @@ void Decider::prove(){
 void Decider::mp_closure(){
     Annotation ann;
     ann.rule = MP;
+    int delta; //keep track of additions in each round of MP closure
+    do{
+        delta = 0;
+        int size = proof.stmt_list.size();
+        for(int i=0; i< size;i++){
+            Formula* f = proof.stmt_list[i];
+            cout << "f is : " ; f->print();
+            if(!f->is_leaf()){
+                int index = proof.get(f->lhs->to_string());
+                cout << " non-leaf ";
+                if(index!=-1) {
+                    Formula* l = proof.stmt_list[index];
+                    cout <<"  MP applicable on rhs '";
+                    l->print();
+                    cout <<"'" <<endl;
+                    ann.l1 = i;//p-q
+                    ann.l2 = index;//p
+                    int status = proof.push(f->rhs, ann);//f is (L-R), L is already in proof, so push R into proof
+                    if(status == 0) delta++; //increment only if push added a new formula in proof
+                }
+                cout << endl;
+            }
+            else{
+                cout << " leaf " <<endl;
+            }
+        }
+    }
+    while(delta > 0);
+}
+
+void Decider::mp_closure_onepass(){
+    Annotation ann;
+    ann.rule = MP;
     int size = proof.stmt_list.size();
     for(int i=0; i< size;i++){
         Formula* f = proof.stmt_list[i];
@@ -169,17 +202,19 @@ void Decider::axiom3_closure(){
 }
 
 /**  Proof_Map **/
-void Proof_Map::push(Formula* f, Annotation ann){
+int Proof_Map::push(Formula* f, Annotation ann){
     string key = f->to_string();
     if(map.find(key) == map.end()){
         int i = stmt_list.size();
         map[key] = i;
         stmt_list.push_back(f);
         ann_list.push_back(ann);
+        return 0;
     }
     else{
         cout << "formula already exists in stmt list : ";
         f->print_line();
+        return -1;
     }
 }
 
