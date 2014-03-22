@@ -43,16 +43,26 @@ Formula* parse_new(){ //formula is either 'a' OR (<f> - <f>)
 
     char x;
     cin >> x;
-    if(x != '('){//i.e its 'a'
+    if(x != '(' && x!='~'){//i.e its 'a'
         cout << "x is " << x << endl;
         formula = new Formula(x);
         return formula;
     }
 
+    if(x == '~'){
+        Formula * lhs;
+        cout << "calling lhs on negation" << endl;
+        lhs = parse_new();
+        Formula * False = new Formula('F');
+        formula = implication(lhs, False);
+        return formula;
+    }
+
+    //x is (
+
     //its (f - f)
     Formula * lhs;
     Formula * rhs;
-    cout << "calling lhs" << endl;
     lhs = parse_new();
 
     char op;

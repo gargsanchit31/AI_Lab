@@ -1,0 +1,19 @@
+((p&(q|r))-((p&q) | (p&r)))
+
+9
+p
+q
+r
+(p-q)
+(p-r)
+(q-r)
+(q-p)
+(r-p)
+(r-q)
+
+1
+
+
+
+(a->b) -> (a-(a and b))
+// parsing ~(p-(q|r))

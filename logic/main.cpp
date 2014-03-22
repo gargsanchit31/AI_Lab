@@ -6,6 +6,13 @@ using namespace std;
 
 
 int main(){
+    /* 
+    //checking parsing functionality
+    Formula* fnot = parse_new();
+    fnot->print_line();
+    return 0;
+    */
+
     /*
     //checking axiom 3 closure new
     Formula * a = new Formula('a');
