@@ -7,6 +7,7 @@
 /* functions  */
 
 Formula* parse();
+Formula* parse_new(); // allows ~ symbol
     
 Formula * implication(Formula *lhs, Formula *rhs);
 

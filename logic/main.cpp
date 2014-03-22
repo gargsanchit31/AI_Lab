@@ -30,7 +30,7 @@ int main(){
     */
 
 
-    Formula * f1 = parse();
+    Formula * f1 = parse_new();
     //f1->print_line();
 
     //Take Seed formulae
@@ -38,7 +38,7 @@ int main(){
     cin >> seed_count;
     Formula_List seeds;
     for(int i=0; i<seed_count; i++){
-        Formula * f = parse();
+        Formula * f = parse_new();
         seeds.push_back(f);
     }
 
