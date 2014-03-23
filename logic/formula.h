@@ -10,6 +10,7 @@ public:
     Formula * lhs;
     Formula * rhs;
     char val;
+    int len;
     /* basic */
     Formula();
     Formula(char tval, Formula * tlhs, Formula * trhs);

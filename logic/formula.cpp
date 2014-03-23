@@ -8,16 +8,18 @@ Formula::Formula(){
     val = '-';
 }
 
-Formula::Formula(char tval, Formula * tlhs, Formula * trhs){
+Formula::Formula(char tval, Formula * tlhs, Formula * trhs){ //non-leaf
     lhs = tlhs;
     rhs = trhs;
     val = tval;
+    len = tlhs->len + trhs->len;
 }
 
-Formula::Formula(char tval){
+Formula::Formula(char tval){ //leaf
     lhs = NULL;
     rhs = NULL;
     val = tval;
+    len = 1;
 }
 
 void Formula::print(){

@@ -2,6 +2,8 @@
 #include <ctime>
 #include <unistd.h>
 #include <stack>
+
+int length_limit;
 /** Annotation **/
 void Annotation::print(){
     switch(rule){
@@ -48,7 +50,7 @@ Decider::Decider(Formula * stmt, Formula_List tSeed){
 void Decider::genererate_hypothesis(Formula * stmt, Formula_List& hyp_list){
     if(stmt->is_leaf()){//generate a-F
         if(stmt->val == 'F') return; //do nothing, were done
-        Formula* hyp = implication(stmt, new Formula('F'));
+        Formula* hyp = implication(stmt, TheFalse);
         hyp_list.push_back(hyp);
     }
     else{//stmt is (lhs-rhs) , so push lhs to hyp_list, recurse on rhs
@@ -68,8 +70,12 @@ void Decider::prove(){
     cout << "hello" <<endl;
     sleep(3);
     int x;
-    int LIMIT = 5;
+    int LIMIT = 10;
+    length_limit = 10;
     for(int i=0; i<LIMIT; i++){
+        cout << "round " << i;
+        cout << "length_limit " << length_limit <<endl;
+        cout << "proof size " << proof.stmt_list.size() <<endl;
         mp_closure();
         if(proof.get("F") != -1){
             cout << "Proof found" << endl;
@@ -78,7 +84,17 @@ void Decider::prove(){
             return;
         }
         axiom1_closure();
+        cout << "ax 1" <<endl;
+        cout << "proof size " << proof.stmt_list.size() <<endl;
+        axiom2_closure();
+        cout << "ax 2" <<endl;
+        cout << "proof size " << proof.stmt_list.size() <<endl;
         axiom3_closure();
+        cout << "ax 3" <<endl;
+        cout << "proof size " << proof.stmt_list.size() <<endl;
+
+        length_limit+=3; //twice the length limit
+
         //print_formula_list(proof.stmt_list);
         //cout << "continue enter any number to continue? ";
         //cin >> x;
@@ -95,24 +111,24 @@ void Decider::mp_closure(){
         int size = proof.stmt_list.size();
         for(int i=0; i< size;i++){
             Formula* f = proof.stmt_list[i];
-            cout << "f is : " ; f->print();
+            //cout << "f is : " ; f->print();
             if(!f->is_leaf()){
                 int index = proof.get(f->lhs->to_string());
-                cout << " non-leaf ";
+                //cout << " non-leaf ";
                 if(index!=-1) {
                     Formula* l = proof.stmt_list[index];
-                    cout <<"  MP applicable on rhs '";
-                    l->print();
-                    cout <<"'" <<endl;
+                    //cout <<"  MP applicable on rhs '";
+                    //l->print();
+                    //cout <<"'" <<endl;
                     ann.l1 = i;//p-q
                     ann.l2 = index;//p
                     int status = proof.push(f->rhs, ann);//f is (L-R), L is already in proof, so push R into proof
                     if(status == 0) delta++; //increment only if push added a new formula in proof
                 }
-                cout << endl;
+                //cout << endl;
             }
             else{
-                cout << " leaf " <<endl;
+                //cout << " leaf " <<endl;
             }
         }
     }
@@ -125,23 +141,23 @@ void Decider::mp_closure_onepass(){
     int size = proof.stmt_list.size();
     for(int i=0; i< size;i++){
         Formula* f = proof.stmt_list[i];
-        cout << "f is : " ; f->print();
+        //cout << "f is : " ; f->print();
         if(!f->is_leaf()){
             int index = proof.get(f->lhs->to_string());
-            cout << " non-leaf ";
+            //cout << " non-leaf ";
             if(index!=-1) {
                 Formula* l = proof.stmt_list[index];
-                cout <<"  MP applicable on rhs '";
-                l->print();
-                cout <<"'" <<endl;
+                //cout <<"  MP applicable on rhs '";
+                //l->print();
+                //cout <<"'" <<endl;
                 ann.l1 = i;//p-q
                 ann.l2 = index;//p
                 proof.push(f->rhs, ann);//f is (L-R), L is already in proof, so push R into proof
             }
-            cout << endl;
+            //cout << endl;
         }
         else{
-            cout << " leaf " <<endl;
+            //cout << " leaf " <<endl;
         }
     }
 }
@@ -157,13 +173,23 @@ void Decider::axiom1_closure(){
             Formula* B = Seed[j];
             ann.a = A;
             ann.b = B;
-            proof.push(Axiom1(A,B), ann);
+            Formula* f =Axiom1(A,B); 
+            if(f->len <= length_limit) proof.push(f,ann);
+            else {
+                delete f;
+                cout << "deleting .." <<endl;
+            }
         }
         for(int j=0;j<size_stmt;++j){
             Formula* B = proof.stmt_list[j];
             ann.a = A;
             ann.b = B;
-            proof.push(Axiom1(A,B), ann);
+            Formula* f =Axiom1(A,B); 
+            if(f->len <= length_limit) proof.push(f,ann);
+            else {
+                delete f;
+                cout << "deleting .." <<endl;
+            }
         }
     }
     for(int i=0; i<size_stmt; ++i){
@@ -172,13 +198,55 @@ void Decider::axiom1_closure(){
             Formula* B = Seed[j];
             ann.a = A;
             ann.b = B;
-            proof.push(Axiom1(A,B), ann);
+            Formula* f =Axiom1(A,B); 
+            if(f->len <= length_limit) proof.push(f,ann);
+            else {
+                delete f;
+                cout << "deleting .." <<endl;
+            }
         }
         for(int j=0;j<size_stmt;++j){
             Formula* B = proof.stmt_list[j];
             ann.a = A;
             ann.b = B;
-            proof.push(Axiom1(A,B), ann);
+            Formula* f =Axiom1(A,B); 
+            if(f->len <= length_limit) proof.push(f,ann);
+            else {
+                delete f;
+                cout << "deleting .." <<endl;
+            }
+        }
+    }
+}
+
+void Decider::axiom2_closure(){
+    Annotation ann;
+    ann.rule = Ax2;
+    int size[2] = {(int)(Seed.size()),(int)(proof.stmt_list.size())};
+    Formula_List* flist[2] = {&Seed,&(proof.stmt_list)};
+
+    int count=0;
+    for(;count<8;++count){
+        int b1 = (count&1 ==1);
+        int b2 = (count&2 ==2);
+        int b3 = (count&4 ==4);
+        Formula_List &fl1 = (*flist[b1]);
+        Formula_List &fl2 = (*flist[b2]);
+        Formula_List &fl3 = (*flist[b3]);
+        for(int i=0;i<size[b1];++i){
+            Formula* A = fl1[i];
+            for(int j=0;j<size[b2];++j){
+                Formula* B = fl2[j];
+                for(int k=0;k<size[b3];++k){
+                    Formula* C = fl3[k];
+                    ann.a = A;
+                    ann.b = B;
+                    ann.c = C;
+                    Formula* f =Axiom2(A,B,C);
+                    if(f->len <= length_limit) proof.push(f,ann);
+                    else delete f;
+                }
+            }
         }
     }
 }
@@ -200,7 +268,6 @@ void Decider::axiom3_closure(){
 
             //A is not leaf, its rhs is "F", its lhs is not leaf, its lhs->rhs is "F"
             //i.e A is ((p-F)-F)
-            Formula* F = new Formula('F');
             Formula* P = A->lhs->lhs;
 
             ann.a = P;
@@ -219,13 +286,11 @@ void Decider::axiom3_closure_brute(){
     int size_stmt = proof.stmt_list.size();
     for(int i=0; i<size_seed; ++i){
         Formula* A = Seed[i];
-        Formula* F = new Formula('F');
         ann.a = A;
         proof.push(Axiom3(A), ann);
     }
     for(int i=0; i<size_stmt; ++i){
         Formula* A = proof.stmt_list[i];
-        Formula* F = new Formula('F');
         ann.a = A;
         proof.push(Axiom3(A), ann);
     }
@@ -242,8 +307,8 @@ int Proof_Map::push(Formula* f, Annotation ann){
         return 0;
     }
     else{
-        cout << "formula already exists in stmt list : ";
-        f->print_line();
+        //cout << "formula already exists in stmt list : ";
+        //f->print_line();
         return -1;
     }
 }

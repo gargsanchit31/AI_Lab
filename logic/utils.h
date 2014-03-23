@@ -2,6 +2,8 @@
 #define _UTILS_H
 #include "formula.h"
 
+extern Formula* TheFalse;
+
 /* shared variables */
 
 /* functions  */

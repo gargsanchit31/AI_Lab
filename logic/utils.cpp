@@ -2,6 +2,7 @@
 using namespace std;
 
 /* shared variables */
+Formula * TheFalse = new Formula('F');
 
 /* functions  */
 Formula* parse(){ //formula is either 'a' OR (<f> - <f>)
@@ -53,7 +54,7 @@ Formula* parse_new(){ //formula is either 'a' OR (<f> - <f>)
         Formula * lhs;
         cout << "calling lhs on negation" << endl;
         lhs = parse_new();
-        Formula * False = new Formula('F');
+        Formula * False = TheFalse;
         formula = implication(lhs, False);
         return formula;
     }
@@ -84,11 +85,11 @@ Formula* parse_new(){ //formula is either 'a' OR (<f> - <f>)
         formula = new Formula(op, lhs, rhs);
     }
     else if(op == '|'){
-        Formula * False = new Formula('F');
+        Formula * False = TheFalse;
         formula = implication(implication(lhs, False), rhs); 
     }
     else if(op == '&'){
-        Formula * False = new Formula('F');
+        Formula * False = TheFalse;
         formula = implication(implication(lhs, implication(rhs, False)), False);
     }
     return formula;
@@ -117,7 +118,7 @@ Formula * Axiom2(Formula *A, Formula *B, Formula *C){
 }
 
 Formula * Axiom3(Formula *A){
-    Formula * F = new Formula('F');
+    Formula * F = TheFalse;
     return  implication(
                 implication(
                     implication(A, F),

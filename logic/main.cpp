@@ -6,6 +6,13 @@ using namespace std;
 
 
 int main(){
+    /*
+    //checking length functionality
+    Formula* fnot = parse_new();
+    fnot->print_line();
+    cout << "length  " << (fnot->len) << endl;
+    return 0;
+    */
     /* 
     //checking parsing functionality
     Formula* fnot = parse_new();
