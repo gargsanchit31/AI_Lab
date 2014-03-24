@@ -165,18 +165,14 @@ void destroy_Formula(Formula *f){
         destroy_Formula(f->lhs);
         destroy_Formula(f->rhs);
     }
-    if(f->val == 'F'){
-        if(f != TheFalse){
-            cout << "Not TheFalse";
-        }
-        cout << "NOT deleting false" <<endl;
-        return;
-    }
-    delete(f);//delete self
+    delete_Formula(f);//delete self
 }
 
 void delete_Formula(Formula *f){
     //if it is TheFalse dont do anything, else delete(f)
-    if(f->val == 'F') return;
+    if(f->val == 'F'){
+        if(f!=TheFalse) cout << "'F' is not TheFalse" <<endl;
+        return;
+    }
     delete(f);
 }

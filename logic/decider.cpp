@@ -54,7 +54,7 @@ Decider::~Decider(){
                 destroy_Axiom3(L[i]);
                 break;
             case MP://just 'delete' it
-                if(L[i]->val != 'F') delete(L[i]); //if val is 'F' don't delete it(TheFalse)
+                delete_Formula(L[i]); //if val is 'F' don't delete it(TheFalse)
                 break;
         }
     }
