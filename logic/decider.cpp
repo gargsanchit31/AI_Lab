@@ -80,7 +80,6 @@ Decider::Decider(Formula * stmt, Formula_List tSeed){
     for(int i=0; i<hypothesis_list.size(); i++){
         int status = proof.push(hypothesis_list[i], ann);
         if(status == -1){ //delete hypothesis i.e destroy_Formula
-            cout << "is here #################################" <<endl;
             destroy_Formula(hypothesis_list[i]);
         }
     }
@@ -114,14 +113,12 @@ void Decider::print_formula_list(Formula_List &l){
 
 void Decider::prove(){
     cout << "hello" <<endl;
-    sleep(2);
+    sleep(1);
     int x;
     int LIMIT = 10;
     length_limit = 5;
     for(int i=0; i<LIMIT; i++){
-        cout << "round " << i;
-        cout << "length_limit " << length_limit <<endl;
-        cout << "proof size " << proof.stmt_list.size() <<endl;
+        cout << "Round " << i <<" Length_limit " << length_limit << " Proof Size=" << proof.stmt_list.size() <<endl;
         mp_closure();
         if(proof.get("F") != -1){
             cout << "Proof found" << endl;
@@ -130,14 +127,15 @@ void Decider::prove(){
             return;
         }
         axiom1_closure();
-        cout << "ax 1" <<endl;
-        cout << "proof size " << proof.stmt_list.size() <<endl;
+        cout << "ax 1: " << proof.stmt_list.size() <<endl;
         axiom2_closure_expansion();
-        cout << "ax 2" <<endl;
-        cout << "proof size " << proof.stmt_list.size() <<endl;
+        cout << "ax 2: Expansion" << proof.stmt_list.size() <<endl;
+        axiom2_closure_reduction();
+        cout << "ax 2: Reduction" << proof.stmt_list.size() <<endl;
+        axiom2_closure_special();
+        cout << "ax 2: Special" << proof.stmt_list.size() <<endl;
         axiom3_closure();
-        cout << "ax 3" <<endl;
-        cout << "proof size " << proof.stmt_list.size() <<endl;
+        cout << "ax 3: " << proof.stmt_list.size() <<endl;
 
         length_limit+=1; //twice the length limit
 
@@ -323,7 +321,6 @@ void Decider::axiom1_closure_brute(){
 
 void Decider::axiom2_closure_expansion(){
 //* if whole line is of form  (A-(B-C)):  expand it using axiom2 
-    length_limit = 20;
     Annotation ann;
     ann.rule = Ax2;
     int size_stmt = proof.stmt_list.size();
@@ -333,7 +330,6 @@ void Decider::axiom2_closure_expansion(){
         if(stmt->is_leaf()) continue;
         if(stmt->rhs->is_leaf()) continue;
         //it is indeed of for (A-(B-C))
-        cout << "here " <<endl;
         Formula * A = stmt->lhs;
         Formula * B = stmt->rhs->lhs;
         Formula * C = stmt->rhs->rhs;
@@ -356,7 +352,6 @@ void Decider::axiom2_closure_expansion(){
 
 void Decider::axiom2_closure_reduction(){
 //* if some "lhs" is of the form (A-B)-(A-C): treat it as rhs of axiom2
-    length_limit = 20;
     Annotation ann;
     ann.rule = Ax2;
     int size_stmt = proof.stmt_list.size();
@@ -371,7 +366,6 @@ void Decider::axiom2_closure_reduction(){
         if(stmt->lhs->is_leaf()) continue;
         if(stmt->lhs->lhs->to_string() != stmt->rhs->lhs->to_string()) continue;//lhs->lhs != rhs->lhs (A1 != A2)
 
-        cout << "here " <<endl;
         Formula * A = stmt->lhs->lhs;
         Formula * B = stmt->lhs->rhs;
         Formula * C = stmt->rhs->rhs;
@@ -396,7 +390,6 @@ void Decider::axiom2_closure_special(){
 //* So use axiom2, but now treat   (A-F) as 
 //* (A-C) term in (A-(B-C)) - ((A-B)-(A-C))
 //* We have freedom to choose B
-    length_limit = 20;
     Annotation ann;
     ann.rule = Ax2;
     int size_stmt = proof.stmt_list.size();
@@ -409,7 +402,6 @@ void Decider::axiom2_closure_special(){
         if(stmt->is_leaf()) continue;
         if(stmt->rhs->val != 'F') continue; //lhs is not (A-F) form
 
-        cout << "here " <<endl;
         Formula * A = stmt->lhs;
         Formula * B; //variable choose from Seed or proof_list
         Formula * C = stmt->rhs; //TheFalse

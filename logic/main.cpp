@@ -59,15 +59,16 @@ int main(){
 
     cout << endl <<"** Decider **" <<endl;
 
-    cout << "1" << endl;
     Decider Dec(f1, seeds);
+    cout << "Proving Now...." <<endl;
+    Dec.prove();
+    /*
     Dec.axiom2_closure_special();
     Dec.proof.print();
     cout << "2" << endl;
     Dec.axiom2_closure_special();
     Dec.proof.print();
-    //Dec.prove();
-    cout << "- - - - - test - - - - - - " <<endl;
+    */
 
 
     //CLEANING UP
