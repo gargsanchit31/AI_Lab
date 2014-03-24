@@ -11,7 +11,12 @@ Formula* parse(){ //formula is either 'a' OR (<f> - <f>)
     char x;
     cin >> x;
     if(x != '('){//i.e its 'a'
-        formula = new Formula(x);
+        if(x == 'F') {
+            cout << "false is input" <<endl;
+            formula = TheFalse;
+        }
+        else formula = new Formula(x);
+
         return formula;
     }
 
@@ -46,7 +51,10 @@ Formula* parse_new(){ //formula is either 'a' OR (<f> - <f>)
     cin >> x;
     if(x != '(' && x!='~'){//i.e its 'a'
         cout << "x is " << x << endl;
-        formula = new Formula(x);
+
+        if(x == 'F') formula = TheFalse;
+        else formula = new Formula(x);
+
         return formula;
     }
 
@@ -157,5 +165,18 @@ void destroy_Formula(Formula *f){
         destroy_Formula(f->lhs);
         destroy_Formula(f->rhs);
     }
+    if(f->val == 'F'){
+        if(f != TheFalse){
+            cout << "Not TheFalse";
+        }
+        cout << "NOT deleting false" <<endl;
+        return;
+    }
     delete(f);//delete self
+}
+
+void delete_Formula(Formula *f){
+    //if it is TheFalse dont do anything, else delete(f)
+    if(f->val == 'F') return;
+    delete(f);
 }

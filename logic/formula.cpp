@@ -81,6 +81,9 @@ bool Formula::is_false(){
 }
 
 Formula* Formula::copy(){ //shalow copy
-    if(is_leaf()) return new Formula(val);
+    if(is_leaf()){
+        if(val == 'F') return TheFalse;
+        else return new Formula(val);
+    }
     return new Formula(val, lhs, rhs);
 }

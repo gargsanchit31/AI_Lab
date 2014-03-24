@@ -63,8 +63,8 @@ int main(){
 
 
     //CLEANING UP
-    delete TheFalse;
     //~Decider() will be called implicitly
+    //delete TheFalse withing it at the last
     
     /*
     Proof_Map pm1;

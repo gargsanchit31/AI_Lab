@@ -54,7 +54,7 @@ Decider::~Decider(){
                 destroy_Axiom3(L[i]);
                 break;
             case MP://just 'delete' it
-                delete(L[i]);
+                if(L[i]->val != 'F') delete(L[i]); //if val is 'F' don't delete it(TheFalse)
                 break;
         }
     }
@@ -65,6 +65,9 @@ Decider::~Decider(){
     for(i=0; i<Seed.size();i++){ //destroy_Formula  as its components are nowhere else
         destroy_Formula(Seed[i]);
     }
+
+    //delete TheFalse at the end
+    delete(TheFalse);
 }
 
 Decider::Decider(Formula * stmt, Formula_List tSeed){
@@ -169,7 +172,7 @@ void Decider::mp_closure(){
                     Formula * copy = newstep->copy();
                     int status = proof.push(copy, ann);//f is (L-R), L is already in proof, so push R into proof
                     if(status == -1){
-                        delete(copy);
+                        delete_Formula(copy);
                     }
                     if(status == 0) delta++; //increment only if push added a new formula in proof
                 }
@@ -183,7 +186,7 @@ void Decider::mp_closure(){
     while(delta > 0);
 }
 
-void Decider::mp_closure_onepass(){
+void Decider::mp_closure_onepass(){//Not Used
     Annotation ann;
     ann.rule = MP;
     int size = proof.stmt_list.size();
@@ -203,7 +206,7 @@ void Decider::mp_closure_onepass(){
                 Formula * copy = f->rhs->copy();
                 int status = proof.push(copy, ann);//f is (L-R), L is already in proof, so push R into proof
                 if(status == -1){
-                    delete(copy);
+                    delete_Formula(copy);
                 }
             }
             //cout << endl;

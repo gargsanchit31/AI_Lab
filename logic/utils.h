@@ -2,7 +2,6 @@
 #define _UTILS_H
 #include "formula.h"
 
-extern Formula* TheFalse;
 
 /* shared variables */
 
@@ -20,6 +19,7 @@ void destroy_Axiom1(Formula *axiom);
 void destroy_Axiom2(Formula *axiom);
 void destroy_Axiom3(Formula *axiom);
 void destroy_Formula(Formula *f);
+void delete_Formula(Formula *f); //if it is TheFalse dont do anything, else delete(f)
 
 
 #endif
