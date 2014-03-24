@@ -22,5 +22,6 @@ public:
     bool operator == (const Formula & node);
     bool is_leaf();
     bool is_false(); //Is syntactically False
+    Formula* copy(); //returns new Formula(val, lhs, rhs)
 };
 #endif

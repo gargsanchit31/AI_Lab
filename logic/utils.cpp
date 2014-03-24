@@ -101,29 +101,52 @@ Formula * implication(Formula *lhs, Formula *rhs){
 }
 
 Formula * Axiom1(Formula *A, Formula *B){
-    return implication(A, implication(B, A));
+    return  implication(//1
+                A,
+                implication(B, A)//2
+            );
+}
+
+void destroy_Axiom1(Formula *axiom){
+    delete(axiom->rhs);//2
+    delete(axiom);//1
 }
 
 Formula * Axiom2(Formula *A, Formula *B, Formula *C){
-    return  implication(
-                implication(
+    return  implication(//1
+                implication(//2
                     A, 
-                    implication(B, C)
+                    implication(B, C)//4
                 ),
-                implication(
-                    implication(A, B),
-                    implication(A, C)
+                implication(//3
+                    implication(A, B),//5
+                    implication(A, C) //6
                 )
             );
+}
+void destroy_Axiom2(Formula *axiom){
+    delete(axiom->lhs->rhs);//4
+    delete(axiom->lhs);//2
+
+    delete(axiom->rhs->lhs);//5
+    delete(axiom->rhs->rhs);//6
+    delete(axiom->rhs); //3
+
+    delete(axiom); //1
 }
 
 Formula * Axiom3(Formula *A){
     Formula * F = TheFalse;
-    return  implication(
-                implication(
-                    implication(A, F),
+    return  implication(//1
+                implication(//2
+                    implication(A, F),//3
                     F
                 ),
                 A
             );
+}
+void destroy_Axiom3(Formula *axiom){
+    delete(axiom->lhs->lhs);//3
+    delete(axiom->lhs);//2
+    delete(axiom);//1
 }

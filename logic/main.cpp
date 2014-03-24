@@ -60,6 +60,12 @@ int main(){
     Decider Dec(f1, seeds);
     Dec.prove();
     cout << "- - - - - test - - - - - - " <<endl;
+
+
+    //CLEANING UP
+    delete TheFalse;
+    //~Decider() will be called implicitly
+    
     /*
     Proof_Map pm1;
     pm1.push(f1);

@@ -29,6 +29,27 @@ void Annotation::print(){
 }
 
 /**  Decider **/
+Decider::~Decider(){
+    cout << "Destroying decider" <<endl;
+    int i;
+
+    //statement to prove
+    delete(statement); 
+
+    //proof steps
+    Formula_List & L = proof.stmt_list;
+    for(i=0; i<L.size();i++){
+        delete(L[i]);
+    }
+
+    //hypothesis list  NOT NEEDED AS ALL hypothesis are also in proof
+
+    //Seed
+    for(i=0; i<Seed.size();i++){
+        delete(Seed[i]);
+    }
+}
+
 Decider::Decider(Formula * stmt, Formula_List tSeed){
     statement = stmt;
     genererate_hypothesis(statement, hypothesis_list);
@@ -37,8 +58,12 @@ Decider::Decider(Formula * stmt, Formula_List tSeed){
     Annotation ann;
     ann.rule = Hyp;
     for(int i=0; i<hypothesis_list.size(); i++){
-        proof.push(hypothesis_list[i], ann);
+        int status = proof.push(hypothesis_list[i], ann);
+        if(status == -1){
+            delete(hypothesis_list[i]);
+        }
     }
+    //Don't use hypothesis list after this, it may become invalid because push(hyp[i]) may delete hyp[i] if repeated
     cout << "Hypothesis list" <<endl;
     print_formula_list(proof.stmt_list);
 
@@ -116,13 +141,18 @@ void Decider::mp_closure(){
                 int index = proof.get(f->lhs->to_string());
                 //cout << " non-leaf ";
                 if(index!=-1) {
-                    Formula* l = proof.stmt_list[index];
+                    //Formula* l = proof.stmt_list[index];
                     //cout <<"  MP applicable on rhs '";
                     //l->print();
                     //cout <<"'" <<endl;
                     ann.l1 = i;//p-q
                     ann.l2 = index;//p
-                    int status = proof.push(f->rhs, ann);//f is (L-R), L is already in proof, so push R into proof
+                    Formula * newstep = f->rhs;
+                    Formula * copy = newstep->copy();
+                    int status = proof.push(copy, ann);//f is (L-R), L is already in proof, so push R into proof
+                    if(status == -1){
+                        delete(copy);
+                    }
                     if(status == 0) delta++; //increment only if push added a new formula in proof
                 }
                 //cout << endl;
@@ -146,13 +176,17 @@ void Decider::mp_closure_onepass(){
             int index = proof.get(f->lhs->to_string());
             //cout << " non-leaf ";
             if(index!=-1) {
-                Formula* l = proof.stmt_list[index];
+                //Formula* l = proof.stmt_list[index];
                 //cout <<"  MP applicable on rhs '";
                 //l->print();
                 //cout <<"'" <<endl;
                 ann.l1 = i;//p-q
                 ann.l2 = index;//p
-                proof.push(f->rhs, ann);//f is (L-R), L is already in proof, so push R into proof
+                Formula * copy = f->rhs->copy();
+                int status = proof.push(copy, ann);//f is (L-R), L is already in proof, so push R into proof
+                if(status == -1){
+                    delete(copy);
+                }
             }
             //cout << endl;
         }
@@ -174,9 +208,14 @@ void Decider::axiom1_closure(){
             ann.a = A;
             ann.b = B;
             Formula* f =Axiom1(A,B); 
-            if(f->len <= length_limit) proof.push(f,ann);
+            if(f->len <= length_limit){
+                int status = proof.push(f,ann);
+                if(status == -1){
+                    destroy_Axiom1(f);
+                }
+            }
             else {
-                delete f;
+                destroy_Axiom1(f);
             }
         }
         for(int j=0;j<size_stmt;++j){
@@ -184,9 +223,14 @@ void Decider::axiom1_closure(){
             ann.a = A;
             ann.b = B;
             Formula* f =Axiom1(A,B); 
-            if(f->len <= length_limit) proof.push(f,ann);
+            if(f->len <= length_limit){
+                int status = proof.push(f,ann);
+                if(status == -1){
+                    destroy_Axiom1(f);
+                }
+            }
             else {
-                delete f;
+                destroy_Axiom1(f);
             }
         }
     }
@@ -197,9 +241,14 @@ void Decider::axiom1_closure(){
             ann.a = A;
             ann.b = B;
             Formula* f =Axiom1(A,B); 
-            if(f->len <= length_limit) proof.push(f,ann);
+            if(f->len <= length_limit){
+                int status = proof.push(f,ann);
+                if(status == -1){
+                    destroy_Axiom1(f);
+                }
+            }
             else {
-                delete f;
+                destroy_Axiom1(f);
             }
         }
         for(int j=0;j<size_stmt;++j){
@@ -207,9 +256,14 @@ void Decider::axiom1_closure(){
             ann.a = A;
             ann.b = B;
             Formula* f =Axiom1(A,B); 
-            if(f->len <= length_limit) proof.push(f,ann);
+            if(f->len <= length_limit){
+                int status = proof.push(f,ann);
+                if(status == -1){
+                    destroy_Axiom1(f);
+                }
+            }
             else {
-                delete f;
+                destroy_Axiom1(f);
             }
         }
     }
@@ -238,9 +292,16 @@ void Decider::axiom2_closure(){
                     ann.a = A;
                     ann.b = B;
                     ann.c = C;
-                    Formula* f =Axiom2(A,B,C);
-                    if(f->len <= length_limit) proof.push(f,ann);
-                    else delete f;
+                    Formula* f = Axiom2(A,B,C);
+                    if(f->len <= length_limit){
+                        int status = proof.push(f,ann);
+                        if(status == -1){
+                            destroy_Axiom2(f);
+                        }
+                    }
+                    else {
+                        destroy_Axiom2(f);
+                    }
                 }
             }
         }
@@ -266,8 +327,12 @@ void Decider::axiom3_closure(){
             //i.e A is ((p-F)-F)
             Formula* P = A->lhs->lhs;
 
+            Formula * f = Axiom3(P);
             ann.a = P;
-            int status = proof.push(Axiom3(P), ann); //((p-F)-F) - p
+            int status = proof.push(f, ann); //((p-F)-F) - p
+            if(status == -1){
+                destroy_Axiom3(f);
+            }
 
             if(status == 0) delta++;
         }
@@ -275,7 +340,7 @@ void Decider::axiom3_closure(){
     while(delta > 0);
 }
 
-void Decider::axiom3_closure_brute(){
+void Decider::axiom3_closure_brute(){ //DoNot use this
     Annotation ann;
     ann.rule = Ax3;
     int size_seed = Seed.size();
@@ -303,8 +368,7 @@ int Proof_Map::push(Formula* f, Annotation ann){
         return 0;
     }
     else{
-        //cout << "formula already exists in stmt list : ";
-        //f->print_line();
+        //handle deleting outside
         return -1;
     }
 }
@@ -355,4 +419,6 @@ void Proof_Map::trace(){
             print(i);
         }
     }
+    //cleaning all malloced stuff Vector
+    delete(&V);
 }

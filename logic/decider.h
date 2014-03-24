@@ -47,6 +47,7 @@ public:
 
     /* functions */
     Decider(Formula * stmt, Formula_List tSeed);
+    ~Decider();
     void genererate_hypothesis(Formula *stmt, Formula_List & hyp_list);  //prove stmt S : equiv to proving: f1,f2,f3,...fn |- F
                                                 //puts f1,f2,... in hypothesis_list
     void print_formula_list(Formula_List &l);
