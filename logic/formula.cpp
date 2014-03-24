@@ -6,6 +6,7 @@ Formula::Formula(){
     lhs = NULL;
     rhs = NULL;
     val = '-';
+    str_form = "?"; //empty
 }
 
 Formula::Formula(char tval, Formula * tlhs, Formula * trhs){ //non-leaf
@@ -54,9 +55,13 @@ void Formula::print_string(string &buffer){
 }
 
 string Formula::to_string(){
-    string str;
-    print_string(str);
-    return str;
+    if(str_form == "?"){
+        print_string(str_form);
+    }
+    else{
+        cout << "reusing ..... " <<endl;
+    }
+    return str_form;
 }
 
 bool Formula::operator == (const Formula & node){

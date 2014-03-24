@@ -11,6 +11,7 @@ public:
     Formula * rhs;
     char val;
     int len;
+    string str_form;
     /* basic */
     Formula();
     Formula(char tval, Formula * tlhs, Formula * trhs);
