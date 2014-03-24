@@ -6,7 +6,7 @@ Formula::Formula(){
     lhs = NULL;
     rhs = NULL;
     val = '-';
-    str_form = "?"; //empty
+    str_form = ""; //empty
 }
 
 Formula::Formula(char tval, Formula * tlhs, Formula * trhs){ //non-leaf
@@ -14,6 +14,7 @@ Formula::Formula(char tval, Formula * tlhs, Formula * trhs){ //non-leaf
     rhs = trhs;
     val = tval;
     len = tlhs->len + trhs->len;
+    str_form = ""; //empty
 }
 
 Formula::Formula(char tval){ //leaf
@@ -21,6 +22,7 @@ Formula::Formula(char tval){ //leaf
     rhs = NULL;
     val = tval;
     len = 1;
+    str_form = ""; //empty
 }
 
 void Formula::print(){
@@ -55,12 +57,13 @@ void Formula::print_string(string &buffer){
 }
 
 string Formula::to_string(){
-    if(str_form == "?"){
+    if(str_form == ""){
         print_string(str_form);
     }
     else{
-        cout << "reusing ..... " <<endl;
+        //cout << "reusing ..... " <<endl;
     }
+    cout << "string is " << str_form <<endl;
     return str_form;
 }
 
