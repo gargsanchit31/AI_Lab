@@ -132,7 +132,7 @@ void Decider::prove(){
         axiom1_closure();
         cout << "ax 1" <<endl;
         cout << "proof size " << proof.stmt_list.size() <<endl;
-        axiom2_closure();
+        axiom2_closure_expansion();
         cout << "ax 2" <<endl;
         cout << "proof size " << proof.stmt_list.size() <<endl;
         axiom3_closure();
@@ -218,6 +218,37 @@ void Decider::mp_closure_onepass(){//Not Used
 }
 
 void Decider::axiom1_closure(){
+//* if some "lhs" is of the form (B-A) i.e is not a leaf add axiom1 :  A-(B-A)
+    //length_limit = 20;
+    Annotation ann;
+    ann.rule = Ax1;
+    int size_stmt = proof.stmt_list.size();
+    Formula_List & FL = proof.stmt_list;
+    for(int i=0;i<size_stmt;i++){
+        Formula * stmt = FL[i];
+        if(stmt->is_leaf()) continue;
+        if(stmt->lhs->is_leaf()) continue;
+        //cout << "come here " <<endl;
+        //i.e stmt has lhs which is not leaf . So apply Axiom1
+        Formula * B = stmt->lhs->lhs;
+        Formula * A = stmt->lhs->rhs;
+        ann.a = A;
+        ann.b = B;
+        Formula* f =Axiom1(A,B); 
+//        f->print_line();
+        if(f->len <= length_limit){
+            int status = proof.push(f,ann);
+            if(status == -1){
+                destroy_Axiom1(f);
+            }
+        }
+        else {
+            destroy_Axiom1(f);
+        }
+    }
+}
+
+void Decider::axiom1_closure_brute(){
     Annotation ann;
     ann.rule = Ax1;
     int size_seed = Seed.size();
@@ -290,7 +321,124 @@ void Decider::axiom1_closure(){
     }
 }
 
-void Decider::axiom2_closure(){
+void Decider::axiom2_closure_expansion(){
+//* if whole line is of form  (A-(B-C)):  expand it using axiom2 
+    length_limit = 20;
+    Annotation ann;
+    ann.rule = Ax2;
+    int size_stmt = proof.stmt_list.size();
+    Formula_List & FL = proof.stmt_list;
+    for(int i=0;i<size_stmt;i++){
+        Formula * stmt = FL[i];
+        if(stmt->is_leaf()) continue;
+        if(stmt->rhs->is_leaf()) continue;
+        //it is indeed of for (A-(B-C))
+        cout << "here " <<endl;
+        Formula * A = stmt->lhs;
+        Formula * B = stmt->rhs->lhs;
+        Formula * C = stmt->rhs->rhs;
+        ann.a = A;
+        ann.b = B;
+        ann.c = C;
+        Formula* f =Axiom2(A,B,C); 
+//        f->print_line();
+        if(f->len <= length_limit){
+            int status = proof.push(f,ann);
+            if(status == -1){
+                destroy_Axiom2(f);
+            }
+        }
+        else {
+            destroy_Axiom2(f);
+        }
+    }
+}
+
+void Decider::axiom2_closure_reduction(){
+//* if some "lhs" is of the form (A-B)-(A-C): treat it as rhs of axiom2
+    length_limit = 20;
+    Annotation ann;
+    ann.rule = Ax2;
+    int size_stmt = proof.stmt_list.size();
+    Formula_List & FL = proof.stmt_list;
+    for(int i=0;i<size_stmt;i++){
+        Formula * line = FL[i];
+        if(line->is_leaf()) continue;
+
+        Formula *stmt = line->lhs;
+        if(stmt->is_leaf()) continue;
+        if(stmt->rhs->is_leaf()) continue;
+        if(stmt->lhs->is_leaf()) continue;
+        if(stmt->lhs->lhs->to_string() != stmt->rhs->lhs->to_string()) continue;//lhs->lhs != rhs->lhs (A1 != A2)
+
+        cout << "here " <<endl;
+        Formula * A = stmt->lhs->lhs;
+        Formula * B = stmt->lhs->rhs;
+        Formula * C = stmt->rhs->rhs;
+        ann.a = A;
+        ann.b = B;
+        ann.c = C;
+        Formula* f =Axiom2(A,B,C); 
+//        f->print_line();
+        if(f->len <= length_limit){
+            int status = proof.push(f,ann);
+            if(status == -1){
+                destroy_Axiom2(f);
+            }
+        }
+        else {
+            destroy_Axiom2(f);
+        }
+    }
+}
+void Decider::axiom2_closure_special(){
+//* if some "lhs" is of the form (A-F), we can't use axiom1
+//* So use axiom2, but now treat   (A-F) as 
+//* (A-C) term in (A-(B-C)) - ((A-B)-(A-C))
+//* We have freedom to choose B
+    length_limit = 20;
+    Annotation ann;
+    ann.rule = Ax2;
+    int size_stmt = proof.stmt_list.size();
+    Formula_List & FL = proof.stmt_list;
+    for(int index=0;index<size_stmt;index++){
+        Formula * line = FL[index];
+        if(line->is_leaf()) continue;
+
+        Formula *stmt = line->lhs;
+        if(stmt->is_leaf()) continue;
+        if(stmt->rhs->val != 'F') continue; //lhs is not (A-F) form
+
+        cout << "here " <<endl;
+        Formula * A = stmt->lhs;
+        Formula * B; //variable choose from Seed or proof_list
+        Formula * C = stmt->rhs; //TheFalse
+
+        int size[2] = {(int)(Seed.size()),(int)(proof.stmt_list.size())};
+        Formula_List* flist[2] = {&Seed,&(proof.stmt_list)};
+        for(int selector=0; selector<2; selector++){
+            Formula_List &fl = *flist[selector];
+            for(int i=0;i<size[selector];++i){
+                Formula * B = fl[i];
+                ann.a = A;
+                ann.b = B;
+                ann.c = C;
+                Formula* f = Axiom2(A,B,C);
+                if(f->len <= length_limit){
+                    int status = proof.push(f,ann);
+                    if(status == -1){
+                        destroy_Axiom2(f);
+                    }
+                }
+                else {
+                    destroy_Axiom2(f);
+                }
+            }
+        }
+    }
+}
+
+void Decider::axiom2_closure_brute(){
     Annotation ann;
     ann.rule = Ax2;
     int size[2] = {(int)(Seed.size()),(int)(proof.stmt_list.size())};

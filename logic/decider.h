@@ -57,7 +57,13 @@ public:
     void mp_closure(); //Modus ponens closure on proof
     void mp_closure_onepass(); //Modus ponens closure on proof
     void axiom1_closure();  // Axiom1 closure
-    void axiom2_closure();  // Axiom2 closure
+    void axiom1_closure_brute();  // Axiom1 closure
+
+    void axiom2_closure_expansion();  // Axiom2 closure
+    void axiom2_closure_reduction();  // Axiom2 closure
+    void axiom2_closure_special();  // Axiom2 closure
+    void axiom2_closure_brute();  // Axiom2 closure
+
     void axiom3_closure(); // Axiom3 closure
     void axiom3_closure_brute(); // Axiom3 closure brute
 
