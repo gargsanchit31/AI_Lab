@@ -26,16 +26,8 @@ Formula::Formula(char tval){ //leaf
 }
 
 void Formula::print(){
-    if(val == '-'){//recusively print lhs & rhs
-        cout << "(";
-        lhs->print();
-        cout << "-";
-        rhs->print();
-        cout<<")";
-    }
-    else{//it's leaf
-        cout << val;
-    }
+    string str = to_string();
+    cout << str;
 }
 
 void Formula::print_line(){
@@ -46,9 +38,11 @@ void Formula::print_line(){
 void Formula::print_string(string &buffer){
     if(val == '-'){//recusively print lhs & rhs
         buffer.push_back('(');
-        lhs->print_string(buffer);
+        buffer.append(lhs->to_string());
+        //lhs->print_string(buffer);
         buffer.push_back('-');
-        rhs->print_string(buffer);
+        buffer.append(rhs->to_string());
+        //rhs->print_string(buffer);
         buffer.push_back(')');
     }
     else{//it's leaf
@@ -63,7 +57,6 @@ string Formula::to_string(){
     else{
         //cout << "reusing ..... " <<endl;
     }
-    cout << "string is " << str_form <<endl;
     return str_form;
 }
 
