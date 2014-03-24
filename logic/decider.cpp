@@ -34,19 +34,36 @@ Decider::~Decider(){
     int i;
 
     //statement to prove
-    delete(statement); 
+    delete(statement);  //only delete this, as its parts are in hypothesis list(or later proof);
 
     //proof steps
     Formula_List & L = proof.stmt_list;
-    for(i=0; i<L.size();i++){
-        delete(L[i]);
+    Annotation_List & A = proof.ann_list;
+    for(i=L.size()-1; i>=0;i--){ //IMPORTANT NOTE: delte from reverse as later-ones depend on previous ones
+        switch(A[i].rule){
+            case Hyp: //if its hypothesis, destroy_Formula
+                destroy_Formula(L[i]);
+                break;
+            case Ax1:
+                destroy_Axiom1(L[i]);
+                break;
+            case Ax2:
+                destroy_Axiom2(L[i]);
+                break;
+            case Ax3:
+                destroy_Axiom3(L[i]);
+                break;
+            case MP://just 'delete' it
+                delete(L[i]);
+                break;
+        }
     }
 
-    //hypothesis list  NOT NEEDED AS ALL hypothesis are also in proof
+    //hypothesis list  deletion NOT NEEDED AS ALL hypothesis are also in proof
 
     //Seed
-    for(i=0; i<Seed.size();i++){
-        delete(Seed[i]);
+    for(i=0; i<Seed.size();i++){ //destroy_Formula  as its components are nowhere else
+        destroy_Formula(Seed[i]);
     }
 }
 
@@ -59,8 +76,9 @@ Decider::Decider(Formula * stmt, Formula_List tSeed){
     ann.rule = Hyp;
     for(int i=0; i<hypothesis_list.size(); i++){
         int status = proof.push(hypothesis_list[i], ann);
-        if(status == -1){
-            delete(hypothesis_list[i]);
+        if(status == -1){ //delete hypothesis i.e destroy_Formula
+            cout << "is here #################################" <<endl;
+            destroy_Formula(hypothesis_list[i]);
         }
     }
     //Don't use hypothesis list after this, it may become invalid because push(hyp[i]) may delete hyp[i] if repeated
@@ -93,10 +111,10 @@ void Decider::print_formula_list(Formula_List &l){
 
 void Decider::prove(){
     cout << "hello" <<endl;
-    sleep(3);
+    sleep(2);
     int x;
     int LIMIT = 10;
-    length_limit = 10;
+    length_limit = 5;
     for(int i=0; i<LIMIT; i++){
         cout << "round " << i;
         cout << "length_limit " << length_limit <<endl;
@@ -118,7 +136,7 @@ void Decider::prove(){
         cout << "ax 3" <<endl;
         cout << "proof size " << proof.stmt_list.size() <<endl;
 
-        length_limit+=3; //twice the length limit
+        length_limit+=1; //twice the length limit
 
         //print_formula_list(proof.stmt_list);
         //cout << "continue enter any number to continue? ";

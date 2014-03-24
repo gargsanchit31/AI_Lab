@@ -150,3 +150,12 @@ void destroy_Axiom3(Formula *axiom){
     delete(axiom->lhs);//2
     delete(axiom);//1
 }
+
+void destroy_Formula(Formula *f){
+    if(! f->is_leaf()){
+        //destroy lhs and rhs recursively
+        destroy_Formula(f->lhs);
+        destroy_Formula(f->rhs);
+    }
+    delete(f);//delete self
+}
