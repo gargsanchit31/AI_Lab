@@ -176,3 +176,11 @@ void delete_Formula(Formula *f){
     }
     delete(f);
 }
+
+bool is_axiom3_candidate(Formula* A){ //is it of the form (X-F)-F .. So don't use it for any other purpose
+    if(A->is_leaf()) return false; //A is leaf
+    if(A->rhs->to_string() != "F") return false; //A->rhs is not F
+    if(A->lhs->is_leaf()) return false;//A->lhs is leaf
+    if(A->lhs->rhs->to_string() != "F") return false;//A->lhs->rhs is not F
+    return true;
+}

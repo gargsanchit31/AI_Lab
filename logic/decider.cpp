@@ -224,6 +224,7 @@ void Decider::axiom1_closure(){
     Formula_List & FL = proof.stmt_list;
     for(int i=0;i<size_stmt;i++){
         Formula * stmt = FL[i];
+        if(is_axiom3_candidate(stmt)){cout<<"ax 3 candidate" <<endl; continue;} //WATCH its axiom3 candidate. Don't consider
         if(stmt->is_leaf()) continue;
         if(stmt->lhs->is_leaf()) continue;
         //cout << "come here " <<endl;
@@ -327,6 +328,7 @@ void Decider::axiom2_closure_expansion(){
     Formula_List & FL = proof.stmt_list;
     for(int i=0;i<size_stmt;i++){
         Formula * stmt = FL[i];
+        if(is_axiom3_candidate(stmt)){cout<<"ax 3 candidate" <<endl; continue;} //WATCH its axiom3 candidate. Don't consider
         if(stmt->is_leaf()) continue;
         if(stmt->rhs->is_leaf()) continue;
         //it is indeed of for (A-(B-C))
@@ -358,6 +360,7 @@ void Decider::axiom2_closure_reduction(){
     Formula_List & FL = proof.stmt_list;
     for(int i=0;i<size_stmt;i++){
         Formula * line = FL[i];
+        if(is_axiom3_candidate(line)){cout<<"ax 3 candidate" <<endl; continue;} //WATCH its axiom3 candidate. Don't consider
         if(line->is_leaf()) continue;
 
         Formula *stmt = line->lhs;
@@ -399,6 +402,7 @@ void Decider::axiom2_closure_special(){
         if(line->is_leaf()) continue;
 
         Formula *stmt = line->lhs;
+        if(is_axiom3_candidate(stmt)){cout<<"ax 3 candidate" <<endl; continue;} //WATCH its axiom3 candidate. Don't consider
         if(stmt->is_leaf()) continue;
         if(stmt->rhs->val != 'F') continue; //lhs is not (A-F) form
 
@@ -479,12 +483,8 @@ void Decider::axiom3_closure(){
         for(int i=0; i<size_stmt; ++i){
             Formula* A = proof.stmt_list[i];
             //if A is of the form ((p-F)-F) apply axiom 3 with p as param
-            if(A->is_leaf()) continue; //A is leaf
-            if(A->rhs->to_string() != "F") continue; //A->rhs is not F
-            if(A->lhs->is_leaf()) continue;//A->lhs is leaf
-            if(A->lhs->rhs->to_string() != "F") continue;//A->lhs->rhs is not F
+            if(!is_axiom3_candidate(A)) continue;
 
-            //A is not leaf, its rhs is "F", its lhs is not leaf, its lhs->rhs is "F"
             //i.e A is ((p-F)-F)
             Formula* P = A->lhs->lhs;
 

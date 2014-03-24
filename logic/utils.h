@@ -21,5 +21,6 @@ void destroy_Axiom3(Formula *axiom);
 void destroy_Formula(Formula *f);
 void delete_Formula(Formula *f); //if it is TheFalse dont do anything, else delete(f)
 
+bool is_axiom3_candidate(Formula* f); //is it of the form (A-F)-F .. So don't use it for any other purpose
 
 #endif
