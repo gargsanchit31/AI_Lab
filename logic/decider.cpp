@@ -177,7 +177,6 @@ void Decider::axiom1_closure(){
             if(f->len <= length_limit) proof.push(f,ann);
             else {
                 delete f;
-                cout << "deleting .." <<endl;
             }
         }
         for(int j=0;j<size_stmt;++j){
@@ -188,7 +187,6 @@ void Decider::axiom1_closure(){
             if(f->len <= length_limit) proof.push(f,ann);
             else {
                 delete f;
-                cout << "deleting .." <<endl;
             }
         }
     }
@@ -202,7 +200,6 @@ void Decider::axiom1_closure(){
             if(f->len <= length_limit) proof.push(f,ann);
             else {
                 delete f;
-                cout << "deleting .." <<endl;
             }
         }
         for(int j=0;j<size_stmt;++j){
@@ -213,7 +210,6 @@ void Decider::axiom1_closure(){
             if(f->len <= length_limit) proof.push(f,ann);
             else {
                 delete f;
-                cout << "deleting .." <<endl;
             }
         }
     }
