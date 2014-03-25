@@ -115,7 +115,7 @@ void Decider::prove(){
     cout << "hello" <<endl;
     sleep(1);
     int x;
-    int LIMIT = 10;
+    int LIMIT = 20;
     length_limit = 5;
     for(int i=0; i<LIMIT; i++){
         cout << "Round " << i <<" Length_limit " << length_limit << " Proof Size=" << proof.stmt_list.size() <<endl;
@@ -224,7 +224,10 @@ void Decider::axiom1_closure(){
     Formula_List & FL = proof.stmt_list;
     for(int i=0;i<size_stmt;i++){
         Formula * stmt = FL[i];
-        if(is_axiom3_candidate(stmt)){cout<<"ax 3 candidate" <<endl; continue;} //WATCH its axiom3 candidate. Don't consider
+        if(is_axiom3_candidate(stmt)){
+            //cout<<"ax 3 candidate" <<endl;
+            continue;
+        } //WATCH its axiom3 candidate. Don't consider
         if(stmt->is_leaf()) continue;
         if(stmt->lhs->is_leaf()) continue;
         //cout << "come here " <<endl;
@@ -328,7 +331,10 @@ void Decider::axiom2_closure_expansion(){
     Formula_List & FL = proof.stmt_list;
     for(int i=0;i<size_stmt;i++){
         Formula * stmt = FL[i];
-        if(is_axiom3_candidate(stmt)){cout<<"ax 3 candidate" <<endl; continue;} //WATCH its axiom3 candidate. Don't consider
+        if(is_axiom3_candidate(stmt)){
+            //cout<<"ax 3 candidate" <<endl;
+            continue;
+        } //WATCH its axiom3 candidate. Don't consider
         if(stmt->is_leaf()) continue;
         if(stmt->rhs->is_leaf()) continue;
         //it is indeed of for (A-(B-C))
@@ -360,7 +366,10 @@ void Decider::axiom2_closure_reduction(){
     Formula_List & FL = proof.stmt_list;
     for(int i=0;i<size_stmt;i++){
         Formula * line = FL[i];
-        if(is_axiom3_candidate(line)){cout<<"ax 3 candidate" <<endl; continue;} //WATCH its axiom3 candidate. Don't consider
+        if(is_axiom3_candidate(line)){
+            //cout<<"ax 3 candidate" <<endl;
+            continue;
+        } //WATCH its axiom3 candidate. Don't consider
         if(line->is_leaf()) continue;
 
         Formula *stmt = line->lhs;
@@ -393,16 +402,24 @@ void Decider::axiom2_closure_special(){
 //* So use axiom2, but now treat   (A-F) as 
 //* (A-C) term in (A-(B-C)) - ((A-B)-(A-C))
 //* We have freedom to choose B
+    
+    static int last_proof_size = 0; //initially 0, set @end of the function
     Annotation ann;
     ann.rule = Ax2;
     int size_stmt = proof.stmt_list.size();
     Formula_List & FL = proof.stmt_list;
+
+    int temp_saved_count = 0;
+    int temp_total_count = 0;
     for(int index=0;index<size_stmt;index++){
         Formula * line = FL[index];
         if(line->is_leaf()) continue;
 
         Formula *stmt = line->lhs;
-        if(is_axiom3_candidate(stmt)){cout<<"ax 3 candidate" <<endl; continue;} //WATCH its axiom3 candidate. Don't consider
+        if(is_axiom3_candidate(stmt)){
+            //cout<<"ax 3 candidate" <<endl;
+            continue;
+        } //WATCH its axiom3 candidate. Don't consider
         if(stmt->is_leaf()) continue;
         if(stmt->rhs->val != 'F') continue; //lhs is not (A-F) form
 
@@ -410,11 +427,26 @@ void Decider::axiom2_closure_special(){
         Formula * B; //variable choose from Seed or proof_list
         Formula * C = stmt->rhs; //TheFalse
 
+        //Note Since Axiom2(A,B,C) = (A-(B-C)) - ((A-B)-(A-C))  
+        //will be atleast size >= 3a+2c+2b 
+        //=>              size >= 3a+2c+2  (Unknown B will be atleast size 1)
+        //So if 3a+2c >= length_limit, Better Not go into the following loop
+        int estimated_length = 3*(A->len) + 2*(C->len) + 2;
+        temp_total_count++;
+        //cout << "estimated lenght" << estimated_length << "/ " <<length_limit << " of " << stmt->to_string() <<endl;
+        if(estimated_length > length_limit){
+            temp_saved_count++;
+            //cout << "hurray saved " << proof.stmt_list.size() <<" operations" <<endl;
+            continue;
+        }
+
         int size[2] = {(int)(Seed.size()),(int)(proof.stmt_list.size())};
         Formula_List* flist[2] = {&Seed,&(proof.stmt_list)};
         for(int selector=0; selector<2; selector++){
+            int i = 0;
+            //if(i < last_proof_size && selector == 1) i=last_proof_size; //consider only new statements as candidates for B
             Formula_List &fl = *flist[selector];
-            for(int i=0;i<size[selector];++i){
+            for(i=0;i<size[selector];++i){
                 Formula * B = fl[i];
                 ann.a = A;
                 ann.b = B;
@@ -432,6 +464,8 @@ void Decider::axiom2_closure_special(){
             }
         }
     }
+    last_proof_size = size_stmt; //size of proof when function was called
+    cout << "temp saved fraction due to length checking = " << ((float)temp_saved_count/temp_total_count) << endl;;
 }
 
 void Decider::axiom2_closure_brute(){
