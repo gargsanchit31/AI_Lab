@@ -75,6 +75,7 @@ Decider::~Decider(){
 }
 
 Decider::Decider(Formula * stmt, Formula_List tSeed){
+    cout << "To prove : "; stmt->print_line();
     statement = stmt;
     genererate_hypothesis(statement, hypothesis_list);
     //print_formula_list(hypothesis_list);

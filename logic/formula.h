@@ -13,13 +13,13 @@ public:
     int len;
     string str_form;
     /* basic */
-    Formula();
     Formula(char tval, Formula * tlhs, Formula * trhs);
     Formula(char tval);
     void print();
     void print_line();
     void print_string(string &buffer);
-    string to_string();
+    void to_string_init();
+    string to_string() const;
     bool operator == (const Formula & node);
     bool is_leaf();
     bool is_false(); //Is syntactically False

@@ -2,19 +2,12 @@
 #include <string>
 using namespace std;
 
-Formula::Formula(){
-    lhs = NULL;
-    rhs = NULL;
-    val = '-';
-    str_form = ""; //empty
-}
-
 Formula::Formula(char tval, Formula * tlhs, Formula * trhs){ //non-leaf
     lhs = tlhs;
     rhs = trhs;
     val = tval;
     len = tlhs->len + trhs->len;
-    str_form = ""; //empty
+    to_string_init();
 }
 
 Formula::Formula(char tval){ //leaf
@@ -22,7 +15,7 @@ Formula::Formula(char tval){ //leaf
     rhs = NULL;
     val = tval;
     len = 1;
-    str_form = ""; //empty
+    to_string_init();
 }
 
 void Formula::print(){
@@ -50,25 +43,17 @@ void Formula::print_string(string &buffer){
     }
 }
 
-string Formula::to_string(){
-    if(str_form == ""){
-        print_string(str_form);
-    }
-    else{
-        //cout << "reusing ..... " <<endl;
-    }
+void Formula::to_string_init(){
+    str_form ="";
+    print_string(str_form);
+}
+
+string Formula::to_string() const{
     return str_form;
 }
 
 bool Formula::operator == (const Formula & node){
-    if(val == node.val && val=='-'){
-        //recusively check lhs and rhs
-        return ((*lhs == *node.lhs) && (*rhs == *node.rhs));
-    }
-    else if(val == node.val){
-        return true;
-    }
-    return false;
+    return (to_string() == node.to_string());
 }
 
 bool Formula::is_leaf(){

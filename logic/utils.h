@@ -15,6 +15,11 @@ Formula * implication(Formula *lhs, Formula *rhs);
 Formula * Axiom1(Formula *A, Formula *B);
 Formula * Axiom2(Formula *A, Formula *B, Formula *C);
 Formula * Axiom3(Formula *A);
+
+bool isAxiom1(Formula * f);
+bool isAxiom2(Formula * f);
+bool isAxiom3(Formula * f);
+
 void destroy_Axiom1(Formula *axiom);
 void destroy_Axiom2(Formula *axiom);
 void destroy_Axiom3(Formula *axiom);

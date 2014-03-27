@@ -6,7 +6,13 @@ using namespace std;
 
 
 int main(){
-
+    /*
+    //checking isAxiom1(), isAxiom3(), isAxiom2()
+    Formula* fnot = parse_new();
+    fnot->print_line();
+    cout << "length  " << (fnot->len) << "is Axiom 1 : " << isAxiom3(fnot) << endl;
+    return 0;
+    */
     /*
     //checking length functionality
     Formula* fnot = parse_new();

@@ -184,3 +184,50 @@ bool is_axiom3_candidate(Formula* A){ //is it of the form (X-F)-F .. So don't us
     if(A->lhs->rhs->to_string() != "F") return false;//A->lhs->rhs is not F
     return true;
 }
+
+bool isAxiom1(Formula * f){
+    if(f->is_leaf()) return false;
+    if(f->rhs->is_leaf()) return false;
+    //check
+    if( *(f->lhs) == *(f->rhs->rhs)) return true;
+}
+
+bool isAxiom3(Formula * f){
+    if(f->is_leaf()) return false;
+    if(f->lhs->is_leaf()) return false;
+    if(f->lhs->lhs->is_leaf()) return false;
+    //check
+    if( *(f->rhs) == *(f->lhs->lhs->lhs)) return true;
+}
+
+bool isAxiom2(Formula * f){
+    if(f->is_leaf()) return false;
+
+    if(f->lhs->is_leaf()) return false;
+    if(f->lhs->rhs->is_leaf()) return false;
+
+    if(f->rhs->is_leaf()) return false;
+    if(f->rhs->lhs->is_leaf()) return false;
+    if(f->rhs->rhs->is_leaf()) return false;
+    //check
+    //(a1-(b1-c1)) - ((a3-b2)-(a3-c2)) to list
+    Formula * a1 = f->lhs->lhs;
+    Formula * a2 = f->rhs->lhs->lhs;
+    Formula * a3 = f->rhs->rhs->lhs;
+
+    Formula * b1 = f->lhs->rhs->lhs;
+    Formula * b2 = f->rhs->lhs->rhs;
+
+    Formula * c1 = f->lhs->rhs->rhs;
+    Formula * c2 = f->rhs->rhs->rhs;
+    if((*a1 == *a2) && (*a2 == *a3) && (*b1 == *b2) && (*c1 == *c2)) return true;
+    /*
+    a1->print_line();
+    a2->print_line();
+    a3->print_line();
+    b1->print_line();
+    b2->print_line();
+    c1->print_line();
+    c2->print_line();
+    */
+}
