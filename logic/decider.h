@@ -22,7 +22,15 @@ struct Annotation{
     Formula * a; // Ax2, Ax1, Ax3
     Formula * b; // Ax2, Ax1, 
     Formula * c; // Ax2
+
+    //axiom flags
+    bool flag_ax2_e; //it was created as a result of expansion using axiom2, so must not be considered for further expansion
+    bool flag_ax2_sp;   // whether it was considered for axiom2special closure(), B candidates are from (last proof size -> end), 
+                        // o/w from 0->end
+
+//methods
     void print();
+    Annotation();
 };
 
 typedef vector<Annotation> Annotation_List;

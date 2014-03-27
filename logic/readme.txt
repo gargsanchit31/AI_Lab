@@ -3,6 +3,9 @@ New Strategy:
 * if whole line is of form  (A-(B-C)):  expand it using axiom2 
     i.e add (A-(B-C)) - ((A-B)-(A-C)) to list
     Here we are simplifying a complicated expr into two simpler expression, when we later apply modes-pones
+
+    Optimization : once expanded, the newly added formula must not be considered for further expansion.Its useless.
+
 * if some lhs is of the form (A-B)-(A-C): treat it as rhs of axiom2
     i.e add (A-(B-C)) - ((A-B)-(A-C))
     So now we need to prove (A-(B-C))

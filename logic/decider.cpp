@@ -5,6 +5,10 @@
 
 int length_limit;
 /** Annotation **/
+Annotation::Annotation(){
+    flag_ax2_e = false;
+    flag_ax2_sp = false;
+}
 void Annotation::print(){
     switch(rule){
         case Hyp:
@@ -117,7 +121,9 @@ void Decider::prove(){
     int x;
     int LIMIT = 20;
     length_limit = 5;
+    int size_before, size_after;
     for(int i=0; i<LIMIT; i++){
+        size_before = proof.stmt_list.size();
         cout << "Round " << i <<" Length_limit " << length_limit << " Proof Size=" << proof.stmt_list.size() <<endl;
         mp_closure();
         if(proof.get("F") != -1){
@@ -137,7 +143,15 @@ void Decider::prove(){
         axiom3_closure();
         cout << "ax 3: " << proof.stmt_list.size() <<endl;
 
-        length_limit+=1; //twice the length limit
+        size_after = proof.stmt_list.size();
+        if(size_after == size_before){//i.e no progress in this round
+            cout << "-------  Incrementing the limit" << endl;
+            length_limit+=1; //twice the length limit
+        }
+        else{
+            i--; //Preserving the round count in next round
+            cout << "-------  Keeping the Same limit" << endl;
+        }
 
         //print_formula_list(proof.stmt_list);
         //cout << "continue enter any number to continue? ";
@@ -329,8 +343,14 @@ void Decider::axiom2_closure_expansion(){
     ann.rule = Ax2;
     int size_stmt = proof.stmt_list.size();
     Formula_List & FL = proof.stmt_list;
+    Annotation_List & AL = proof.ann_list;
     for(int i=0;i<size_stmt;i++){
         Formula * stmt = FL[i];
+        Annotation ann_stmt = AL[i];
+        if(ann_stmt.flag_ax2_e == true){
+            //cout << "saved ax2 expansion" << endl;
+            continue;
+        }
         if(is_axiom3_candidate(stmt)){
             //cout<<"ax 3 candidate" <<endl;
             continue;
@@ -344,6 +364,7 @@ void Decider::axiom2_closure_expansion(){
         ann.a = A;
         ann.b = B;
         ann.c = C;
+        ann.flag_ax2_e = true;
         Formula* f =Axiom2(A,B,C); 
 //        f->print_line();
         if(f->len <= length_limit){
@@ -397,6 +418,7 @@ void Decider::axiom2_closure_reduction(){
         }
     }
 }
+
 void Decider::axiom2_closure_special(){
 //* if some "lhs" is of the form (A-F), we can't use axiom1
 //* So use axiom2, but now treat   (A-F) as 
@@ -411,6 +433,10 @@ void Decider::axiom2_closure_special(){
 
     int temp_saved_count = 0;
     int temp_total_count = 0;
+
+    int size[2] = {(int)(Seed.size()),(int)(proof.stmt_list.size())};
+    Formula_List* flist[2] = {&Seed,&(proof.stmt_list)};
+
     for(int index=0;index<size_stmt;index++){
         Formula * line = FL[index];
         if(line->is_leaf()) continue;
@@ -440,8 +466,6 @@ void Decider::axiom2_closure_special(){
             continue;
         }
 
-        int size[2] = {(int)(Seed.size()),(int)(proof.stmt_list.size())};
-        Formula_List* flist[2] = {&Seed,&(proof.stmt_list)};
         for(int selector=0; selector<2; selector++){
             int i = 0;
             //if(i < last_proof_size && selector == 1) i=last_proof_size; //consider only new statements as candidates for B
