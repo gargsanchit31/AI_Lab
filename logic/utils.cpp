@@ -153,9 +153,26 @@ Formula * Axiom3(Formula *A){
                 A
             );
 }
+
+Formula * Axiom3_reverse(Formula *A){
+    Formula * F = TheFalse;
+    return  implication(//1
+                A,
+                implication(//2
+                    implication(A, F),//3
+                    F
+                )
+            );
+}
+
 void destroy_Axiom3(Formula *axiom){
     delete(axiom->lhs->lhs);//3
     delete(axiom->lhs);//2
+    delete(axiom);//1
+}
+void destroy_Axiom3_reverse(Formula *axiom){
+    delete(axiom->rhs->lhs);//3
+    delete(axiom->rhs);//2
     delete(axiom);//1
 }
 
