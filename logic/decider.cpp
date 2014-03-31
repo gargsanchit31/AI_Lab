@@ -88,6 +88,7 @@ Decider::Decider(Formula * stmt, Formula_List tSeed){
         Formula * f = hypothesis_list[i];
         if(f->is_leaf()) continue;
         if(f->rhs->val != 'F') continue;
+        if(f->lhs->is_leaf()) continue; //if lhs(X) is leaf, no use as we can't simplify it any further, moreover we add X itself in gen_hyp()
         //it is to be taken rhs to form (X-F)-F or simply call gen_hyp with X
         hypothesis_validity_list[i] = false;
         genererate_hypothesis(f->lhs, hypothesis_list, hypothesis_validity_list);
@@ -163,7 +164,7 @@ void Decider::prove(){
         cout << "ax 2: Expansion" << proof.stmt_list.size() <<endl;
         axiom2_closure_reduction();
         cout << "ax 2: Reduction" << proof.stmt_list.size() <<endl;
-        axiom2_closure_special();
+        //axiom2_closure_special();
         cout << "ax 2: Special" << proof.stmt_list.size() <<endl;
         axiom3_closure();
         cout << "ax 3: " << proof.stmt_list.size() <<endl;
