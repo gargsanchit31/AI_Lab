@@ -248,3 +248,10 @@ bool isAxiom2(Formula * f){
     c2->print_line();
     */
 }
+
+bool is_a_imp_f(Formula *f){
+    if(f->is_leaf()) return false;
+    if(f->rhs->val != 'F') return false;
+    if(f->lhs->is_leaf()) return false; //if lhs(X) is leaf, no use as we can't simplify it any further, moreover we add X itself in gen_hyp()
+    return true;
+}

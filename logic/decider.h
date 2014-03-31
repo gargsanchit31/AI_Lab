@@ -8,12 +8,12 @@
 typedef vector<Formula*> Formula_List;
 
 typedef enum{
-    Hyp,
-    MP,
-    Ax1,
-    Ax2,
-    Ax3,
-    Ax3_fix
+    Hyp = 1,
+    MP = 2,
+    Ax1 = 3,
+    Ax2 = 4,
+    Ax3 = 5,
+    Ax3_fix = 6
 } Rule;
 
 struct Annotation{

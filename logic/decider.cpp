@@ -86,9 +86,7 @@ Decider::Decider(Formula * stmt, Formula_List tSeed){
     //simplify hyp of the form A-F 
     for(int i=0; i< hypothesis_list.size();i++){
         Formula * f = hypothesis_list[i];
-        if(f->is_leaf()) continue;
-        if(f->rhs->val != 'F') continue;
-        if(f->lhs->is_leaf()) continue; //if lhs(X) is leaf, no use as we can't simplify it any further, moreover we add X itself in gen_hyp()
+        if(! is_a_imp_f(f)) continue;
         //it is to be taken rhs to form (X-F)-F or simply call gen_hyp with X
         hypothesis_validity_list[i] = false;
         genererate_hypothesis(f->lhs, hypothesis_list, hypothesis_validity_list);
@@ -352,6 +350,7 @@ void Decider::axiom2_closure_reduction(){
     }
 }
 
+
 void Decider::axiom2_closure_special(){
 //* if some "lhs" is of the form (A-F), we can't use axiom1
 //* So use axiom2, but now treat   (A-F) as 
@@ -541,12 +540,18 @@ void Decider::lhs_some_axiom_closure(){
 
 /**  Proof_Map **/
 int Proof_Map::push(Formula* f, Annotation ann){
+    static int temp_count = 0;
     string key = f->to_string();
     if(map.find(key) == map.end()){
+        temp_count++;
         int i = stmt_list.size();
         map[key] = i;
         stmt_list.push_back(f);
         ann_list.push_back(ann);
+
+        if(is_a_imp_f(f)) {
+            cout << "Is of the form A-F." << temp_count << "  Gen by rule " << ann.rule << " f is " << f->to_string() <<endl;
+        }
         return 0;
     }
     else{
