@@ -4,11 +4,12 @@
 
 
 /* shared variables */
+extern istream *inFile;
 
 /* functions  */
 
 Formula* parse();
-Formula* parse_new(); // allows ~ symbol
+Formula* parse_new(istream &stream); // allows ~ symbol
     
 Formula * implication(Formula *lhs, Formula *rhs);
 

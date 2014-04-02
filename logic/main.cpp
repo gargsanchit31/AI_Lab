@@ -2,10 +2,14 @@
 #include "formula.h"
 #include "utils.h"
 #include "decider.h"
+#include <cstring>
+#include <fstream>
+#include <istream>
 using namespace std;
+istream *inFile;
 
 
-int main(){
+int main(int argc, char *argv[]){
     /*
     //checking isAxiom1(), isAxiom3(), isAxiom2()
     Formula* fnot = parse_new();
@@ -50,16 +54,28 @@ int main(){
     return 0;
     */
 
-
-    Formula * f1 = parse_new();
+    ifstream inFile_file;
+    inFile_file.open(argv[1], ios::in);
+    if(!inFile_file.is_open()){
+        cout << "can't open control file " << argv[1] <<endl;
+        exit(0);
+    }
+    inFile = &inFile_file; //Note its importance
+/*
+    Formula * C = parse_new(cin);
+    cout << C->to_string() <<endl;
+    return 0;
+    */
+    Formula * f1 = parse_new(*inFile);
     //f1->print_line();
 
     //Take Seed formulae
     int seed_count;
-    cin >> seed_count;
+    *inFile >> seed_count;
+
     Formula_List seeds;
     for(int i=0; i<seed_count; i++){
-        Formula * f = parse_new();
+        Formula * f = parse_new(*inFile);
         seeds.push_back(f);
     }
 

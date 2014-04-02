@@ -8,6 +8,7 @@ int length_limit;
 Annotation::Annotation(){
     flag_ax2_e = false;
     flag_ax2_sp = false;
+    flag_ax2_red = false;
     flag_lhs_axiom = false;
 }
 void Annotation::print(){
@@ -158,14 +159,16 @@ void Decider::prove(){
         cout << "lhs axiom 3's lhs" << proof.stmt_list.size() <<endl;
         axiom1_closure();
         cout << "ax 1: " << proof.stmt_list.size() <<endl;
+        axiom3_closure();
+        cout << "ax 3: " << proof.stmt_list.size() <<endl;
+
         axiom2_closure_expansion();
         cout << "ax 2: Expansion" << proof.stmt_list.size() <<endl;
         axiom2_closure_reduction();
         cout << "ax 2: Reduction" << proof.stmt_list.size() <<endl;
         //axiom2_closure_special();
+        axiom2_closure_special_help();
         cout << "ax 2: Special" << proof.stmt_list.size() <<endl;
-        axiom3_closure();
-        cout << "ax 3: " << proof.stmt_list.size() <<endl;
 
         size_after = proof.stmt_list.size();
         if(size_after == size_before){//i.e no progress in this round
@@ -185,14 +188,13 @@ void Decider::prove(){
 }
 
 void Decider::mp_closure(){
-    Annotation ann;
-    ann.rule = MP;
     int delta; //keep track of additions in each round of MP closure
     do{
         delta = 0;
         int size = proof.stmt_list.size();
         for(int i=0; i< size;i++){
             Formula* f = proof.stmt_list[i];
+            Annotation ann_f = proof.ann_list[i];
             //cout << "f is : " ; f->print();
             if(!f->is_leaf()){
                 int index = proof.get(f->lhs->to_string());
@@ -202,8 +204,13 @@ void Decider::mp_closure(){
                     //cout <<"  MP applicable on rhs '";
                     //l->print();
                     //cout <<"'" <<endl;
+                    Annotation ann;
+                    ann.rule = MP;
+
                     ann.l1 = i;//p-q
                     ann.l2 = index;//p
+                    ann.flag_ax2_e = ann_f.flag_ax2_e;//carry over
+                    ann.flag_ax2_red = ann_f.flag_ax2_red;//carry over
                     Formula * newstep = f->rhs;
                     Formula * copy = newstep->copy();
                     int status = proof.push(copy, ann);//f is (L-R), L is already in proof, so push R into proof
@@ -279,6 +286,10 @@ void Decider::axiom2_closure_expansion(){
             //cout << "saved ax2 expansion" << endl;
             continue;
         }
+        if(ann_stmt.flag_ax2_red == true){
+            //cout << "saved ax2 expansion" << endl;
+            continue;
+        }
         if(is_axiom3_candidate(stmt)){
             //cout<<"ax 3 candidate" <<endl;
             continue;
@@ -336,6 +347,7 @@ void Decider::axiom2_closure_reduction(){
         ann.a = A;
         ann.b = B;
         ann.c = C;
+        ann.flag_ax2_red = true;
         Formula* f =Axiom2(A,B,C); 
 //        f->print_line();
         if(f->len <= length_limit){
@@ -350,6 +362,55 @@ void Decider::axiom2_closure_reduction(){
     }
 }
 
+void Decider::axiom2_closure_special_help(){
+    static int index = 0;
+//* if some "lhs" is of the form (A-F), we can't use axiom1
+//* So use axiom2, but now treat   (A-F) as 
+//* (A-C) term in (A-(B-C)) - ((A-B)-(A-C))
+//* We have freedom to choose B
+//* Take human help to ask for B
+    Annotation ann;
+    ann.rule = Ax2;
+
+    Formula_List & FL = proof.stmt_list;
+    Annotation_List & AL = proof.ann_list;
+    int size = FL.size();
+
+    for(; index<size ;index++){
+        Formula * line = FL[index];
+        Annotation &ann_stmt = AL[index];
+        if(line->is_leaf()) continue;
+        if(ann_stmt.flag_lhs_axiom) continue; //since lhs is axiom no need to prove it
+
+        Formula *stmt = line->lhs;
+        if(is_axiom3_candidate(stmt)){
+            //cout<<"ax 3 candidate" <<endl;
+            continue;
+        } //WATCH its axiom3 candidate. Don't consider
+        if(stmt->is_leaf()) continue;
+        if(stmt->rhs->val != 'F') continue; //lhs is not (A-F) form
+
+        Formula * A = stmt->lhs;
+        Formula * B; //variable choose from Seed or proof_list
+        Formula * C = stmt->rhs; //TheFalse
+
+        cout << "Need to apply theorem 2 with :" <<endl;
+        cout << "A : " << A->to_string() << endl;
+        cout << "C : " << C->to_string() << endl;
+        cout << "Please give suggestions for B" <<endl;
+        int count;
+        cout << "How many suggestions you want to give:"; cin >> count;
+        for(int i=0;i<count;i++){
+            cout << "Suggestion " << i <<":";
+            B = parse_new(cin);
+            Formula* f = Axiom2(A,B,C);
+            int status = proof.push(f,ann);
+            if(status == -1){
+                destroy_Axiom2(f);
+            }
+        }
+    }
+}
 
 void Decider::axiom2_closure_special(){
 //* if some "lhs" is of the form (A-F), we can't use axiom1

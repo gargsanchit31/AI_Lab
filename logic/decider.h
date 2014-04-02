@@ -26,6 +26,7 @@ struct Annotation{
 
     //axiom flags
     bool flag_ax2_e; //it was created as a result of expansion using axiom2, so must not be considered for further expansion
+    bool flag_ax2_red; //it was created as a result of reduction using axiom2
     bool flag_ax2_sp;   // whether it was considered for axiom2special closure(), B candidates are from (last proof size -> end), 
                         // o/w from 0->end
     bool flag_lhs_axiom;//lhs is an axiom
@@ -77,6 +78,7 @@ public:
     void axiom2_closure_expansion();  // Axiom2 closure
     void axiom2_closure_reduction();  // Axiom2 closure
     void axiom2_closure_special();  // Axiom2 closure
+    void axiom2_closure_special_help();
     void axiom2_closure_brute();  // Axiom2 closure
 
     void axiom3_closure(); // Axiom3 closure

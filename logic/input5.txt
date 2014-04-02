@@ -1,4 +1,4 @@
-(~~p-p)
+((p-q)-((~p-q)-q))
 2
 p
 q
@@ -11,3 +11,7 @@ q
 # (~(p&q)-(~p|~q)) 
 //  ~(p and q) -> ~p or ~q
 //(p-(q-F)) - (not not p)-(not q)
+
+
+//ROUGH
+((p-q)-(((p-F)-q)-q))

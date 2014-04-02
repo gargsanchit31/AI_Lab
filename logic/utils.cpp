@@ -6,10 +6,12 @@ Formula * TheFalse = new Formula('F');
 
 /* functions  */
 Formula* parse(){ //formula is either 'a' OR (<f> - <f>)
+    /*
+
     Formula * formula;
 
     char x;
-    cin >> x;
+    *inFile >> x;
     if(x != '('){//i.e its 'a'
         if(x == 'F') {
             cout << "false is input" <<endl;
@@ -25,7 +27,7 @@ Formula* parse(){ //formula is either 'a' OR (<f> - <f>)
     Formula * rhs;
     lhs = parse();
 
-    cin >>x ; //for '-'
+    *inFile >>x ; //for '-'
     if(x != '-'){ //Error checking
         cout << "Found character '" << x <<"'. Expected '-'" <<endl;
         return NULL;
@@ -33,7 +35,7 @@ Formula* parse(){ //formula is either 'a' OR (<f> - <f>)
 
     rhs = parse();
 
-    cin >> x; //for ')'
+    *inFile >> x; //for ')'
     if(x != ')'){ //Error checking
         cout << "Found character '" << x <<"'. Expected ')'" <<endl;
         return NULL;
@@ -42,13 +44,15 @@ Formula* parse(){ //formula is either 'a' OR (<f> - <f>)
     formula = new Formula('-', lhs, rhs);
 
     return formula;
+    */
 }
 
-Formula* parse_new(){ //formula is either 'a' OR (<f> - <f>)
+Formula* parse_new(istream &stream){ //formula is either 'a' OR (<f> - <f>)
+
     Formula * formula;
 
     char x;
-    cin >> x;
+    stream >> x;
     if(x != '(' && x!='~'){//i.e its 'a'
         cout << "x is " << x << endl;
 
@@ -61,7 +65,7 @@ Formula* parse_new(){ //formula is either 'a' OR (<f> - <f>)
     if(x == '~'){
         Formula * lhs;
         cout << "calling lhs on negation" << endl;
-        lhs = parse_new();
+        lhs = parse_new(stream);
         Formula * False = TheFalse;
         formula = implication(lhs, False);
         return formula;
@@ -72,19 +76,19 @@ Formula* parse_new(){ //formula is either 'a' OR (<f> - <f>)
     //its (f - f)
     Formula * lhs;
     Formula * rhs;
-    lhs = parse_new();
+    lhs = parse_new(stream);
 
     char op;
 
-    cin >>op ; //for '-'
+    stream >>op ; //for '-'
     if(op != '-' && op!='&' && op != '|'){ //Error checking
         cout << "Found character '" << op <<"'. Expected '-', '|' or '&'" <<endl;
         return NULL;
     }
 
-    rhs = parse_new();
+    rhs = parse_new(stream);
 
-    cin >> x; //for ')'
+    stream >> x; //for ')'
     if(x != ')'){ //Error checking
         cout << "Found character '" << x <<"'. Expected ')'" <<endl;
         return NULL;
