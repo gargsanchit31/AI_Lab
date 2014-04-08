@@ -42,7 +42,7 @@ eval(T) :- connected(out(X), T), type(X, tnot), write(X), eval(in(1,X)), eval(X)
 
 eval(G):- type(G, tand), signal(in(1,G), 1), signal(in(2,G), 1), write('AND is 1\n'), setsignal(out(G),1), !. 
 % cut op ! means that futher nothing should be tried i.e next rule will not be looked upon on reaching !.
-eval(G) :- type(G, tand),write('AND is 0\n'), setsignal(out(G),1), !.
+eval(G) :- type(G, tand),write('AND is 0\n'), setsignal(out(G),0), !.
 
 eval(G):- type(G, tnot), signal(in(1,G), 1), write('NOT is 0\n'), setsignal(out(G),0), !. 
 % cut op ! means that futher nothing should be tried i.e next rule will not be looked upon on reaching !.
