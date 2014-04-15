@@ -10,7 +10,7 @@
 #include <string>
 
 /** debugging symbols **/
-#define  MAXITERATION 20
+#define  MAXITERATION 200
 #define INF 10000000
 
 
@@ -149,12 +149,22 @@ int main(int argc, char *argv[]){ //args control-file-name  #block in 4/5 testin
 
 	    neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
         //nn->print_topology();
+        int response;
+        cout << "if you want to load weights enter 1 else 0 : Load? " ;
+        cin >> response;
+        if(response == 1){
+            string file;
+            cout << "Enter weight file :";
+            cin >> file;
+            nn->load_weights(file);
+        }
+        else{
+            cout << "MAXITERATION " << MAXITERATION << endl;
+            run_network(nn, data);
+            nn->save_weights();
+            cout <<ITERATION<< "\ntraining complete";
+        }
         
-        cout << "MAXITERATION " << MAXITERATION << endl;
-        run_network(nn, data);
-
-        cout <<ITERATION<< "\ntraining complete";
-
         cout << "test_record_count " << size_block <<endl;
         float correct_count = 0; //no of test tweets classified correctly
 
