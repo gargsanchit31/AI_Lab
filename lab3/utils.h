@@ -7,6 +7,7 @@
 #define IFBUG if(DEBUG){
 #define ENDBUG }
 
+#define PRINTMODULO 1
 
 double sigmoid(double x);
 

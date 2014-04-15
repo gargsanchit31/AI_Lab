@@ -4,6 +4,9 @@
 #include <vector>
 #include <cstring>
 #include <cstdlib>
+#include  <iostream>
+#include  <fstream>
+#include <string>
 
 //#define CLASSIFY(x) (x<0.4?0:(x>0.6?1:2))
 #define CLASSIFY(x) (x<0.5?0:1)
@@ -187,7 +190,7 @@ int neural_network::training_step(vector<training_data> inp_data){
     int num_patterns = pow(2,layers[layer_count-1]->get_population());
     Error  = Error;
 
-	if(PRINTERROR == 1 && ITERATION%100 == 0) cout << ITERATION/100 << " " << Error << endl;
+	if(PRINTERROR == 1 && ITERATION%PRINTMODULO == 0) cout << ITERATION/PRINTMODULO << " " << Error << endl;
 	if(Error >= Threshold){
 		return -1;
 	}
@@ -249,4 +252,40 @@ void neural_network::print_truth(){ //print o/p {0,1} for the neurons in all lay
         }
         cout << " | ";
 	}
+}
+
+void neural_network::save_weights(){ //print o/p {0,1} for the neurons in all layers(except input)
+    ofstream weightfile;
+    weightfile.open("weight.save", ios::out);
+	for(int cur_index=layer_count-1; cur_index>=0; cur_index--){
+		layer* cur_layer = layers[cur_index];
+		vector<Neuron*> cur_layer_neurons = cur_layer->neuronList;
+        for(int j=0; j<cur_layer->get_population(); j++){
+            Neuron * myneuron = cur_layer_neurons[j];
+            for(int k=0; k< myneuron->inputs.size(); k++){
+                weightfile << myneuron->inputs[k]->get_weight() << " ";
+            }
+        }
+        weightfile << endl;
+	}
+    weightfile.close();
+}
+
+void neural_network::load_weights(string filename){ //print o/p {0,1} for the neurons in all layers(except input)
+    ifstream weightfile;
+    double wt;
+    weightfile.open(filename.c_str(), ios::in);
+	for(int cur_index=layer_count-1; cur_index>=0; cur_index--){
+		layer* cur_layer = layers[cur_index];
+		vector<Neuron*> cur_layer_neurons = cur_layer->neuronList;
+        for(int j=0; j<cur_layer->get_population(); j++){
+            cout << cur_index  << "," << j  << "  " << endl;
+            Neuron * myneuron = cur_layer_neurons[j];
+            for(int k=0; k< myneuron->inputs.size(); k++){
+                weightfile >> wt;
+                myneuron->inputs[k]->set_weight(wt);
+            }
+        }
+	}
+    weightfile.close();
 }

@@ -35,6 +35,8 @@ public:
 	void print_network();
 	void print_truth();
 	void weight_update();
+    void save_weights();
+    void load_weights(string filename);
 	int training_step(vector<training_data>);
 	void set_input(vector<double>);
 	double calculate_err(vector<double>);			//returns the diatance between output layer vector and vector

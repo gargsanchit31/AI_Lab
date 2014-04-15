@@ -10,8 +10,9 @@
 #include <string>
 
 /** debugging symbols **/
-#define  MAXITERATION 10000
+#define  MAXITERATION 20
 #define INF 10000000
+
 
 double EITA = 0.02;
 double THRESH = 0.01;
@@ -149,12 +150,15 @@ int main(int argc, char *argv[]){ //args control-file-name  #block in 4/5 testin
 	    neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
         //nn->print_topology();
         
+        cout << "MAXITERATION " << MAXITERATION << endl;
         run_network(nn, data);
 
         cout <<ITERATION<< "\ntraining complete";
 
         cout << "test_record_count " << size_block <<endl;
         float correct_count = 0; //no of test tweets classified correctly
+
+        inFile.close();
 
         for(int i=0; i<test_data.size();i++){
             vector<double> out = nn->calculate_output(test_data[i].input);
@@ -168,9 +172,70 @@ int main(int argc, char *argv[]){ //args control-file-name  #block in 4/5 testin
         cout << "correct_count " << correct_count <<endl;
         cout << "accuracy " << ((float)correct_count * 100)/test_data.size()<< endl;
     }
+    if(option == "live"){ //further take eita and thresh and then take input for testing
+        cout << "option is" << option << endl;
+        //input EITA and THRESH
+        inFile >> EITA;
+        cout << "EITA is " << EITA <<endl;
+        inFile >> THRESH;
+        cout << "THRESH is " << THRESH <<endl;
+        inFile >> MOMENTUM;
+        cout << "MOMENTUM is " << MOMENTUM <<endl;
+        for(int i=0;i<test_data.size() ;i++){
+            data.push_back(test_data[i]);
+        } //push training
+
+	    neural_network* nn = new neural_network(num_layers,layer_sizes, THRESH);
+        //nn->print_topology();
+        int response;
+        cout << "if you want to load weights enter 1 else 0 : Load? " ;
+        cin >> response;
+        if(response == 1){
+            string file;
+            cout << "Enter weight file :";
+            cin >> file;
+            nn->load_weights(file);
+        }
+        else{
+            cout << "MAXITERATION " << MAXITERATION << endl;
+            run_network(nn, data);
+            nn->save_weights();
+            cout <<ITERATION<< "\ntraining complete";
+        }
+
+
+        inFile.close();
+        while(true){
+            training_data d;
+            cout << "Please fill the tweet in in.txt. Enter any number to continue" << endl;
+            int flag;
+            cin >> flag;
+            ifstream tweetfile;
+            tweetfile.open("in.txt", ios::in);
+
+            for(int j=0;j<numinputs;j++){
+                tweetfile >> in;
+                d.input.push_back(in/normal_factor);
+                //d.input.push_back(in);
+            }
+            cout << "input is : ";
+            printvec(d.input);
+            cout << endl;
+
+            vector<double> out = nn->calculate_output(d.input);
+            cout << "output is : ";
+            printvec(out);
+            cout << endl;
+
+            tweetfile.close();
+        }
+    }
+    else{
+        inFile.close();
+    }
+
 
     /******************************/
-    inFile.close();
 
 	return 0;
 }

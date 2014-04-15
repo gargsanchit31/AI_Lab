@@ -58,6 +58,8 @@ double are_equal_vec(vector<double> Z, vector<double> Y){
 	}
     double ratio;
     ratio = ((float)c)/s;
+    if(ratio >= 1) return 1;
+    else return 0;
     //cout << "returning c " << c << "S " << s <<" "<< ratio << endl;
     return ratio;
 }
