@@ -126,9 +126,6 @@ signal(x5,0).
 
 % ===========================
 
-%check equality
-equal(X,X).
-
 %AND gate
 signal(T, 1) :- connected(out(G), T), type(G, and), signal(in(1,G), Y1), signal(in(2,G),Y2), Y1 is 1, Y2 is 1, print(G), write(' : AND 1\n'), !.
 signal(T, 0) :- connected(out(G), T), type(G, and), print(G), write(' : AND 0\n'),!.
@@ -149,3 +146,5 @@ signal(T, 1) :- connected(out(G), T), type(G, xor), signal(in(1,G), Y1), signal(
 signal(T, 1) :- connected(T1, T), signal(T1, 1),print(T1), write(' : direct 1\n'), !. %case when signal(in(1,a1), S) called
 signal(T, 0) :- connected(T1, T), signal(T1, 0),print(T1), write(' : direct 0\n'), !. %case when signal(in(1,a1), S) called
 
+%check equality
+equal(X,X).
