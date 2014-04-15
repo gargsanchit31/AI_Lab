@@ -1,26 +1,29 @@
-% signal(X, S) :- member(S, [0, 1]).
-% type(X, T) :- member(T, [or, and]).
-% x1 ---[in(1,A1)]=|\
-%                A1 >=[out(A1)]--- [in(1,A2)]=|A2|>=[out(A2)]-----x3
-% x2 ---[in(2,A2)]=|
+type(xor1,xor).
+type(xor2,xor).
+type(not1,not).
+type(not2,not).
+type(and1,and).
 
-type(a1, and).
-type(a2, or).
-connected(x1, in(1, a1)).
-connected(x2, in(2, a1)).
+connected(x1,in(1,xor1)).
+connected(x5,in(2,xor1)).
+connected(x2,in(1,xor2)).
+connected(x4,in(2,xor2)).
 
-connected(out(a1), in(1, a2)).
-connected(x3, in(2, a2)).
+connected(out(xor1),in(1,not1)).
+connected(out(xor2),in(1,not2)).
 
-connected(out(a2), x4).
+connected(out(not1), in(1,and1)).
+connected(out(not2), in(2,and1)).
 
-signal(x1, 1).
-signal(x2, 1).
-signal(x3, 0).
+connected(out(and1), x6).
 
-type(x1, end).
-type(x2, end).
-type(x3, end).
+%============================
+
+signal(x1,1).
+signal(x2,0).
+signal(x3,1).
+signal(x4,1).
+signal(x5,1).
 
 % ===========================
 
