@@ -176,10 +176,12 @@ int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
 	open_list.push(Start);
 
 	int count=0;
+	int steps = 0;
 
 	while(1){
+		steps++;
 		if(open_list.empty()){
-			cout<<"Something went wront. open_list can't be empty"<<endl;
+			cout<<"Something went wrong. open_list can't be empty"<<endl;
             return -1; //path len is -1 (since no path could be found)
 		}
 
@@ -189,7 +191,7 @@ int AStar<NODE>::run(){ //returns length of path found(if any) else return -1
 		cout<<"Hurray Goal is"<<endl;
             min_node->print_me();
 			int len = trace(min_node);
-            return len;
+            return steps;
 		}
 
 		//closed_list.push_back(min_node);

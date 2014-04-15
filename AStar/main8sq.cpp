@@ -220,8 +220,7 @@ float random_cost(mynode* n){
 float random_cost_2(mynode* n){
     float x = manhattan(n);
     if(x == 0) return 0;
-    if(x >=4) x =4;
-    return get_random(x);
+    return x * (get_random(x) + 2)		;
 }
 
 float rel_displace_cost(mynode* n){
@@ -335,42 +334,68 @@ int main(){
     mygraphtype * graph = new mygraphtype() ;
 
     srand(time(NULL)); //seed _8sq
-	// rand ids = {{1,4,7},{2,5,3},{8,6,0}};
+
 	_8sq ids = {{1,4,5},{0,8,2},{7,3,6}};
-
 	_8sq idg1 = {{1,2,3},{4,5,6},{7,8,0}};
-	//_8sq idg2 = {{2,1,3},{4,5,6},{7,8,0}};
-	
-	//cout<<(idg==ids)<<endl;
-
-	cout<<getkey(ids)<<endl;
-
-
 
 	mynode* s = new mynode(ids);
 	mynode* g1 = new mynode(idg1);
-	// mynode* g2 = new mynode(idg2);
 
 	(*graph)[getkey(ids)] = s;
 	(*graph)[getkey(idg1)] = g1;
-	// (*graph)[getkey(idg2)] = g2;
 
     list<mynode*> goals;
-	// goals.push_back(g2);
 	goals.push_back(g1);
 
     cout << "Starting with A-star" <<endl;
-
 	cout<<"Start Node: "<<endl;
 	cout<<ids;
-	cout<<"End Nodes: "<<endl;
-	cout<<idg1;
-	// cout<<"- - - - - "<<endl;
-	// cout<<idg2;
 
-	AStar<Node<_8sq > > algo(s,goals,manhattan,myneigh,graph);
-	int len = algo.run();
-    cout << "Path found is of length " << len <<endl;
+	int len;
+input_heuristic:
+	cout<<"Press 0 to exit: \n";
+    cout<<"Press 1 for manhattan heuristic: \n";
+    cout<<"Press 2 for hamming heuristic: \n";
+    cout<<"Press 3 for random_cost heuristic: \n";
+    cout<<"Press 4 for rel_displace_cost heuristic: \n";
+    cout<<"Press 5 for random_cost_2 heuristic: \n";
+    cout<<"Enter your choice: ";
+	cin>>len;
+	float (*f)(mynode*);
+
+	switch(len){
+		case 0:
+			cout<<"Exit\n";
+			return 0;
+		break;
+
+		case 1:
+			f=manhattan;
+		break;
+
+		case 2:
+			f=hamming;
+		break;
+
+		case 3:
+			f=random_cost;
+		break;
+
+		case 4: 
+			f=rel_displace_cost;
+		break;
+
+		case 5:
+			f=random_cost_2;
+		break;
+
+		default:
+			cout<<"Undesired Input\n";
+			goto input_heuristic;
+	}
+	AStar<Node<_8sq > > algo(s,goals,f,myneigh,graph);
+	len = algo.run();
+    cout << "Number of steps required " << len <<endl;
     cout << "Size of graph discovered " << (*graph).size() <<endl;
 
 	return 0;

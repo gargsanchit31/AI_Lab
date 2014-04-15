@@ -15,12 +15,13 @@ typedef vector<char> ID;			// '#' means blank, 'B' mean B, 'W' mean W
 typedef Node<ID> mynode;
 typedef NeighInfo<mynode> myneighinfo;
 
+typedef unordered_map<string, mynode*> mygraphtype;
+
 typedef struct{
 	int row;
 	int col;
 } pos_pair;
 
-unordered_map<string, mynode*> graph;
 list<mynode*> goals;
 
 //overload the << operator for printing vector
@@ -66,7 +67,7 @@ vector<int> find_blank(ID id){
 	return res;
 }
 
-list<myneighinfo > myneigh(mynode* n){
+list<myneighinfo > myneigh(mynode* n, mygraphtype &graph){
 	list<myneighinfo> l;
 	ID id = n->getid();
 	vector<int> blank = find_blank(id);
@@ -173,7 +174,7 @@ list<myneighinfo > myneigh(mynode* n){
 }
 
 float cost_1(mynode* n){
-	return 7;
+	return 1;
 }
 
 //here manhattan is number of inverted pair
@@ -198,45 +199,6 @@ float inversion2(mynode* n){
 	return x;
 }
 
-// //h(n) function
-// float manhattan(Node< _8sq >* n){
-// 	float cost = 0;
-// 	_8sq ids = n->getid();
-
-// 	pos_pair pos;
-// 	for(int i=0;i<8;i++){ //ERROR was here. We only need to consider manhattan displaced positions (i.e numbers 1 - 8)
-// 		pos_pair pos = find(ids, i+1);
-// 		int row = pos.row;
-// 		int col = pos.col;
-// 		int man_row = (i)/3;
-// 		int man_col = (i)%3;
-// 		int temp = abs(man_row - row) + abs(man_col - col);
-// 		//cout<< i+1 <<" error: "<< temp<<endl;
-// 		cost+= temp;
-// 	}
-// 	//cout<< "cost is: " << cost<<endl;
-// 	return cost;
-// }
-
-// float hamming(mynode* n){
-//     float cost = 0;
-// 	_8sq ids = n->getid();
-
-// 	pos_pair pos;
-// 	for(int i=0;i<8;i++){//ERROR was here. (see manhattan() for details)
-// 		pos_pair pos = find(ids, i+1);
-// 		int row = pos.row;
-// 		int col = pos.col;
-// 		int man_row = (i)/3;
-// 		int man_col = (i)%3;
-// 		int temp = abs(man_row - row) + abs(man_col - col);
-// 		//cout<< i+1 <<" error: "<< temp<<endl;
-// 		if(temp>0)cost+= 1;
-// 	}
-// 	//cout<< "cost is: " << cost<<endl;
-// 	return cost;
-// }
-
 float random_cost(mynode* n){
     float x = inversion(n);
     if(x == 0) return 0;
@@ -259,9 +221,10 @@ float zero_cost(mynode* n){
 //     if(x >=4) x =4;
 //     return get_random(x);
 // }
-//0 is the blank
+
 int main(){
 	srand(time(NULL)); //seed rand
+	mygraphtype * graph = new mygraphtype() ;
 
 	ID ids = {'B','B','B',BLANK,'W','W','W'};
 	ID idg1 = {'W','W','W','B','B','B',BLANK};
@@ -271,34 +234,8 @@ int main(){
 	ID idg5 = {'W','W',BLANK,'W','B','B','B'};
 	ID idg6 = {'W',BLANK,'W','W','B','B','B'};
 	ID idg7 = {BLANK,'W','W','W','B','B','B'};
-	// cout<<ids<<endl;
-	// swap(ids[6],ids[4]);
-	// cout<<ids;
-	// return 0;
-	// vector<int> blank = find_blank(ids);
-	// return 0;
-	// for(int i=0;i<blank.size();++i){
-	// 	cout<<blank[i]<<" ";
-	// }
-	// cout<<endl;
-
-	// mynode* s = new mynode(ids);
-	// list<mynode*> l = myneigh(s);
-
- //    srand(time(NULL)); //seed rand
-	// _8sq ids = {{3,1,2},{0,6,8},{4,5,7}};
-
-	// _8sq idg1 = {{1,2,3},{4,5,6},{7,8,0}};
-	// _8sq idg2 = {{2,1,3},{4,5,6},{7,8,0}};
-	
-	// //cout<<(idg==ids)<<endl;
-
-	// cout<<getkey(ids)<<endl;
-
-
 
 	mynode* s = new mynode(ids);
-	
 	mynode* g1 = new mynode(idg1);
 	mynode* g2 = new mynode(idg2);
 	mynode* g3 = new mynode(idg3);
@@ -307,18 +244,14 @@ int main(){
 	mynode* g6 = new mynode(idg6);
 	mynode* g7 = new mynode(idg7);
 
-	// cout<<manhattan(s)<<endl;
-	// return 0;
-
-	graph[getkey(ids)] = s;
-	
-	graph[getkey(idg1)] = g1;
-	graph[getkey(idg2)] = g2;
-	graph[getkey(idg3)] = g3;
-	graph[getkey(idg4)] = g4;
-	graph[getkey(idg5)] = g5;
-	graph[getkey(idg6)] = g6;
-	graph[getkey(idg7)] = g7;
+	(*graph)[getkey(ids)] = s;
+	(*graph)[getkey(idg1)] = g1;
+	(*graph)[getkey(idg2)] = g2;
+	(*graph)[getkey(idg3)] = g3;
+	(*graph)[getkey(idg4)] = g4;
+	(*graph)[getkey(idg5)] = g5;
+	(*graph)[getkey(idg6)] = g6;
+	(*graph)[getkey(idg7)] = g7;
 
 	goals.push_back(g1);
 	goals.push_back(g2);
@@ -327,36 +260,54 @@ int main(){
 	goals.push_back(g5);
 	goals.push_back(g6);
 	goals.push_back(g7);
-	// graph[getkey(idg2)] = g2;
 
- //    list<mynode*> goals;
-	// goals.push_back(g1);
-	// goals.push_back(g2);
 
-	// list<mynode*> l1 = myneigh(s);
-	// list<mynode*> l2 = myneigh(s);
+	int len;
+input_heuristic:
+	cout<<"Press 0 to exit: \n";
+    cout<<"Press 1 for inversion heuristic: \n";
+    cout<<"Press 2 for inversion2 heuristic: \n";
+    cout<<"Press 3 for random_cost heuristic: \n";
+    cout<<"Press 4 for greater_h heuristic: \n";
+    cout<<"Press 5 for zero_cost heuristic: \n";
+    cout<<"Enter your choice: ";
+	cin>>len;
+	float (*f)(mynode*);
 
-	// cout<<(l1.front() == l2.front())<<endl;		//if pointer is same
-	// s->print_me();
-	// list<mynode*> l = myneigh(s);
+	switch(len){
+		case 0:
+			cout<<"Exit\n";
+			return 0;
+		break;
 
- //    cout << "neigh " << endl;
-	// list<mynode*>::iterator it = l.begin();
-	// for(;it!=l.end();it++){
-	// 	(*it)->print_me();
-	// }
+		case 1:
+			f=inversion;
+		break;
 
- //    cout << "Starting with A-star" <<endl;
+		case 2:
+			f=inversion2;
+		break;
 
-	// cout<<"Start Node: "<<endl;
-	// cout<<ids;
-	// cout<<"End Node: "<<endl;
-	// cout<<idg1;
-	// cout<<idg2;
+		case 3:
+			f=random_cost;
+		break;
 
-	AStar<mynode> algo(s,goals,inversion2,myneigh);
-	int len = algo.run();
-    cout << "Path found is of length " << len <<endl;
-    cout << "Size of graph discovered " << graph.size() <<endl;
+		case 4: 
+			f=greater_h;
+		break;
+
+		case 5:
+			f=zero_cost;
+		break;
+
+		default:
+			cout<<"Undesired Input\n";
+			goto input_heuristic;
+	}
+
+	AStar<mynode> algo(s,goals,f,myneigh,graph);
+	len = algo.run();
+    cout << "Number of steps required " << len <<endl;
+    cout << "Size of graph discovered " << (*graph).size() <<endl;
 	return 0;
 }

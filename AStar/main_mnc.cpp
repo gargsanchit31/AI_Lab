@@ -25,7 +25,7 @@ typedef list<mynode* > node_list;
 typedef node_list::iterator node_it;
 typedef NeighInfo<mynode> myneighinfo;
 
-unordered_map<string, mynode*> graph;
+typedef unordered_map<string, mynode*> mygraphtype;
 vector<mnc_move> move_list = {{1,0},{0,1},{2,0},{0,2},{1,1}};
 mynode* s;
 mynode* g;
@@ -67,7 +67,7 @@ bool isvalid(ID id){
 	return false;
 }
 
-list<myneighinfo> myneigh(mynode* n){
+list<myneighinfo> myneigh(mynode* n, mygraphtype &graph){
 	int factor = 1;
 	list<myneighinfo> l;
 	if(n->getid().position){
@@ -110,24 +110,67 @@ float zero_cost(mynode* n){
 	return 0;
 }
 
+float random_cost(mynode* n){
+	float x = cost(n);
+	cout<<"cost is: "<<x<<endl;
+	if(x==0) return 0;
+	return get_random(x*10)/10;
+}
+
 int main(){
+	mygraphtype * graph = new mygraphtype() ;
+
 	ID ids = {3,3,1};
 	ID idg = {0,0,0};
 	s = new mynode(ids);
 	g = new mynode(idg);
-	graph[getkey(ids)] = s;
-	graph[getkey(idg)] = g;
+	(*graph)[getkey(ids)] = s;
+	(*graph)[getkey(idg)] = g;
 
     list<mynode*> goals;
     goals.push_back(g);
 
-	//cout<<cost(s);
+	cout << "Starting with A-star" <<endl;
+	cout<<"Start Node: "<<endl;
+	cout<<ids;
 
-//	node_list l = myneigh(s);
+    int len;
+    
+input_heuristic:
+	cout<<"Press 0 to exit: \n";
+    cout<<"Press 1 for normal heuristic: \n";
+    cout<<"Press 2 for zero cost heuristic: \n";
+    cout<<"Press 3 for random_cost heuristic: \n";
+    cout<<"Enter your choice: ";
+	cin>>len;
+	float (*f)(mynode*);
 
-	AStar<mynode> algo(s,goals,zero_cost,myneigh);
-	int len = algo.run();
-    cout << "Path found is of length " << len <<endl;
-    cout << "Size of graph discovered " << graph.size() <<endl;
+	switch(len){
+		case 0:
+			cout<<"Exit\n";
+			return 0;
+		break;
+
+		case 1:
+			f=cost;
+		break;
+
+		case 2:
+			f=zero_cost;
+		break;
+
+		case 3:
+			f=random_cost;
+		break;
+
+		default:
+			cout<<"Undesired Input\n";
+			goto input_heuristic;
+	}
+
+	AStar<mynode> algo(s,goals,f,myneigh,graph);
+	len = algo.run();
+    cout << "Number of steps required " << len <<endl;
+    cout << "Size of graph discovered " << (*graph).size() <<endl;
 	return 0;
 }
