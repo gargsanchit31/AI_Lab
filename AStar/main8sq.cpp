@@ -331,7 +331,7 @@ int main(){
 
     srand(time(NULL)); //seed _8sq
 	// rand ids = {{1,4,7},{2,5,3},{8,6,0}};
-	_8sq ids = {{1,4,5},{0,8,2},{7,3,6}};
+	_8sq ids = {{2,8,1},{4,0,7},{5,3,6}};
 	_8sq idg = {{1,2,3},{4,5,6},{7,8,0}};
 
 
@@ -358,8 +358,54 @@ int main(){
 	cout<<"End Nodes: "<<endl;
 	cout<<idg;
 
-	AStar<Node<_8sq > > algo1(s1,g1,rel_displace_cost,myneigh,graph1);
-	AStar<Node<_8sq > > algo2(s2,g2,rel_displace_cost,myneigh,graph2);
+	int len;
+	input_heuristic:
+	cout<<"Press 0 to exit: \n";
+    cout<<"Press 1 for manhattan heuristic: \n";
+    cout<<"Press 2 for hamming heuristic: \n";
+    cout<<"Press 3 for random_cost heuristic: \n";
+    cout<<"Press 4 for rel_displace_cost heuristic: \n";
+    cout<<"Press 5 for random_cost_2 heuristic: \n";
+    cout<<"Enter your choice: ";
+	cin>>len;
+	float (*f)(mynode*,mynode*);
+
+	switch(len){
+		case 0:
+			cout<<"Exit\n";
+			return 0;
+		break;
+
+		case 1:
+			f=manhattan;
+		break;
+
+		case 2:
+			f=hamming;
+		break;
+
+		case 3:
+			f=random_cost;
+		break;
+
+		case 4: 
+			f=rel_displace_cost;
+		break;
+
+		case 5:
+			f=random_cost_2;
+		break;
+
+		default:
+			cout<<"Undesired Input\n";
+			goto input_heuristic;
+	}
+
+
+
+
+	AStar<Node<_8sq > > algo1(s1,g1,f,myneigh,graph1);
+	AStar<Node<_8sq > > algo2(s2,g2,f,myneigh,graph2);
 
     algo1.init();
     algo2.init();
@@ -373,17 +419,19 @@ int main(){
 		mynode *n1, *n2;
 
 		int len1 = algo1.step(n1);
-		int len2 = algo2.step(n2);
 		
 		if(len1!=-1){
 			cout<<"Algo1 found the path\n";
 			break;
 		}
-
+		count++;
+		
+		int len2 = algo2.step(n2);
 		if(len2!=-1){
 			cout<<"Algo2 found the path\n";
 			break;
 		}
+		count++;
 
 		string key1 = getkey(n1->getid());
 		
@@ -413,6 +461,7 @@ int main(){
 		}
 	}
 	int elem = 0;
+	cout << "Number of steps required " << count <<endl;
 	cout<<"size of graph1: "<<graph1->size()<<endl;
 	cout<<"size of graph2: "<<graph2->size()<<endl;
 	
