@@ -1,4 +1,4 @@
-((p-q)-((~p-q)-q))
+(((p&q)|r)-((p|r)|(q|r)))
 2
 p
 q
@@ -15,3 +15,4 @@ q
 
 //ROUGH
 ((p-q)-(((p-F)-q)-q))
+((A-(B-C))-(((A-B)-((A-C)-F)) - ((A-B)-F)))        //use ax2 expansion

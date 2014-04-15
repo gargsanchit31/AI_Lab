@@ -553,7 +553,10 @@ void Decider::lhs_some_axiom_closure(){
         Formula* f;
         Annotation ann;
 
+       // cout <<" candidate is  " << candidate->to_string() <<endl;
+
         if(isAxiom1(candidate)){
+            cout << "inside " <<endl;
             ann_stmt.flag_lhs_axiom = true;
             ann.rule = Ax1;
             ann.a = candidate->lhs;

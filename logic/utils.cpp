@@ -210,7 +210,8 @@ bool isAxiom1(Formula * f){
     if(f->is_leaf()) return false;
     if(f->rhs->is_leaf()) return false;
     //check
-    if( *(f->lhs) == *(f->rhs->rhs)) return true;
+    if( (f->lhs)->to_string() == (f->rhs->rhs)->to_string()) return true;
+    return false;
 }
 
 bool isAxiom3(Formula * f){
